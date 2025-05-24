@@ -14,6 +14,9 @@ const geistMono = Geist_Mono({
 export const metadata = {
   title: "E-Placo",
   description: "A simple digital placement system for KMIT",
+  icons: {
+    icon: "logo.png",
+  },
 };
 
 export default function RootLayout({ children }) {
