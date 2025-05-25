@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🎓 College Placement Management System – Frontend
 
-## Getting Started
+This is the **frontend** for a college-specific Placement Management System built with **Next.js (JavaScript)**. The application delivers a responsive, role-based, and intuitive interface for students, placement officers (admins), and company HRs to manage end-to-end campus placement workflows — from job drives to final selection.
 
-First, run the development server:
+> ⚠️ Note: This repository contains **only the frontend code**. The backend (Express.js) is available in a separate repository.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Features (Frontend)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### 🔒 Role-Based Dashboards
+- **Students**
+  - View eligible job drives filtered by CGPA, branch, and year
+  - Apply to drives
+  - Access placement preparation resources
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Admins (Placement Officers)**
+  - Manage companies, students, drives, schedules, and analytics via a comprehensive dashboard
+  - Perform bulk actions (e.g., result uploads, reminders)
+  - Calendar UI for scheduling interviews, talks, and tests
 
-## Learn More
+- **Recruiters (HR)**
+  - View student resumes, mark shortlists/selections
+  - Submit post-drive feedback to the college
 
-To learn more about Next.js, take a look at the following resources:
+### 🧩 Core UI Components
+- **Drive Dashboard** with labels: `Upcoming`, `Open`, `Closed`, `Results Declared`
+- **Drive Timeline View** to visualize application stages
+- **Integrated Interview Scheduler** with slots and panel tracking
+- **Document Vault** for resumes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🖼️ Screenshots
 
-## Deploy on Vercel
+> Coming soon...
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) (App Router + Client-Side Navigation)
+- **Language**: JavaScript (ES6+)
+- **Styling**: Tailwind CSS
+- **State Management**: React Context API
+- **Routing**: App Router (Next.js)
+- **Icons**: Lucide
