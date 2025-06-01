@@ -1,51 +1,57 @@
-"use client"
-import api from '@/lib/api'
-import React, { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Eye, EyeOff, Loader2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+"use client";
 
-export function LoginForm({ onLoginSuccess }) {
-  const router = useRouter()
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
-  const [showPassword, setShowPassword] = useState(false)
-  const [role, setRole] = useState("student")
-  const [rememberMe, setRememberMe] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
+import api from "@/lib/api";
+import React, { useState } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+export function LoginForm() {
+  const { setUser } = useAuth();
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [role, setRole] = useState("student");
+  const [rememberMe, setRememberMe] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setErrorMessage("")
+    e.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
 
     try {
       const res = await api.post(
         "/auth/login",
         { email, password, role, rememberMe },
-      )
+        { withCredentials: true }
+      );
 
-      const { message, user } = res.data
+      const { message, user } = res.data;
+
       if (message === "Successfully logged in") {
-        onLoginSuccess(user)
-        localStorage.setItem("role", role)
+        setUser(user);
+        router.replace(`/${user.role}/dashboard`);
       } else {
-        setErrorMessage("Unexpected response.")
+        setErrorMessage("Unexpected response.");
       }
     } catch (err) {
+      console.log(err);
       const errMsg =
-        err.response?.data?.message || "Login failed. Please try again."
-      setErrorMessage(errMsg)
+        err.response?.data?.message || "Login failed. Please try again.";
+      setErrorMessage(errMsg);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Card className="w-full max-w-md mx-auto">
@@ -153,5 +159,5 @@ export function LoginForm({ onLoginSuccess }) {
         </div>
       )}
     </Card>
-  )
+  );
 }

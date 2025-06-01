@@ -1,15 +1,11 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { RecruiterLayout } from "@/components/recruiter-layout";
+import { RecruiterDashboard } from "@/components/recruiter-dashboard";
 
-import React from "react";
-
-export default function RecruiterDashboard() {
-  const router = useRouter();
+export default function RecruiterDashboardPage() {
   return (
-    <>
-      <div>I am Recruiter Dashboard</div>
-      <Button onClick={() => router.push("/logout")}>Logout</Button>
-    </>
+    <RecruiterLayout>
+      <RecruiterDashboard />
+    </RecruiterLayout>
   );
 }

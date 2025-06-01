@@ -1,15 +1,11 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+"use client"
+import { AdminLayout } from "@/components/admin-layout"
+import { AdminDashboard } from "@/components/admin-dashboard"
 
-import React from "react";
-
-export default function AdminDashboard() {
-  const router = useRouter();
+export default function AdminDashboardPage() {
   return (
-    <>
-      <div>I am Admin Dashboard</div>
-      <Button onClick={() => router.push("/logout")}>Logout</Button>
-    </>
-  );
+    <AdminLayout>
+      <AdminDashboard />
+    </AdminLayout>
+  )
 }
