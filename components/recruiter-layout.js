@@ -44,18 +44,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 
 export function RecruiterLayout({ children }) {
-  const router = useRouter()
-
-  const handleLogout = () => {
-    localStorage.removeItem("isAuthenticated")
-    localStorage.removeItem("userRole")
-    router.push("/")
-  }
-
-  const handleRoleSwitch = (role) => {
-    localStorage.setItem("userRole", role)
-    router.push(`/${role}/dashboard`)
-  }
+  const router = useRouter();
 
   return (
     <SidebarProvider>
@@ -133,20 +122,6 @@ export function RecruiterLayout({ children }) {
               </SidebarGroupContent>
             </SidebarGroup>
           </SidebarContent>
-          <SidebarFooter className="p-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
-                  <span>Recruiter View</span>
-                  <ChevronDown className="h-4 w-4 opacity-50" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuItem onClick={() => handleRoleSwitch("admin")}>Switch to Admin View</DropdownMenuItem>
-                <DropdownMenuItem onClick={() => handleRoleSwitch("student")}>Switch to Student View</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarFooter>
         </Sidebar>
 
         <div className="flex flex-col flex-1">
@@ -266,7 +241,7 @@ export function RecruiterLayout({ children }) {
                       <span>Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout}>
+                    <DropdownMenuItem onClick={()=>router.push('/logout')}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>

@@ -3,17 +3,22 @@
 import { useState } from "react"
 import {
   BarChart3,
+  Briefcase,
   Calendar,
   CheckCircle,
   ChevronRight,
   Clock,
   Download,
+  Edit,
+  Eye,
   FileText,
   Filter,
   GraduationCap,
   MessageSquare,
+  Plus,
   Search,
   ThumbsUp,
+  Trash2,
   User,
   Users,
   X,
@@ -21,13 +26,73 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export function RecruiterDashboard() {
   const [searchQuery, setSearchQuery] = useState("")
+  const [selectedJob, setSelectedJob] = useState("all")
+
+  // Mock job postings data
+  const jobPostings = [
+    {
+      id: "JOB001",
+      title: "Software Engineer",
+      department: "Engineering",
+      applications: 78,
+      shortlisted: 24,
+      interviewed: 15,
+      selected: 5,
+      status: "active",
+      postedDate: "2025-04-15",
+      deadline: "2025-05-15",
+    },
+    {
+      id: "JOB002",
+      title: "Frontend Developer",
+      department: "Engineering",
+      applications: 45,
+      shortlisted: 18,
+      interviewed: 12,
+      selected: 3,
+      status: "active",
+      postedDate: "2025-04-20",
+      deadline: "2025-05-20",
+    },
+    {
+      id: "JOB003",
+      title: "Data Analyst",
+      department: "Analytics",
+      applications: 32,
+      shortlisted: 12,
+      interviewed: 8,
+      selected: 2,
+      status: "active",
+      postedDate: "2025-04-25",
+      deadline: "2025-05-25",
+    },
+    {
+      id: "JOB004",
+      title: "Product Manager",
+      department: "Product",
+      applications: 28,
+      shortlisted: 10,
+      interviewed: 6,
+      selected: 1,
+      status: "closed",
+      postedDate: "2025-03-15",
+      deadline: "2025-04-15",
+    },
+  ]
+
+  const activeJobs = jobPostings.filter((job) => job.status === "active")
+  const totalApplications = jobPostings.reduce((sum, job) => sum + job.applications, 0)
+  const totalShortlisted = jobPostings.reduce((sum, job) => sum + job.shortlisted, 0)
+  const totalInterviewed = jobPostings.reduce((sum, job) => sum + job.interviewed, 0)
+  const totalSelected = jobPostings.reduce((sum, job) => sum + job.selected, 0)
 
   return (
     <div className="space-y-6">
@@ -35,30 +100,41 @@ export function RecruiterDashboard() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Recruiter Dashboard</h2>
           <p className="text-muted-foreground">
-            Welcome to TechCorp&apos;s recruitment portal. Manage your campus hiring process.
+            Welcome to TechCorp's recruitment portal. Manage your job postings and candidates.
           </p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" size="sm">
-            <FileText className="mr-2 h-4 w-4" />
-            Job Details
-          </Button>
-          <Button size="sm">
             <Download className="mr-2 h-4 w-4" />
             Export Data
+          </Button>
+          <Button size="sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Post New Job
           </Button>
         </div>
       </div>
 
+      {/* Overview Stats */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Jobs</CardTitle>
+            <Briefcase className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{activeJobs.length}</div>
+            <p className="text-xs text-muted-foreground mt-2">{jobPostings.length - activeJobs.length} closed jobs</p>
+          </CardContent>
+        </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Applications</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">78</div>
-            <p className="text-xs text-muted-foreground mt-2">For Software Engineer position</p>
+            <div className="text-2xl font-bold">{totalApplications}</div>
+            <p className="text-xs text-muted-foreground mt-2">Across all job postings</p>
           </CardContent>
         </Card>
         <Card>
@@ -67,39 +143,48 @@ export function RecruiterDashboard() {
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">24</div>
-            <Progress value={30} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-2">30% of total applications</p>
+            <div className="text-2xl font-bold">{totalShortlisted}</div>
+            <Progress value={(totalShortlisted / totalApplications) * 100} className="mt-2" />
+            <p className="text-xs text-muted-foreground mt-2">
+              {Math.round((totalShortlisted / totalApplications) * 100)}% of total applications
+            </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Interview Progress</CardTitle>
+            <CardTitle className="text-sm font-medium">Selected</CardTitle>
             <BarChart3 className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">15/24</div>
-            <Progress value={62} className="mt-2" />
-            <p className="text-xs text-muted-foreground mt-2">62% completed</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Upcoming Interviews</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">9</div>
-            <p className="text-xs text-muted-foreground mt-2">Scheduled for this week</p>
+            <div className="text-2xl font-bold">{totalSelected}</div>
+            <Progress value={(totalSelected / totalShortlisted) * 100} className="mt-2" />
+            <p className="text-xs text-muted-foreground mt-2">
+              {Math.round((totalSelected / totalShortlisted) * 100)}% conversion rate
+            </p>
           </CardContent>
         </Card>
       </div>
+
+      {/* Job Postings Management */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Job Postings</CardTitle>
+          <CardDescription>Manage your active and closed job postings.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {jobPostings.map((job) => (
+              <JobPostingCard key={job.id} job={job} />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-4 md:grid-cols-7">
         <Card className="md:col-span-4">
           <CardHeader>
             <CardTitle>Candidate Management</CardTitle>
-            <CardDescription>Review and manage candidate applications.</CardDescription>
+            <CardDescription>Review and manage candidate applications across all jobs.</CardDescription>
             <div className="flex items-center gap-2 mt-2">
               <div className="relative flex-1">
                 <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -111,6 +196,19 @@ export function RecruiterDashboard() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
+              <Select value={selectedJob} onValueChange={setSelectedJob}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Filter by job" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Jobs</SelectItem>
+                  {jobPostings.map((job) => (
+                    <SelectItem key={job.id} value={job.id}>
+                      {job.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Button variant="outline" size="icon">
                 <Filter className="h-4 w-4" />
                 <span className="sr-only">Filter</span>
@@ -131,6 +229,8 @@ export function RecruiterDashboard() {
                   cgpa={8.9}
                   skills={["Java", "Spring Boot", "React"]}
                   status="shortlisted"
+                  jobTitle="Software Engineer"
+                  jobId="JOB001"
                   interviewDate="May 5, 2025"
                   image="/placeholder.svg"
                 />
@@ -140,6 +240,8 @@ export function RecruiterDashboard() {
                   cgpa={9.2}
                   skills={["Python", "Django", "Machine Learning"]}
                   status="shortlisted"
+                  jobTitle="Data Analyst"
+                  jobId="JOB003"
                   interviewDate="May 5, 2025"
                   image="/placeholder.svg"
                 />
@@ -149,6 +251,8 @@ export function RecruiterDashboard() {
                   cgpa={8.7}
                   skills={["JavaScript", "Node.js", "MongoDB"]}
                   status="shortlisted"
+                  jobTitle="Frontend Developer"
+                  jobId="JOB002"
                   interviewDate="May 6, 2025"
                   image="/placeholder.svg"
                 />
@@ -164,6 +268,8 @@ export function RecruiterDashboard() {
                   cgpa={8.5}
                   skills={["C++", "Embedded Systems", "IoT"]}
                   status="pending"
+                  jobTitle="Software Engineer"
+                  jobId="JOB001"
                   image="/placeholder.svg"
                 />
                 <CandidateCard
@@ -172,6 +278,8 @@ export function RecruiterDashboard() {
                   cgpa={8.3}
                   skills={["Java", "Android", "Kotlin"]}
                   status="pending"
+                  jobTitle="Frontend Developer"
+                  jobId="JOB002"
                   image="/placeholder.svg"
                 />
                 <Button variant="outline" className="w-full">
@@ -186,6 +294,8 @@ export function RecruiterDashboard() {
                   cgpa={9.0}
                   skills={["Python", "React", "AWS"]}
                   status="interviewed"
+                  jobTitle="Software Engineer"
+                  jobId="JOB001"
                   feedback="Strong technical skills, good communication"
                   image="/placeholder.svg"
                 />
@@ -195,6 +305,8 @@ export function RecruiterDashboard() {
                   cgpa={8.6}
                   skills={["JavaScript", "Angular", "Node.js"]}
                   status="interviewed"
+                  jobTitle="Frontend Developer"
+                  jobId="JOB002"
                   feedback="Good problem-solving skills, needs improvement in system design"
                   image="/placeholder.svg"
                 />
@@ -210,12 +322,14 @@ export function RecruiterDashboard() {
         <Card className="md:col-span-3">
           <CardHeader>
             <CardTitle>Interview Schedule</CardTitle>
-            <CardDescription>Upcoming interviews for this week.</CardDescription>
+            <CardDescription>Upcoming interviews across all job postings.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <InterviewScheduleItem
                 name="Rahul Sharma"
+                jobTitle="Software Engineer"
+                jobId="JOB001"
                 round="Technical Round 1"
                 date="May 5, 2025"
                 time="10:00 AM - 11:00 AM"
@@ -224,6 +338,8 @@ export function RecruiterDashboard() {
               />
               <InterviewScheduleItem
                 name="Priya Patel"
+                jobTitle="Data Analyst"
+                jobId="JOB003"
                 round="Technical Round 1"
                 date="May 5, 2025"
                 time="11:30 AM - 12:30 PM"
@@ -232,6 +348,8 @@ export function RecruiterDashboard() {
               />
               <InterviewScheduleItem
                 name="Amit Singh"
+                jobTitle="Frontend Developer"
+                jobId="JOB002"
                 round="Technical Round 1"
                 date="May 6, 2025"
                 time="2:00 PM - 3:00 PM"
@@ -250,42 +368,29 @@ export function RecruiterDashboard() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Department-wise Applications</CardTitle>
-            <CardDescription>Distribution of applications by department.</CardDescription>
+            <CardTitle>Job Performance</CardTitle>
+            <CardDescription>Application statistics by job posting.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">Computer Science</p>
-                  <p className="text-2xl font-bold">42</p>
+              {activeJobs.map((job) => (
+                <div key={job.id} className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium">{job.title}</p>
+                    <p className="text-xs text-muted-foreground">{job.id}</p>
+                    <p className="text-lg font-bold">{job.applications} applications</p>
+                  </div>
+                  <div className="text-right">
+                    <Progress value={(job.applications / totalApplications) * 100} className="w-20 mb-1" />
+                    <p className="text-xs text-muted-foreground">
+                      {Math.round((job.applications / totalApplications) * 100)}%
+                    </p>
+                  </div>
                 </div>
-                <Progress value={54} className="w-1/2" />
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">Information Technology</p>
-                  <p className="text-2xl font-bold">18</p>
-                </div>
-                <Progress value={23} className="w-1/2" />
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">Electronics</p>
-                  <p className="text-2xl font-bold">12</p>
-                </div>
-                <Progress value={15} className="w-1/2" />
-              </div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium">Others</p>
-                  <p className="text-2xl font-bold">6</p>
-                </div>
-                <Progress value={8} className="w-1/2" />
-              </div>
+              ))}
               <Button variant="outline" className="w-full">
                 <BarChart3 className="mr-2 h-4 w-4" />
-                View detailed breakdown
+                View detailed analytics
               </Button>
             </div>
           </CardContent>
@@ -293,13 +398,15 @@ export function RecruiterDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Feedback Summary</CardTitle>
-            <CardDescription>Recent interview feedback.</CardDescription>
+            <CardTitle>Recent Feedback</CardTitle>
+            <CardDescription>Latest interview feedback across all jobs.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <FeedbackItem
                 name="Ananya Desai"
+                jobTitle="Software Engineer"
+                jobId="JOB001"
                 interviewer="Vikram Mehta"
                 rating="Positive"
                 comment="Strong technical skills, good communication. Recommended for next round."
@@ -307,16 +414,20 @@ export function RecruiterDashboard() {
               />
               <FeedbackItem
                 name="Rohan Joshi"
+                jobTitle="Frontend Developer"
+                jobId="JOB002"
                 interviewer="Sneha Gupta"
                 rating="Neutral"
-                comment="Good problem-solving skills, needs improvement in system design. Consider for next round."
+                comment="Good problem-solving skills, needs improvement in system design."
                 date="May 2, 2025"
               />
               <FeedbackItem
                 name="Kiran Shah"
+                jobTitle="Data Analyst"
+                jobId="JOB003"
                 interviewer="Rajesh Kumar"
                 rating="Negative"
-                comment="Lacks fundamental knowledge in key areas. Not recommended for this position."
+                comment="Lacks fundamental knowledge in key areas. Not recommended."
                 date="May 1, 2025"
               />
               <Button variant="outline" className="w-full">
@@ -327,77 +438,50 @@ export function RecruiterDashboard() {
           </CardContent>
         </Card>
       </div>
+    </div>
+  )
+}
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Job Details</CardTitle>
-          <CardDescription>Software Engineer position at TechCorp.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-medium">Job Description</h3>
-              <p className="text-sm text-muted-foreground mt-2">
-                We are looking for Software Engineers to join our growing team. You will be responsible for developing
-                and maintaining our core products, working with a team of experienced developers to build scalable and
-                maintainable software solutions.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium">Requirements</h3>
-              <ul className="text-sm text-muted-foreground mt-2 space-y-1">
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>B.Tech/BE in CS/IT/ECE with CGPA 7.5 or above</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Strong knowledge of data structures and algorithms</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Proficiency in at least one programming language (Java, Python, JavaScript)</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Knowledge of web technologies and frameworks</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">•</span>
-                  <span>Good problem-solving and communication skills</span>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-lg font-medium">Selection Process</h3>
-              <ul className="text-sm text-muted-foreground mt-2 space-y-1">
-                <li className="flex items-start">
-                  <span className="mr-2">1.</span>
-                  <span>Resume shortlisting</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">2.</span>
-                  <span>Technical assessment</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">3.</span>
-                  <span>Technical interview</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="mr-2">4.</span>
-                  <span>HR interview</span>
-                </li>
-              </ul>
-            </div>
+function JobPostingCard({ job }) {
+  const statusColors = {
+    active: "bg-green-500/10 text-green-500",
+    closed: "bg-gray-500/10 text-gray-500",
+    draft: "bg-orange-500/10 text-orange-500",
+  }
+
+  return (
+    <div className="flex items-center justify-between rounded-lg border p-4">
+      <div className="flex items-start gap-4">
+        <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-primary/10">
+          <Briefcase className="h-6 w-6 text-primary" />
+        </div>
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <h4 className="font-medium">{job.title}</h4>
+            <Badge className={statusColors[job.status]}>{job.status}</Badge>
           </div>
-        </CardContent>
-        <CardFooter>
-          <Button variant="outline" className="w-full">
-            <FileText className="mr-2 h-4 w-4" />
-            Edit Job Details
-          </Button>
-        </CardFooter>
-      </Card>
+          <p className="text-sm text-muted-foreground">
+            {job.id} • {job.department} • Posted: {job.postedDate}
+          </p>
+          <div className="flex gap-4 text-xs text-muted-foreground">
+            <span>{job.applications} applications</span>
+            <span>{job.shortlisted} shortlisted</span>
+            <span>{job.interviewed} interviewed</span>
+            <span>{job.selected} selected</span>
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Eye className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="icon" className="h-8 w-8">
+          <Edit className="h-4 w-4" />
+        </Button>
+        <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500">
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
     </div>
   )
 }
@@ -408,6 +492,8 @@ function CandidateCard({
   cgpa,
   skills,
   status,
+  jobTitle,
+  jobId,
   interviewDate,
   feedback,
   image,
@@ -440,6 +526,10 @@ function CandidateCard({
           <Badge className={statusColors[status]}>{statusText[status]}</Badge>
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+          <span className="flex items-center">
+            <Briefcase className="mr-1 h-3 w-3" />
+            {jobTitle} ({jobId})
+          </span>
           <span className="flex items-center">
             <GraduationCap className="mr-1 h-3 w-3" />
             {department}
@@ -494,6 +584,8 @@ function CandidateCard({
 
 function InterviewScheduleItem({
   name,
+  jobTitle,
+  jobId,
   round,
   date,
   time,
@@ -507,6 +599,9 @@ function InterviewScheduleItem({
       </div>
       <div className="space-y-1">
         <h4 className="font-medium">{name}</h4>
+        <p className="text-sm text-muted-foreground">
+          {jobTitle} ({jobId})
+        </p>
         <p className="text-sm text-muted-foreground">{round}</p>
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
           <span className="flex items-center">
@@ -533,6 +628,8 @@ function InterviewScheduleItem({
 
 function FeedbackItem({
   name,
+  jobTitle,
+  jobId,
   interviewer,
   rating,
   comment,
@@ -551,7 +648,7 @@ function FeedbackItem({
         <Badge className={ratingColors[rating]}>{rating}</Badge>
       </div>
       <p className="text-xs text-muted-foreground mt-1">
-        Interviewer: {interviewer} | {date}
+        {jobTitle} ({jobId}) • {interviewer} • {date}
       </p>
       <p className="text-sm mt-2">{comment}</p>
     </div>
