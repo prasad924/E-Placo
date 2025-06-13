@@ -4,10 +4,8 @@ import React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
-  Bell,
   Calendar,
   CheckSquare,
-  ChevronDown,
   FileText,
   GraduationCap,
   Home,
@@ -32,7 +30,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -41,11 +38,12 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import { Badge } from "@/components/ui/badge"
+import { NotificationPopover } from "./ui/notification-popover"
+import { useAuth } from "@/context/AuthContext"
 
 export function RecruiterLayout({ children }) {
   const router = useRouter();
-
+  const { user } = useAuth();
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-background">
@@ -61,8 +59,8 @@ export function RecruiterLayout({ children }) {
                 <AvatarFallback>RC</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <span className="text-sm font-medium">Recruiter</span>
-                <span className="text-xs text-muted-foreground">TechCorp</span>
+                <span className="text-sm font-medium">{user.name}</span>
+                <span className="text-xs text-muted-foreground">{user.email}</span>
               </div>
             </div>
           </SidebarHeader>
@@ -186,35 +184,7 @@ export function RecruiterLayout({ children }) {
                 <h1 className="text-xl font-bold">E-Placo Recruiter</h1>
               </div>
               <div className="flex items-center gap-4">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" size="icon">
-                      <Bell className="h-5 w-5" />
-                      <span className="sr-only">Notifications</span>
-                      <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-primary text-[10px] font-medium text-primary-foreground flex items-center justify-center">
-                        5
-                      </span>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-80">
-                    <DropdownMenuLabel>Notifications</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <div className="max-h-96 overflow-auto">
-                      <div className="flex flex-col gap-1 p-3 bg-secondary/50">
-                        <div className="flex justify-between items-start">
-                          <span className="font-medium">New applications received</span>
-                          <Badge variant="secondary" className="text-[10px]">
-                            New
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          15 new applications for Software Engineer position.
-                        </p>
-                        <span className="text-xs text-muted-foreground">1 hour ago</span>
-                      </div>
-                    </div>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <NotificationPopover/>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-9 w-9 rounded-full">
