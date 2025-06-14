@@ -267,7 +267,7 @@ export function AdminDashboard() {
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-1">
         <Card>
           <CardHeader>
             <CardTitle>Placement Statistics</CardTitle>
@@ -311,44 +311,7 @@ export function AdminDashboard() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activities</CardTitle>
-            <CardDescription>Latest actions and updates.</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <ActivityItem
-                icon={<Plus className="h-4 w-4" />}
-                title="New drive added"
-                description="TechCorp Software Engineer drive was added"
-                time="2 hours ago"
-              />
-              <ActivityItem
-                icon={<CheckCircle className="h-4 w-4" />}
-                title="Results published"
-                description="DataTech interview results were published"
-                time="Yesterday"
-              />
-              <ActivityItem
-                icon={<Users className="h-4 w-4" />}
-                title="Student verification"
-                description="45 new student profiles were verified"
-                time="2 days ago"
-              />
-              <ActivityItem
-                icon={<Calendar className="h-4 w-4" />}
-                title="Schedule updated"
-                description="GlobalSoft interview schedule was updated"
-                time="3 days ago"
-              />
-              <Button variant="outline" className="w-full">
-                <RefreshCw className="mr-2 h-4 w-4" />
-                View all activities
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">

@@ -1,12 +1,10 @@
-"use client"
+"use client";
 
-import React from "react"
-import Link from "next/link"
-import { NotificationPopover } from "@/components/ui/notification-popover"
-
-import { useRouter } from "next/navigation"
+import React from "react";
+import Link from "next/link";
+import { NotificationPopover } from "@/components/ui/notification-popover";
+import { useRouter } from "next/navigation";
 import {
-  Bell,
   BarChart,
   Building,
   Calendar,
@@ -18,9 +16,9 @@ import {
   User,
   Users,
   Briefcase,
-} from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,8 +26,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Sidebar,
   SidebarContent,
@@ -40,15 +38,17 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-} from "@/components/ui/sidebar"
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/sidebar";
+import { useAuth } from "@/context/AuthContext";
+import { usePathname } from "next/navigation";
 
 export function AdminLayout({ children }) {
-  const router = useRouter()
-
+  const router = useRouter();
+  const { user } = useAuth();
+  const pathname = usePathname();
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen bg-background">
+      <div className="flex min-h-screen w-full bg-background">
         <Sidebar className="hidden md:flex border-r">
           <SidebarHeader className="flex flex-col gap-2 p-4">
             <div className="flex items-center gap-2">
@@ -57,12 +57,14 @@ export function AdminLayout({ children }) {
             </div>
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-secondary/50">
               <Avatar className="h-7 w-7">
-                <AvatarImage src="/placeholder.svg" alt="Avatar" />
-                <AvatarFallback>AD</AvatarFallback>
+                <AvatarImage src={user.url} alt="Avatar" />
+                <AvatarFallback>$</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <span className="text-sm font-medium">Admin User</span>
-                <span className="text-xs text-muted-foreground">Administrator</span>
+                <span className="text-sm font-medium">{user.name}</span>
+                <span className="text-xs text-muted-foreground">
+                  {user.email}
+                </span>
               </div>
             </div>
           </SidebarHeader>
@@ -71,7 +73,10 @@ export function AdminLayout({ children }) {
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === "/admin/dashboard"}
+                    >
                       <Link href="/admin/dashboard">
                         <Home className="h-4 w-4" />
                         <span>Dashboard</span>
@@ -79,7 +84,10 @@ export function AdminLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === "/admin/companies"}
+                    >
                       <Link href="/admin/companies">
                         <Building className="h-4 w-4" />
                         <span>Company Management</span>
@@ -87,7 +95,10 @@ export function AdminLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === "/admin/students"}
+                    >
                       <Link href="/admin/students">
                         <Users className="h-4 w-4" />
                         <span>Student Management</span>
@@ -95,7 +106,10 @@ export function AdminLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === "/admin/drives"}
+                    >
                       <Link href="/admin/drives">
                         <Briefcase className="h-4 w-4" />
                         <span>Drive Management</span>
@@ -103,7 +117,10 @@ export function AdminLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === "/admin/analytics"}
+                    >
                       <Link href="/admin/analytics">
                         <BarChart className="h-4 w-4" />
                         <span>Analytics</span>
@@ -111,18 +128,13 @@ export function AdminLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton
+                      asChild
+                      isActive={pathname === "/admin/calendar"}
+                    >
                       <Link href="/admin/calendar">
                         <Calendar className="h-4 w-4" />
                         <span>Schedule Management</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
-                      <Link href="/admin/settings">
-                        <Settings className="h-4 w-4" />
-                        <span>Settings</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -133,7 +145,7 @@ export function AdminLayout({ children }) {
         </Sidebar>
 
         <div className="flex flex-col flex-1">
-          <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-6">
+          <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-6 w-full">
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="outline" size="icon" className="md:hidden">
@@ -148,43 +160,78 @@ export function AdminLayout({ children }) {
                     <h1 className="text-xl font-bold">E-Placo</h1>
                   </div>
                   <div className="mt-4 space-y-1">
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                      isActive={pathname === "/admin/dashboard"}
+                    >
                       <Link href="/admin/dashboard">
                         <Home className="mr-2 h-4 w-4" />
                         Dashboard
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                      isActive={pathname === "/admin/companies"}
+                    >
                       <Link href="/admin/companies">
                         <Building className="mr-2 h-4 w-4" />
                         Company Management
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                      isActive={pathname === "/admin/students"}
+                    >
                       <Link href="/admin/students">
                         <Users className="mr-2 h-4 w-4" />
                         Student Management
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                      isActive={pathname === "/admin/drives"}
+                    >
                       <Link href="/admin/drives">
                         <Briefcase className="mr-2 h-4 w-4" />
                         Drive Management
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                      isActive={pathname === "/admin/analytics"}
+                    >
                       <Link href="/admin/analytics">
                         <BarChart className="mr-2 h-4 w-4" />
                         Analytics
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                      isActive={pathname === "/admin/calendar"}
+                    >
                       <Link href="/admin/calendar">
                         <Calendar className="mr-2 h-4 w-4" />
                         Schedule Management
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                      isActive={pathname === "/admin/settings"}
+                    >
                       <Link href="/admin/settings">
                         <Settings className="mr-2 h-4 w-4" />
                         Settings
@@ -200,34 +247,37 @@ export function AdminLayout({ children }) {
                 <h1 className="text-xl font-bold">E-Placo Admin</h1>
               </div>
               <div className="flex items-center gap-4">
-                <NotificationPopover/>
+                {/* <NotificationPopover/> */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                    <Button
+                      variant="ghost"
+                      className="relative h-9 w-9 rounded-full"
+                    >
                       <Avatar className="h-9 w-9">
-                        <AvatarImage src="/placeholder.svg" alt="Avatar" />
-                        <AvatarFallback>AD</AvatarFallback>
+                        <AvatarImage src={user.url} alt="Avatar" />
+                        <AvatarFallback>$</AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium">Admin User</p>
-                        <p className="text-xs text-muted-foreground">admin@college.edu</p>
+                        <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {user.email}
+                        </p>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => router.push("/admin/settings")}
+                    >
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={()=> router.push('/logout')}>
+                    <DropdownMenuItem onClick={() => router.push("/logout")}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>
@@ -240,5 +290,5 @@ export function AdminLayout({ children }) {
         </div>
       </div>
     </SidebarProvider>
-  )
+  );
 }

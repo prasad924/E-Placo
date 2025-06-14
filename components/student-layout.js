@@ -41,11 +41,11 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import { Badge } from "@/components/ui/badge"
+import { useAuth } from "@/context/AuthContext"
 
 export function StudentLayout({ children }) {
   const router = useRouter()
-
+  const {user} = useAuth()
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-background">
@@ -57,8 +57,8 @@ export function StudentLayout({ children }) {
             </div>
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-secondary/50">
               <Avatar className="h-7 w-7">
-                <AvatarImage src="/placeholder.svg" alt="Avatar" />
-                <AvatarFallback>JS</AvatarFallback>
+                <AvatarImage src={user.url} alt="Avatar" />
+                <AvatarFallback>$</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
                 <span className="text-sm font-medium">John Smith</span>
@@ -191,8 +191,8 @@ export function StudentLayout({ children }) {
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                       <Avatar className="h-9 w-9">
-                        <AvatarImage src="/placeholder.svg" alt="Avatar" />
-                        <AvatarFallback>JS</AvatarFallback>
+                        <AvatarImage src={user.url} alt="Avatar" />
+                        <AvatarFallback>$</AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>

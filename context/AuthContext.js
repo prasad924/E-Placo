@@ -1,7 +1,6 @@
 "use client";
 
 import React, { createContext, useState, useEffect, useContext } from "react";
-import { useRouter } from "next/navigation";
 import api from "@/lib/api";
 
 const AuthContext = createContext();
@@ -9,7 +8,6 @@ const AuthContext = createContext();
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const router = useRouter();
 
   useEffect(() => {
     async function fetchUser() {
