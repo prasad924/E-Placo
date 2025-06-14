@@ -37,7 +37,7 @@ export function StudentProfile() {
     degree: "Computer Science & Engineering",
     batch: "2025",
     cgpa: "8.5",
-    profilePicture: "/placeholder.svg", // This will be Cloudinary URL
+    profilePicture: "/placeholder.svg",
     aboutMe:
       "I am a final year Computer Science student with a passion for web development and machine learning. I have experience building full-stack applications and working with various frameworks and technologies. I am looking for opportunities in software development and data science.",
   })
@@ -141,96 +141,11 @@ export function StudentProfile() {
   // Temporary edit states
   const [editData, setEditData] = useState(profileData)
 
-  // Handle avatar upload
-  const handleAvatarUpload = async (event) => {
-    const file = event.target.files?.[0]
-    if (!file) return
-
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      toast({
-        title: "Invalid file type",
-        description: "Please select an image file (JPG, PNG, GIF)",
-        variant: "destructive",
-      })
-      return
-    }
-
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Please select an image smaller than 5MB",
-        variant: "destructive",
-      })
-      return
-    }
-
-    setIsUploading(true)
-
-    try {
-      // Option 1: Upload to Cloudinary (Recommended)
-      const formData = new FormData()
-      formData.append("file", file)
-      formData.append("upload_preset", "your_upload_preset") // Replace with your Cloudinary preset
-
-      const response = await fetch(
-        "https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", // Replace with your cloud name
-        {
-          method: "POST",
-          body: formData,
-        },
-      )
-
-      if (!response.ok) {
-        throw new Error("Upload failed")
-      }
-
-      const data = await response.json()
-
-      // Update profile with Cloudinary URL
-      const newProfileData = { ...profileData, profilePicture: data.secure_url }
-      setProfileData(newProfileData)
-      setEditData(newProfileData)
-
-      toast({
-        title: "Profile picture updated!",
-        description: "Your profile picture has been successfully updated.",
-      })
-
-      // Here you would also update the backend
-      // await updateUserProfile({ profilePicture: data.secure_url })
-    } catch (error) {
-      console.error("Upload error:", error)
-
-      // Fallback: Create local preview (for development)
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        const newProfileData = { ...profileData, profilePicture: e.target?.result }
-        setProfileData(newProfileData)
-        setEditData(newProfileData)
-
-        toast({
-          title: "Profile picture updated!",
-          description: "Your profile picture has been updated (local preview).",
-        })
-      }
-      reader.readAsDataURL(file)
-    } finally {
-      setIsUploading(false)
-      // Reset file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = ""
-      }
-    }
-  }
-
   // Trigger file input
   const triggerFileInput = () => {
     fileInputRef.current?.click()
   }
 
-  // Calculate profile completion
   const calculateCompletion = () => {
     let completed = 0
     const total = 12
@@ -251,14 +166,10 @@ export function StudentProfile() {
     return Math.round((completed / total) * 100)
   }
 
-  // Handle profile save
   const handleSaveProfile = async () => {
     try {
       setProfileData(editData)
       setIsEditing(false)
-
-      // Here you would make API call to save the data
-      // await updateUserProfile(editData)
 
       toast({
         title: "Profile updated!",
@@ -275,7 +186,6 @@ export function StudentProfile() {
     }
   }
 
-  // Handle profile cancel
   const handleCancelEdit = () => {
     setEditData(profileData)
     setIsEditing(false)
@@ -348,7 +258,7 @@ export function StudentProfile() {
   return (
     <div className="space-y-6">
       {/* Hidden file input */}
-      <input ref={fileInputRef} type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
+      <input ref={fileInputRef} type="file" accept="image/*" className="hidden" />
 
       {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
