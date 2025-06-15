@@ -35,7 +35,7 @@ import {
   GraduationCap,
   Briefcase,
 } from "lucide-react"
-import NewDriveDialog from "./newDrive"
+import NewDriveDialog from "@/components/newDrive"
 
 const driveStats = [
   { title: "Total Drives", value: "156", change: "+12%", icon: Briefcase, color: "text-blue-600" },
@@ -48,7 +48,7 @@ const drives = [
   {
     id: 1,
     company: "Google",
-    logo: "default.png?height=40&width=40",
+    logo: "/default.png?height=40&width=40",
     position: "Software Engineer",
     type: "On-Campus",
     status: "Active",
@@ -66,7 +66,7 @@ const drives = [
   {
     id: 2,
     company: "Microsoft",
-    logo: "default.png?height=40&width=40",
+    logo: "/default.png?height=40&width=40",
     position: "Product Manager",
     type: "Virtual",
     status: "Upcoming",
@@ -84,7 +84,7 @@ const drives = [
   {
     id: 3,
     company: "Amazon",
-    logo: "default.png?height=40&width=40",
+    logo: "/default.png?height=40&width=40",
     position: "SDE-1",
     type: "On-Campus",
     status: "Completed",
@@ -211,7 +211,7 @@ export function DriveManagement() {
                   <TableRow key={drive.id}>
                     <TableCell>
                       <div className="flex items-center space-x-3">
-                        <Image src={drive.logo || "default.png"} alt={drive.company} height={8} width={8} className=" rounded" />
+                        <Image src={drive.logo || "/default.png"} alt={drive.company} height={8} width={8} className=" rounded" />
                         <div>
                           <div className="font-medium">{drive.company}</div>
                           <div className="text-sm text-muted-foreground">{drive.location}</div>
@@ -261,7 +261,7 @@ export function DriveManagement() {
             <DialogHeader>
               <DialogTitle className="flex items-center space-x-3">
                 <Image
-                  src={selectedDrive.logo || "default.png"}
+                  src={selectedDrive.logo || "/default.png"}
                   alt={selectedDrive.company}
                   height={10}
                   width={10}

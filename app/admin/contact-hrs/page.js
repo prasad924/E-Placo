@@ -1,4 +1,4 @@
-import { ContactHRs } from "@/components/contact-hrs"
+import { ContactHRs } from "./contact-hrs"
 
 export default function ContactHRsPage() {
   return (

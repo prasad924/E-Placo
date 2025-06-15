@@ -12,9 +12,9 @@ import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useAuth } from "@/context/AuthContext"
 import { useRouter } from "next/navigation"
-import NewDriveDialog from "./newDrive"
-import ScheduleEventDialog from "./scheduleEvent"
-import ExportReportsDialog from "./export-data"
+import NewDriveDialog from "@/components/newDrive"
+import ScheduleEventDialog from "@/components/scheduleEvent"
+import ExportReportsDialog from "@/components/export-data"
 
 export function AdminDashboard() {
   const [showNewDrive, setShowNewDrive] = useState(false)

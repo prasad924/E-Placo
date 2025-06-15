@@ -1,4 +1,4 @@
-import { StudentApplicationForm } from "@/components/student-application-form"
+import { StudentApplicationForm } from "./student-application-form"
 
 export default function StudentApplyPage({ params }) {
   return (

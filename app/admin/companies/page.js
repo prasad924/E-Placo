@@ -1,4 +1,4 @@
-import { CompanyManagement } from "@/components/company-management"
+import { CompanyManagement } from "./company-management"
 
 export default function CompaniesPage() {
   return (

@@ -1,4 +1,4 @@
-import { InterviewCalendar } from "@/components/interview-calendar"
+import { InterviewCalendar } from "./interview-calendar"
 
 export default function CalendarPage() {
   return (

@@ -18,7 +18,7 @@ import {
   PieChart,
   LineChart,
 } from "lucide-react"
-import ExportReportsDialog from "./export-data"
+import ExportReportsDialog from "@/components/export-data"
 
 const overallStats = [
   { title: "Total Students", value: "2,847", change: "+12%", trend: "up", icon: Users, color: "text-blue-600" },

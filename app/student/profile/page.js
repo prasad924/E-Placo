@@ -1,4 +1,4 @@
-import { StudentProfile } from "@/components/student-profile"
+import { StudentProfile } from "./student-profile"
 
 export default function ProfilePage() {
   return (

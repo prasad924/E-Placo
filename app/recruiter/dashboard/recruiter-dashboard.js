@@ -31,10 +31,18 @@ import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
+import NewDriveDialog from "@/components/newDrive"
 
 export function RecruiterDashboard() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedJob, setSelectedJob] = useState("all")
+  const [isViewJobOpen, setIsViewJobOpen] = useState(false)
+  const [isEditJobOpen, setIsEditJobOpen] = useState(false)
+  const [selectedJobData, setSelectedJobData] = useState(null)
+  const [newDrive, setNewDrive] = useState(false);
 
   // Mock job postings data
   const jobPostings = [
@@ -49,6 +57,19 @@ export function RecruiterDashboard() {
       status: "active",
       postedDate: "2025-04-15",
       deadline: "2025-05-15",
+      location: "Bangalore, India",
+      type: "Full-time",
+      experience: "2-4 years",
+      salary: "₹8-12 LPA",
+      description: "We are looking for a skilled Software Engineer to join our dynamic team...",
+      requirements: [
+        "Bachelor's degree in Computer Science or related field",
+        "2+ years of experience in software development",
+        "Proficiency in Java, Python, or JavaScript",
+        "Experience with databases and web technologies",
+      ],
+      skills: ["Java", "Python", "JavaScript", "SQL", "React"],
+      benefits: ["Health Insurance", "Flexible Working Hours", "Learning Budget", "Stock Options"],
     },
     {
       id: "JOB002",
@@ -61,6 +82,19 @@ export function RecruiterDashboard() {
       status: "active",
       postedDate: "2025-04-20",
       deadline: "2025-05-20",
+      location: "Mumbai, India",
+      type: "Full-time",
+      experience: "1-3 years",
+      salary: "₹6-10 LPA",
+      description: "Join our frontend team to build amazing user experiences...",
+      requirements: [
+        "Bachelor's degree in Computer Science or related field",
+        "1+ years of experience in frontend development",
+        "Strong knowledge of React, HTML, CSS, JavaScript",
+        "Experience with responsive design",
+      ],
+      skills: ["React", "JavaScript", "HTML", "CSS", "TypeScript"],
+      benefits: ["Health Insurance", "Remote Work", "Learning Budget", "Team Outings"],
     },
     {
       id: "JOB003",
@@ -73,6 +107,19 @@ export function RecruiterDashboard() {
       status: "active",
       postedDate: "2025-04-25",
       deadline: "2025-05-25",
+      location: "Delhi, India",
+      type: "Full-time",
+      experience: "1-2 years",
+      salary: "₹5-8 LPA",
+      description: "We need a Data Analyst to help us make data-driven decisions...",
+      requirements: [
+        "Bachelor's degree in Statistics, Mathematics, or related field",
+        "1+ years of experience in data analysis",
+        "Proficiency in SQL, Python, and Excel",
+        "Experience with data visualization tools",
+      ],
+      skills: ["Python", "SQL", "Excel", "Tableau", "Statistics"],
+      benefits: ["Health Insurance", "Flexible Hours", "Training Programs", "Performance Bonus"],
     },
     {
       id: "JOB004",
@@ -85,6 +132,19 @@ export function RecruiterDashboard() {
       status: "closed",
       postedDate: "2025-03-15",
       deadline: "2025-04-15",
+      location: "Pune, India",
+      type: "Full-time",
+      experience: "3-5 years",
+      salary: "₹12-18 LPA",
+      description: "Lead product strategy and development for our key products...",
+      requirements: [
+        "Bachelor's degree in Business, Engineering, or related field",
+        "3+ years of product management experience",
+        "Strong analytical and communication skills",
+        "Experience with agile methodologies",
+      ],
+      skills: ["Product Strategy", "Analytics", "Agile", "Communication", "Leadership"],
+      benefits: ["Health Insurance", "Stock Options", "Learning Budget", "Flexible Work"],
     },
   ]
 
@@ -94,24 +154,37 @@ export function RecruiterDashboard() {
   const totalInterviewed = jobPostings.reduce((sum, job) => sum + job.interviewed, 0)
   const totalSelected = jobPostings.reduce((sum, job) => sum + job.selected, 0)
 
+  const handleViewJob = (job) => {
+    setSelectedJobData(job)
+    setIsViewJobOpen(true)
+  }
+
+  const handleEditJob = (job) => {
+    setSelectedJobData(job)
+    setIsEditJobOpen(true)
+  }
+
+  const handleSaveJob = () => {
+    // Here you would typically save the job data
+    console.log("Saving job:", selectedJobData)
+    setIsEditJobOpen(false)
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Recruiter Dashboard</h2>
           <p className="text-muted-foreground">
-            Welcome to E-Placo&apos;s recruitment portal. Manage your job postings and candidates.
+            Welcome to TechCorp's recruitment portal. Manage your job postings and candidates.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <Download className="mr-2 h-4 w-4" />
-            Export Data
-          </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setNewDrive(true)} className={'cursor-pointer'}>
             <Plus className="mr-2 h-4 w-4" />
             Post New Job
           </Button>
+          {newDrive && <NewDriveDialog onClose={() => setNewDrive(false)} />}
         </div>
       </div>
 
@@ -174,46 +247,277 @@ export function RecruiterDashboard() {
         <CardContent>
           <div className="space-y-4">
             {jobPostings.map((job) => (
-              <JobPostingCard key={job.id} job={job} />
+              <JobPostingCard
+                key={job.id}
+                job={job}
+                onView={() => handleViewJob(job)}
+                onEdit={() => handleEditJob(job)}
+              />
             ))}
           </div>
         </CardContent>
       </Card>
+
+      {/* View Job Dialog */}
+      <Dialog open={isViewJobOpen} onOpenChange={setIsViewJobOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Job Details - {selectedJobData?.title}</DialogTitle>
+            <DialogDescription>Complete job posting information</DialogDescription>
+          </DialogHeader>
+          {selectedJobData && (
+            <div className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <h3 className="font-semibold mb-2">Basic Information</h3>
+                  <div className="space-y-2 text-sm">
+                    <p>
+                      <strong>Job ID:</strong> {selectedJobData.id}
+                    </p>
+                    <p>
+                      <strong>Title:</strong> {selectedJobData.title}
+                    </p>
+                    <p>
+                      <strong>Department:</strong> {selectedJobData.department}
+                    </p>
+                    <p>
+                      <strong>Location:</strong> {selectedJobData.location}
+                    </p>
+                    <p>
+                      <strong>Type:</strong> {selectedJobData.type}
+                    </p>
+                    <p>
+                      <strong>Experience:</strong> {selectedJobData.experience}
+                    </p>
+                    <p>
+                      <strong>Salary:</strong> {selectedJobData.salary}
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <h3 className="font-semibold mb-2">Application Statistics</h3>
+                  <div className="space-y-2 text-sm">
+                    <p>
+                      <strong>Applications:</strong> {selectedJobData.applications}
+                    </p>
+                    <p>
+                      <strong>Shortlisted:</strong> {selectedJobData.shortlisted}
+                    </p>
+                    <p>
+                      <strong>Interviewed:</strong> {selectedJobData.interviewed}
+                    </p>
+                    <p>
+                      <strong>Selected:</strong> {selectedJobData.selected}
+                    </p>
+                    <p>
+                      <strong>Status:</strong>{" "}
+                      <Badge
+                        className={
+                          selectedJobData.status === "active"
+                            ? "bg-green-500/10 text-green-500"
+                            : "bg-gray-500/10 text-gray-500"
+                        }
+                      >
+                        {selectedJobData.status}
+                      </Badge>
+                    </p>
+                    <p>
+                      <strong>Posted:</strong> {selectedJobData.postedDate}
+                    </p>
+                    <p>
+                      <strong>Deadline:</strong> {selectedJobData.deadline}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">Job Description</h3>
+                <p className="text-sm text-muted-foreground">{selectedJobData.description}</p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">Requirements</h3>
+                <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
+                  {selectedJobData.requirements?.map((req, index) => (
+                    <li key={index}>{req}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">Required Skills</h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedJobData.skills?.map((skill) => (
+                    <Badge key={skill} variant="outline">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">Benefits</h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedJobData.benefits?.map((benefit) => (
+                    <Badge key={benefit} variant="secondary">
+                      {benefit}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Job Dialog */}
+      <Dialog open={isEditJobOpen} onOpenChange={setIsEditJobOpen}>
+        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Job - {selectedJobData?.title}</DialogTitle>
+            <DialogDescription>Update job posting information</DialogDescription>
+          </DialogHeader>
+          {selectedJobData && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-title">Job Title</Label>
+                  <Input
+                    id="edit-title"
+                    value={selectedJobData.title}
+                    onChange={(e) => setSelectedJobData({ ...selectedJobData, title: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-department">Department</Label>
+                  <Input
+                    id="edit-department"
+                    value={selectedJobData.department}
+                    onChange={(e) => setSelectedJobData({ ...selectedJobData, department: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-location">Location</Label>
+                  <Input
+                    id="edit-location"
+                    value={selectedJobData.location}
+                    onChange={(e) => setSelectedJobData({ ...selectedJobData, location: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-type">Job Type</Label>
+                  <Select
+                    value={selectedJobData.type}
+                    onValueChange={(value) => setSelectedJobData({ ...selectedJobData, type: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Full-time">Full-time</SelectItem>
+                      <SelectItem value="Part-time">Part-time</SelectItem>
+                      <SelectItem value="Contract">Contract</SelectItem>
+                      <SelectItem value="Internship">Internship</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-experience">Experience Required</Label>
+                  <Input
+                    id="edit-experience"
+                    value={selectedJobData.experience}
+                    onChange={(e) => setSelectedJobData({ ...selectedJobData, experience: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-salary">Salary Range</Label>
+                  <Input
+                    id="edit-salary"
+                    value={selectedJobData.salary}
+                    onChange={(e) => setSelectedJobData({ ...selectedJobData, salary: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="edit-deadline">Application Deadline</Label>
+                  <Input
+                    id="edit-deadline"
+                    type="date"
+                    value={selectedJobData.deadline}
+                    onChange={(e) => setSelectedJobData({ ...selectedJobData, deadline: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="edit-status">Status</Label>
+                  <Select
+                    value={selectedJobData.status}
+                    onValueChange={(value) => setSelectedJobData({ ...selectedJobData, status: value })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="closed">Closed</SelectItem>
+                      <SelectItem value="draft">Draft</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div>
+                <Label htmlFor="edit-description">Job Description</Label>
+                <Textarea
+                  id="edit-description"
+                  value={selectedJobData.description}
+                  onChange={(e) => setSelectedJobData({ ...selectedJobData, description: e.target.value })}
+                  rows={4}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit-skills">Required Skills (comma-separated)</Label>
+                <Input
+                  id="edit-skills"
+                  value={selectedJobData.skills?.join(", ") || ""}
+                  onChange={(e) => setSelectedJobData({ ...selectedJobData, skills: e.target.value.split(", ") })}
+                />
+              </div>
+
+              <div>
+                <Label htmlFor="edit-benefits">Benefits (comma-separated)</Label>
+                <Input
+                  id="edit-benefits"
+                  value={selectedJobData.benefits?.join(", ") || ""}
+                  onChange={(e) => setSelectedJobData({ ...selectedJobData, benefits: e.target.value.split(", ") })}
+                />
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={() => setIsEditJobOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSaveJob}>Save Changes</Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <div className="grid gap-4 md:grid-cols-7">
         <Card className="md:col-span-4">
           <CardHeader>
             <CardTitle>Candidate Management</CardTitle>
             <CardDescription>Review and manage candidate applications across all jobs.</CardDescription>
-            <div className="flex items-center gap-2 mt-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search candidates..."
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <Select value={selectedJob} onValueChange={setSelectedJob}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="Filter by job" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Jobs</SelectItem>
-                  {jobPostings.map((job) => (
-                    <SelectItem key={job.id} value={job.id}>
-                      {job.title}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-                <span className="sr-only">Filter</span>
-              </Button>
-            </div>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="shortlisted">
@@ -442,7 +746,7 @@ export function RecruiterDashboard() {
   )
 }
 
-function JobPostingCard({ job }) {
+function JobPostingCard({ job, onView, onEdit }) {
   const statusColors = {
     active: "bg-green-500/10 text-green-500",
     closed: "bg-gray-500/10 text-gray-500",
@@ -472,10 +776,10 @@ function JobPostingCard({ job }) {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="icon" className="h-8 w-8">
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onView}>
           <Eye className="h-4 w-4" />
         </Button>
-        <Button variant="ghost" size="icon" className="h-8 w-8">
+        <Button variant="ghost" size="icon" className="h-8 w-8" onClick={onEdit}>
           <Edit className="h-4 w-4" />
         </Button>
         <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500">

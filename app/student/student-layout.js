@@ -3,21 +3,49 @@
 import React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import {BarChart, Building, Calendar, GraduationCap, Home, LogOut, Menu, Settings, User, Users, Briefcase, FileText} from "lucide-react"
+import {
+  Bell,
+  BookOpen,
+  Briefcase,
+  Building,
+  Calendar,
+  GraduationCap,
+  Home,
+  LogOut,
+  Menu,
+  Award,
+  Settings,
+  User,
+} from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@/components/ui/sidebar"
-import { useAuth } from "@/context/AuthContext";
-import { usePathname } from "next/navigation";
-import { NotificationPopover } from "./ui/notification-popover"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarProvider,
+} from "@/components/ui/sidebar"
+import { useAuth } from "@/context/AuthContext"
+import { usePathname } from "next/navigation"
 
-export function AdminLayout({ children }) {
-  const router = useRouter();
-  const { user } = useAuth();
-  const pathname = usePathname();
-
+export function StudentLayout({ children }) {
+  const router = useRouter()
+  const {user} = useAuth()
+  const pathname = usePathname()
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-background w-dvw">
@@ -43,66 +71,58 @@ export function AdminLayout({ children }) {
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname === "/admin/dashboard"}>
-                      <Link href="/admin/dashboard">
+                    <SidebarMenuButton asChild isActive={pathname === '/student/dashboard'}>
+                      <Link href="/student/dashboard">
                         <Home className="h-4 w-4" />
                         <span>Dashboard</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname === "/admin/companies"}>
-                      <Link href="/admin/companies">
-                        <Building className="h-4 w-4" />
-                        <span>Company Management</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname === "/admin/students"}>
-                      <Link href="/admin/students">
-                        <Users className="h-4 w-4" />
-                        <span>Student Management</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname === "/admin/drives"}>
-                      <Link href="/admin/drives">
+                    <SidebarMenuButton asChild isActive={pathname === '/student/drives'}>
+                      <Link href="/student/drives">
                         <Briefcase className="h-4 w-4" />
-                        <span>Drive Management</span>
+                        <span>Placement Drives</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname === "/admin/pending-jobs"}>
-                      <Link href="/admin/pending-jobs">
-                        <FileText className="h-4 w-4" />
-                        <span>Pending Job Posts</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname === "/admin/contact-hrs"}>
-                      <Link href="/admin/contact-hrs">
+                    <SidebarMenuButton asChild isActive={pathname === '/student/profile'}>
+                      <Link href="/student/profile">
                         <User className="h-4 w-4" />
-                        <span>Contact HR&apos;s</span>
+                        <span>My Profile</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname === "/admin/analytics"}>
-                      <Link href="/admin/analytics">
-                        <BarChart className="h-4 w-4" />
-                        <span>Analytics</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname === "/admin/calendar"}>
-                      <Link href="/admin/calendar">
+                    <SidebarMenuButton asChild isActive={pathname === '/student/calendar'}>
+                      <Link href="/student/calendar">
                         <Calendar className="h-4 w-4" />
-                        <span>Schedule Management</span>
+                        <span>Interview Calendar</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/resources'}>
+                      <Link href="/student/resources">
+                        <BookOpen className="h-4 w-4" />
+                        <span>Resources</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/companies'}>
+                      <Link href="/student/companies">
+                        <Building className="h-4 w-4" />
+                        <span>Companies</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/statistics'}>
+                      <Link href="/student/statistics">
+                        <Award className="h-4 w-4" />
+                        <span>Statistics</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -129,51 +149,45 @@ export function AdminLayout({ children }) {
                   </div>
                   <div className="mt-4 space-y-1">
                     <Button variant="ghost" className="w-full justify-start" asChild>
-                      <Link href="/admin/dashboard">
+                      <Link href="/student/dashboard">
                         <Home className="mr-2 h-4 w-4" />
                         Dashboard
                       </Link>
                     </Button>
                     <Button variant="ghost" className="w-full justify-start" asChild>
-                      <Link href="/admin/companies">
-                        <Building className="mr-2 h-4 w-4" />
-                        Company Management
-                      </Link>
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
-                      <Link href="/admin/students">
-                        <Users className="mr-2 h-4 w-4" />
-                        Student Management
-                      </Link>
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
-                      <Link href="/admin/drives">
+                      <Link href="/student/drives">
                         <Briefcase className="mr-2 h-4 w-4" />
-                        Drive Management
+                        Placement Drives
                       </Link>
                     </Button>
                     <Button variant="ghost" className="w-full justify-start" asChild>
-                      <Link href="/admin/pending-jobs">
-                        <FileText className="mr-2 h-4 w-4" />
-                        Pending Job Posts
-                      </Link>
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
-                      <Link href="/admin/contact-hrs">
+                      <Link href="/student/profile">
                         <User className="mr-2 h-4 w-4" />
-                        Contact HR&apos;s
+                        My Profile
                       </Link>
                     </Button>
                     <Button variant="ghost" className="w-full justify-start" asChild>
-                      <Link href="/admin/analytics">
-                        <BarChart className="mr-2 h-4 w-4" />
-                        Analytics
-                      </Link>
-                    </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
-                      <Link href="/admin/calendar">
+                      <Link href="/student/calendar">
                         <Calendar className="mr-2 h-4 w-4" />
-                        Schedule Management
+                        Interview Calendar
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start" asChild>
+                      <Link href="/student/resources">
+                        <BookOpen className="mr-2 h-4 w-4" />
+                        Resources
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start" asChild>
+                      <Link href="/student/companies">
+                        <Building className="mr-2 h-4 w-4" />
+                        Companies
+                      </Link>
+                    </Button>
+                    <Button variant="ghost" className="w-full justify-start" asChild>
+                      <Link href="/student/statistics">
+                        <Building className="mr-2 h-4 w-4" />
+                        Statistics
                       </Link>
                     </Button>
                   </div>
@@ -183,12 +197,12 @@ export function AdminLayout({ children }) {
             <div className="w-full flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <GraduationCap className="h-6 w-6" />
-                <h1 className="text-xl font-bold">E-Placo Admin</h1>
+                <h1 className="text-xl font-bold">E-Placo Student</h1>
               </div>
               <div className="flex items-center gap-4">
                 {/* <NotificationPopover/> */}
                 <DropdownMenu>
-                  <DropdownMenuTrigger asChild className={'cursor-pointer'}>
+                  <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                       <Avatar className="h-9 w-9">
                         <AvatarImage src={user.url ? user.url : "default.png"} alt="Avatar" />
@@ -204,12 +218,12 @@ export function AdminLayout({ children }) {
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={()=>router.push('/admin/settings')} className={'cursor-pointer'}>
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
+                    <DropdownMenuItem onClick={()=> router.push('/student/profile')}>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={()=>router.push('/logout')} className={'cursor-pointer'}>
+                    <DropdownMenuItem onClick={()=> router.push('/logout')}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>

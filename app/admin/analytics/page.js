@@ -1,4 +1,4 @@
-import { Analytics } from "@/components/analytics"
+import { Analytics } from "./analytics"
 
 export default function AnalyticsPage() {
   return (

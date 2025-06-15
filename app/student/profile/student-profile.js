@@ -810,6 +810,16 @@ function ProjectDialog({ project, onAdd, onUpdate }) {
             />
           </div>
           <div>
+            <Label htmlFor="status">Status</Label>
+            <div className="flex">
+            <Input type="radio" id="In-Progress" name="status" value="In-Progress"/>
+            <Label for="In-Progress">In-Progress</Label>
+            <Input type="radio" id="Finished" name="status" value="Finished"/>
+            <Label for="Finished">Finished</Label>
+            </div>
+          </div>
+
+          <div>
             <Label htmlFor="link">Project Link (Optional)</Label>
             <Input
               id="link"
@@ -1280,6 +1290,15 @@ function CertificationDialog({ certification, onAdd, onUpdate }) {
               value={formData.credentialId}
               onChange={(e) => setFormData({ ...formData, credentialId: e.target.value })}
               placeholder="AWS-DEV-2025-001"
+            />
+          </div>
+          <div className="space-y-1">
+            <Label htmlFor="credentialLink">Credential Link (Optional)</Label>
+            <Input
+              id="credentialLink"
+              value={formData.credentialLink}
+              onChange={(e) => setFormData({ ...formData, credentialLink: e.target.value })}
+              placeholder="https://prasad924.in/springboot"
             />
           </div>
           <Button onClick={handleSubmit} className="w-full">

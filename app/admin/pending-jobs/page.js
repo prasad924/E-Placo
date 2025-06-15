@@ -1,4 +1,4 @@
-import { PendingJobPosts } from "@/components/pending-job-posts"
+import { PendingJobPosts } from "./pending-job-posts"
 
 export default function PendingJobsPage() {
   return (

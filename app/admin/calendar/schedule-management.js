@@ -44,7 +44,7 @@ import {
   Video,
   Building,
 } from "lucide-react";
-import ScheduleEventDialog from "./scheduleEvent";
+import ScheduleEventDialog from "@/components/scheduleEvent";
 
 const upcomingEvents = [
   {

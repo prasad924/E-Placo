@@ -1,7 +1,7 @@
 "use client";
 
 import RouteGuard from "@/components/RouteGuard";
-import { StudentLayout } from "@/components/student-layout";
+import { StudentLayout } from "./student-layout";
 
 export default function StudentAppLayout({ children }) {
   return (

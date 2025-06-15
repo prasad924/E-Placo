@@ -4,8 +4,10 @@ import React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
+  Bell,
   Calendar,
   CheckSquare,
+  ChevronDown,
   FileText,
   GraduationCap,
   Home,
@@ -30,6 +32,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -38,12 +41,13 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar"
-import { NotificationPopover } from "./ui/notification-popover"
+// import { NotificationPopover } from "@/components/ui/notification-popover"
 import { useAuth } from "@/context/AuthContext"
 
 export function RecruiterLayout({ children }) {
-  const router = useRouter();
+  const router = useRouter()
   const { user } = useAuth();
+
   return (
     <SidebarProvider>
       <div className="flex min-h-screen bg-background">
@@ -55,12 +59,13 @@ export function RecruiterLayout({ children }) {
             </div>
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-secondary/50">
               <Avatar className="h-7 w-7">
-                <AvatarImage src="/placeholder.svg" alt="Avatar" />
-                <AvatarFallback>RC</AvatarFallback>
+                <AvatarImage src={user.url? user.url : 'default.png'} alt="Avatar" />
+                <AvatarFallback>$</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{user.name}</span>
                 <span className="text-xs text-muted-foreground">{user.email}</span>
+                {/* <span className="text-xs text-muted-foreground">{user.company}</span> */}
               </div>
             </div>
           </SidebarHeader>
@@ -184,32 +189,24 @@ export function RecruiterLayout({ children }) {
                 <h1 className="text-xl font-bold">E-Placo Recruiter</h1>
               </div>
               <div className="flex items-center gap-4">
-                <NotificationPopover/>
+                {/* <NotificationPopover/> */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                       <Avatar className="h-9 w-9">
-                        <AvatarImage src="/placeholder.svg" alt="Avatar" />
-                        <AvatarFallback>RC</AvatarFallback>
+                        <AvatarImage src={user.url ? user.url : 'default.png'} alt="Avatar" />
+                        <AvatarFallback>$</AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium">Recruiter</p>
-                        <p className="text-xs text-muted-foreground">recruiter@techcorp.com</p>
+                        <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                        {/* <p className="text-xs text-muted-foreground">{user.company}</p> */}
                       </div>
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
-                    </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem onClick={()=>router.push('/logout')}>
                       <LogOut className="mr-2 h-4 w-4" />

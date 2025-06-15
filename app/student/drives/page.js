@@ -1,4 +1,4 @@
-import { DrivesListing } from "@/components/drives-listing"
+import { DrivesListing } from "./drives-listing"
 
 export default function DrivesPage() {
   return (  

@@ -1,7 +1,7 @@
 "use client";
 
 import RouteGuard from "@/components/RouteGuard";
-import { AdminLayout } from "@/components/admin-layout";
+import { AdminLayout } from "./admin-layout";
 
 export default function AdminAppLayout({ children }) {
   return (

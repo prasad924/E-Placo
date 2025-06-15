@@ -1,5 +1,5 @@
 "use client";
-import { StudentDashboard } from "@/components/student-dashboard";
+import { StudentDashboard } from "./student-dashboard";
 
 export default function RecruiterDashboardPage() {
   return (

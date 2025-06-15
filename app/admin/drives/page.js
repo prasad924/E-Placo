@@ -1,4 +1,4 @@
-import { DriveManagement } from "@/components/drive-management"
+import { DriveManagement } from "./drive-management"
 
 export default function DriveManagementPage() {
   return (
