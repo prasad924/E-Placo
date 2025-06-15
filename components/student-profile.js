@@ -287,7 +287,6 @@ export function StudentProfile() {
       </div>
 
       <div className="grid gap-6 md:grid-cols-7">
-        {/* Left Sidebar */}
         <Card className="md:col-span-2">
           <CardHeader>
             <div className="flex flex-col items-center">
@@ -301,38 +300,6 @@ export function StudentProfile() {
                       .join("")}
                   </AvatarFallback>
                 </Avatar>
-
-                {/* Upload overlay */}
-                <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer">
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="text-white hover:bg-white/20"
-                    onClick={triggerFileInput}
-                    disabled={isUploading}
-                  >
-                    {isUploading ? (
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    ) : (
-                      <Camera className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-
-                {/* Upload button for mobile/always visible option */}
-                <Button
-                  size="icon"
-                  variant="outline"
-                  className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full bg-background"
-                  onClick={triggerFileInput}
-                  disabled={isUploading}
-                >
-                  {isUploading ? (
-                    <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-current"></div>
-                  ) : (
-                    <Upload className="h-3 w-3" />
-                  )}
-                </Button>
               </div>
 
               {isEditing ? (

@@ -21,9 +21,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Link from "next/link"
+import { useAuth } from "@/context/AuthContext"
+import { useRouter } from "next/navigation"
 
 export function StudentDashboard() {
   const [searchQuery, setSearchQuery] = useState("")
+  const {user} = useAuth()
+  const router = useRouter()
 
   return (
     <div className="space-y-6">
@@ -31,15 +36,17 @@ export function StudentDashboard() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <p className="text-muted-foreground">
-            Welcome back, John! Here&apos;s what&apos;s happening with your placement journey.
+            Welcome back, {user.name}! Here's what's happening with your placement journey.
           </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm">
-            <FileText className="mr-2 h-4 w-4" />
-            View Resume
+          <Button variant="outline" size="sm" className={'cursor-pointer'}>
+            <Link target="_blank" className="flex" href={user.resumeLink || 'https://drive.google.com/file/d/1bnbq9gWukHXxI1nOMGfNeTBIMx2nVaSj/view?usp=sharing'}>
+              <FileText className="mr-2 h-4 w-4" />
+              View Resume
+            </Link>
           </Button>
-          <Button size="sm">
+          <Button size="sm" className={'cursor-pointer'} onClick={()=>router.push('/student/drives')}>
             <Briefcase className="mr-2 h-4 w-4" />
             Browse Drives
           </Button>
@@ -94,23 +101,7 @@ export function StudentDashboard() {
         <Card className="md:col-span-4">
           <CardHeader>
             <CardTitle>Placement Drives</CardTitle>
-            <CardDescription>Browse and apply to placement drives you&apos;re eligible for.</CardDescription>
-            <div className="flex items-center gap-2 mt-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  type="search"
-                  placeholder="Search companies or roles..."
-                  className="pl-8"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <Button variant="outline" size="icon">
-                <Filter className="h-4 w-4" />
-                <span className="sr-only">Filter</span>
-              </Button>
-            </div>
+            <CardDescription>Browse and apply to placement drives you're eligible for.</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="eligible">
@@ -144,7 +135,7 @@ export function StudentDashboard() {
                   status="open"
                   logo="/placeholder.svg"
                 />
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full cursor-pointer" onClick={()=>router.push('/student/drives')} >
                   View all eligible drives
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -166,7 +157,7 @@ export function StudentDashboard() {
                   status="shortlisted"
                   logo="/placeholder.svg"
                 />
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full cursor-pointer" onClick={()=>router.push('/student/drives')}>
                   View all applications
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -188,7 +179,7 @@ export function StudentDashboard() {
                   status="upcoming"
                   logo="/placeholder.svg"
                 />
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full cursor-pointer" onClick={()=>router.push('/student/drives')}>
                   View all upcoming drives
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
@@ -225,7 +216,7 @@ export function StudentDashboard() {
                 time="9:00 AM - 10:30 AM"
                 location="Computer Lab 3"
               />
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full cursor-pointer" onClick={()=>router.push('/student/calendar')}>
                 View full calendar
                 <Calendar className="ml-2 h-4 w-4" />
               </Button>
@@ -245,7 +236,7 @@ export function StudentDashboard() {
               <ResourceItem title="Resume Building Workshop" type="Workshop Recording" date="Apr 15, 2025" />
               <ResourceItem title="Technical Interview Questions" type="PDF Document" date="Apr 10, 2025" />
               <ResourceItem title="Aptitude Test Practice" type="Online Quiz" date="Apr 5, 2025" />
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full cursor-pointer" onClick={()=>router.push('/student/resources')}>
                 Browse all resources
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -281,7 +272,7 @@ export function StudentDashboard() {
                 </div>
                 <Award className="h-8 w-8 text-primary" />
               </div>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full cursor-pointer" onClick={()=>router.push('/student/statistics')}>
                 View detailed statistics
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

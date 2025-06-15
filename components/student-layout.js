@@ -2,7 +2,6 @@
 
 import React from "react"
 import Link from "next/link"
-import { NotificationPopover } from "./ui/notification-popover"
 import { useRouter } from "next/navigation"
 import {
   Bell,
@@ -10,11 +9,11 @@ import {
   Briefcase,
   Building,
   Calendar,
-  ChevronDown,
   GraduationCap,
   Home,
   LogOut,
   Menu,
+  Award,
   Settings,
   User,
 } from "lucide-react"
@@ -32,7 +31,6 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarHeader,
@@ -41,14 +39,18 @@ import {
   SidebarMenuItem,
   SidebarProvider,
 } from "@/components/ui/sidebar"
+import { Badge } from "@/components/ui/badge"
 import { useAuth } from "@/context/AuthContext"
+import { usePathname } from "next/navigation"
+import { NotificationPopover } from "./ui/notification-popover"
 
 export function StudentLayout({ children }) {
   const router = useRouter()
   const {user} = useAuth()
+  const pathname = usePathname()
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen bg-background">
+      <div className="flex min-h-screen bg-background w-dvw">
         <Sidebar className="hidden md:flex border-r">
           <SidebarHeader className="flex flex-col gap-2 p-4">
             <div className="flex items-center gap-2">
@@ -61,8 +63,8 @@ export function StudentLayout({ children }) {
                 <AvatarFallback>$</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
-                <span className="text-sm font-medium">John Smith</span>
-                <span className="text-xs text-muted-foreground">Student</span>
+                <span className="text-sm font-medium">{user.name}</span>
+                <span className="text-xs text-muted-foreground">{user.email}</span>
               </div>
             </div>
           </SidebarHeader>
@@ -71,7 +73,7 @@ export function StudentLayout({ children }) {
               <SidebarGroupContent>
                 <SidebarMenu>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/dashboard'}>
                       <Link href="/student/dashboard">
                         <Home className="h-4 w-4" />
                         <span>Dashboard</span>
@@ -79,7 +81,7 @@ export function StudentLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/drives'}>
                       <Link href="/student/drives">
                         <Briefcase className="h-4 w-4" />
                         <span>Placement Drives</span>
@@ -87,7 +89,7 @@ export function StudentLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/profile'}>
                       <Link href="/student/profile">
                         <User className="h-4 w-4" />
                         <span>My Profile</span>
@@ -95,7 +97,7 @@ export function StudentLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/calendar'}>
                       <Link href="/student/calendar">
                         <Calendar className="h-4 w-4" />
                         <span>Interview Calendar</span>
@@ -103,7 +105,7 @@ export function StudentLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/resources'}>
                       <Link href="/student/resources">
                         <BookOpen className="h-4 w-4" />
                         <span>Resources</span>
@@ -111,10 +113,18 @@ export function StudentLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/companies'}>
                       <Link href="/student/companies">
                         <Building className="h-4 w-4" />
                         <span>Companies</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/statistics'}>
+                      <Link href="/student/statistics">
+                        <Award className="h-4 w-4" />
+                        <span>Statistics</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -176,6 +186,12 @@ export function StudentLayout({ children }) {
                         Companies
                       </Link>
                     </Button>
+                    <Button variant="ghost" className="w-full justify-start" asChild>
+                      <Link href="/student/statistics">
+                        <Building className="mr-2 h-4 w-4" />
+                        Statistics
+                      </Link>
+                    </Button>
                   </div>
                 </div>
               </SheetContent>
@@ -186,7 +202,7 @@ export function StudentLayout({ children }) {
                 <h1 className="text-xl font-bold">E-Placo Student</h1>
               </div>
               <div className="flex items-center gap-4">
-                <NotificationPopover/>
+                {/* <NotificationPopover/> */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="relative h-9 w-9 rounded-full">
@@ -199,21 +215,21 @@ export function StudentLayout({ children }) {
                   <DropdownMenuContent align="end">
                     <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium">John Smith</p>
-                        <p className="text-xs text-muted-foreground">student@college.edu</p>
+                        <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=> router.push('/student/profile')}>
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem onClick={()=> router.push('/student/settings')}>
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={()=>router.push('/logout')}>
+                    <DropdownMenuItem onClick={()=> router.push('/logout')}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>
