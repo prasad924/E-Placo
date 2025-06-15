@@ -216,7 +216,7 @@ export function ScheduleManagement() {
               <div>
                 <div className="text-2xl font-bold">8</div>
                 <div className="text-sm text-muted-foreground">
-                  Today's Events
+                  Today&apos;s Events
                 </div>
               </div>
             </div>

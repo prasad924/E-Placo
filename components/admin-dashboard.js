@@ -14,9 +14,11 @@ import { useAuth } from "@/context/AuthContext"
 import { useRouter } from "next/navigation"
 import NewDriveDialog from "./newDrive"
 import ScheduleEventDialog from "./scheduleEvent"
+import ExportReportsDialog from "./export-data"
 
 export function AdminDashboard() {
   const [showNewDrive, setShowNewDrive] = useState(false)
+  const [showScheduleEvent, setShowScheduleEvent] = useState(false);
   const [showExportReports, setShowExportReports] = useState(false)
   const {user} = useAuth();
   const router = useRouter()
@@ -26,7 +28,7 @@ export function AdminDashboard() {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Admin Dashboard</h2>
-          <p className="text-muted-foreground">Welcome back {user.name}! Here's an overview of the placement activities.</p>
+          <p className="text-muted-foreground">Welcome back {user.name}! Here&apos;s an overview of the placement activities.</p>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="outline" className={'cursor-pointer'} size="sm" onClick={()=>router.push('/admin/settings')}>

@@ -151,7 +151,7 @@ export function ContactHRs() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Contact HR's</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Contact HR&apos;s</h2>
           <p className="text-muted-foreground">Manage HR contacts from recruiting companies.</p>
         </div>
         <Button onClick={() => setShowAddHR(true)}>

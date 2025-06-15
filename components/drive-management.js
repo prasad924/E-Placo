@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Image from "next/image"
 import {
   Dialog,
   DialogContent,
@@ -210,7 +211,7 @@ export function DriveManagement() {
                   <TableRow key={drive.id}>
                     <TableCell>
                       <div className="flex items-center space-x-3">
-                        <img src={drive.logo || "default.png"} alt={drive.company} className="h-8 w-8 rounded" />
+                        <Image src={drive.logo || "default.png"} alt={drive.company} height={8} width={8} className=" rounded" />
                         <div>
                           <div className="font-medium">{drive.company}</div>
                           <div className="text-sm text-muted-foreground">{drive.location}</div>
@@ -259,10 +260,12 @@ export function DriveManagement() {
           <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle className="flex items-center space-x-3">
-                <img
+                <Image
                   src={selectedDrive.logo || "default.png"}
                   alt={selectedDrive.company}
-                  className="h-10 w-10 rounded"
+                  height={10}
+                  width={10}
+                  className="rounded"
                 />
                 <div>
                   <div>

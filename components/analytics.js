@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Progress } from "@/components/ui/progress"
+import Image from "next/image"
 import {
   BarChart,
   TrendingUp,
@@ -269,7 +270,7 @@ export function Analytics() {
                 {topCompanies.map((company, index) => (
                   <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center space-x-4">
-                      <img src={company.logo || "/placeholder.svg"} alt={company.name} className="h-10 w-10 rounded" />
+                      <Image src={company.logo || "/placeholder.svg"} alt={company.name} height={40} width={40} className="rounded" />
                       <div>
                         <div className="font-medium">{company.name}</div>
                         <div className="text-sm text-muted-foreground">{company.package}</div>

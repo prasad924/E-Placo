@@ -86,7 +86,7 @@ export function AdminLayout({ children }) {
                     <SidebarMenuButton asChild isActive={pathname === "/admin/contact-hrs"}>
                       <Link href="/admin/contact-hrs">
                         <User className="h-4 w-4" />
-                        <span>Contact HR's</span>
+                        <span>Contact HR&apos;s</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -161,7 +161,7 @@ export function AdminLayout({ children }) {
                     <Button variant="ghost" className="w-full justify-start" asChild>
                       <Link href="/admin/contact-hrs">
                         <User className="mr-2 h-4 w-4" />
-                        Contact HR's
+                        Contact HR&apos;s
                       </Link>
                     </Button>
                     <Button variant="ghost" className="w-full justify-start" asChild>
