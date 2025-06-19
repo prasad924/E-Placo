@@ -199,11 +199,11 @@ const statusColors = {
 export function JobDetails() {
   const [selectedTab, setSelectedTab] = useState("all")
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedJob, setSelectedJob] = useState<any>(null)
+  const [selectedJob, setSelectedJob] = useState(null)
   const [isJobDialogOpen, setIsJobDialogOpen] = useState(false)
   const [isCreateJobOpen, setIsCreateJobOpen] = useState(false)
   const [isEditJobOpen, setIsEditJobOpen] = useState(false)
-  const [editingJob, setEditingJob] = useState<any>(null)
+  const [editingJob, setEditingJob] = useState(null)
 
   const filteredJobs = mockJobs.filter((job) => {
     const matchesSearch =

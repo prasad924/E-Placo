@@ -3,7 +3,7 @@
 import React from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import {BarChart, Building, Calendar, GraduationCap, Home, LogOut, Menu, Settings, User, Users, Briefcase, FileText} from "lucide-react"
+import {BarChart, Building, Calendar, GraduationCap, Home, LogOut, Menu, Settings, User, Users, Briefcase, FileText, BookOpen} from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -34,6 +34,7 @@ export function AdminLayout({ children }) {
               </Avatar>
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{user.name}</span>
+                <span className="text-xs text-muted-foreground">{user.id}</span>
                 <span className="text-xs text-muted-foreground">{user.email}</span>
               </div>
             </div>
@@ -103,6 +104,14 @@ export function AdminLayout({ children }) {
                       <Link href="/admin/calendar">
                         <Calendar className="h-4 w-4" />
                         <span>Schedule Management</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={pathname === "/admin/resources"}>
+                      <Link href="/admin/resources">
+                        <BookOpen className="h-4 w-4" />
+                        <span>Resources Management</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -200,6 +209,7 @@ export function AdminLayout({ children }) {
                     <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-xs text-muted-foreground">{user.id}</p>
                         <p className="text-xs text-muted-foreground">{user.email}</p>
                       </div>
                     </DropdownMenuLabel>

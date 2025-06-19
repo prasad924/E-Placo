@@ -107,7 +107,6 @@ export default function PlatformSettings() {
           <TabsTrigger value="email" className="flex-1">Email Templates</TabsTrigger>
         </TabsList>
 
-        {/* Contact Info */}
         <TabsContent value="contact" className="space-y-6">
           <Card>
             <CardHeader>
@@ -142,7 +141,6 @@ export default function PlatformSettings() {
           </Card>
         </TabsContent>
 
-        {/* Email Templates */}
         <TabsContent value="email" className="space-y-6">
           <Card>
             <CardHeader>

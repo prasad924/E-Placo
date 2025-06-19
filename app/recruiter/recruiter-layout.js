@@ -50,7 +50,7 @@ export function RecruiterLayout({ children }) {
 
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen bg-background">
+      <div className="flex bg-background w-dvw">
         <Sidebar className="hidden md:flex border-r">
           <SidebarHeader className="flex flex-col gap-2 p-4">
             <div className="flex items-center gap-2">
