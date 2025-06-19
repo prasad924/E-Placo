@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback } from "react"
 import api from "@/lib/api"
 
-const PlatformSettingsContext = createContext()
+const PlatformSettingsContext = createContext(null)
 
 export const PlatformSettingsProvider = ({ children }) => {
   const [settings, setSettings] = useState(null)
@@ -13,7 +13,11 @@ export const PlatformSettingsProvider = ({ children }) => {
     setLoading(true)
     try {
       const res = await api.get("/auth/platform-settings")
-      setSettings(res.data)
+      console.log(res)
+      if(res.data.message === "Settings not avaliable") {
+        return
+      }
+      setSettings(res.data.settings)
     } catch (err) {
       console.error("Error fetching platform settings", err)
     } finally {
@@ -27,8 +31,8 @@ export const PlatformSettingsProvider = ({ children }) => {
 
   const updateSettings = async (updatedData) => {
     try {
-      const res = await api.put("/admin/settings", updatedData)
-      setSettings(res.data)
+      setSettings(updatedData)
+      await api.put("/admin/settings", updatedData)
       await fetchSettings()
     } catch (err) {
       console.error("Error updating platform settings", err)
@@ -43,4 +47,10 @@ export const PlatformSettingsProvider = ({ children }) => {
   )
 }
 
-export const usePlatformSettings = () => useContext(PlatformSettingsContext)
+export const usePlatformSettings = () => {
+  const context = useContext(PlatformSettingsContext)
+  if (!context) {
+    throw new Error("usePlatformSettings must be used within a PlatformSettingsProvider")
+  }
+  return context
+}

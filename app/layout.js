@@ -2,7 +2,6 @@ import { Inter } from "next/font/google";
 import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
-import { PlatformSettingsProvider } from "@/context/PlatformSettingContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,11 +18,9 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
         <AuthProvider>
-          <PlatformSettingsProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             {children}
           </ThemeProvider>
-          </PlatformSettingsProvider>
         </AuthProvider>
       </body>
     </html>
