@@ -1,4 +1,4 @@
-# 🎓 College Placement Management System – Frontend
+# 🎓 E-Placo – Frontend
 
 This is the **frontend** for a college-specific Placement Management System built with **Next.js (JavaScript)**. The application delivers a responsive, role-based, and intuitive interface for students, placement officers (admins), and company HRs to manage end-to-end campus placement workflows — from job drives to final selection.
 
@@ -45,3 +45,10 @@ This is the **frontend** for a college-specific Placement Management System buil
 - **State Management**: React Context API
 - **Routing**: App Router (Next.js)
 - **Icons**: Lucide
+- **Components Library**: shadcn
+
+---
+
+## 📄 License: Custom Non-Commercial  
+
+You may use this project for learning or personal use. Commercial use is not allowed without written permission. See LICENSE for details.
