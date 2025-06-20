@@ -1,29 +1,64 @@
-"use client"
+"use client";
 
-import React from "react"
+import React from "react";
 
-import { useState } from "react"
-import { Users, Search, Plus, MoreHorizontal, Edit, Trash2, Eye, GraduationCap, Mail, CheckCircle, X, Upload, FileText, Phone } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import {
+  Users,
+  Search,
+  Plus,
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  Eye,
+  GraduationCap,
+  Mail,
+  CheckCircle,
+  X,
+  Upload,
+  FileText,
+  Phone,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
+import api from "@/lib/api";
+import { toast } from "sonner";
 
 export default function StudentManagement() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [departmentFilter, setDepartmentFilter] = useState("all")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [showAddStudent, setShowAddStudent] = useState(false)
-  const [showImportDialog, setShowImportDialog] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [departmentFilter, setDepartmentFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [showAddStudent, setShowAddStudent] = useState(false);
+  const [showImportDialog, setShowImportDialog] = useState(false);
 
-  const [selectedStudent, setSelectedStudent] = useState(null)
-  const [showViewProfile, setShowViewProfile] = useState(false)
-  const [showEditProfile, setShowEditProfile] = useState(false)
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [showViewProfile, setShowViewProfile] = useState(false);
+  const [showEditProfile, setShowEditProfile] = useState(false);
 
   const students = [
     {
@@ -74,31 +109,45 @@ export default function StudentManagement() {
       offers: 2,
       lastActive: "2024-05-02",
     },
-  ]
+  ];
 
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
       student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       student.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      student.rollNumber.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesDepartment = departmentFilter === "all" || student.department === departmentFilter
-    const matchesStatus = statusFilter === "all" || student.status.toLowerCase() === statusFilter.toLowerCase()
-    return matchesSearch && matchesDepartment && matchesStatus
-  })
+      student.rollNumber.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDepartment =
+      departmentFilter === "all" || student.department === departmentFilter;
+    const matchesStatus =
+      statusFilter === "all" ||
+      student.status.toLowerCase() === statusFilter.toLowerCase();
+    return matchesSearch && matchesDepartment && matchesStatus;
+  });
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Student Management</h2>
-          <p className="text-muted-foreground">Manage student profiles and placement activities.</p>
+          <h2 className="text-3xl font-bold tracking-tight">
+            Student Management
+          </h2>
+          <p className="text-muted-foreground">
+            Manage student profiles and placement activities.
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={() => setShowImportDialog(true)} className={'cursor-pointer'}>
+          <Button
+            variant="outline"
+            onClick={() => setShowImportDialog(true)}
+            className={"cursor-pointer"}
+          >
             <Upload className="mr-2 h-4 w-4" />
             Import Students
           </Button>
-          <Button onClick={() => setShowAddStudent(true)} className={'cursor-pointer'}>
+          <Button
+            onClick={() => setShowAddStudent(true)}
+            className={"cursor-pointer"}
+          >
             <Plus className="mr-2 h-4 w-4" />
             Add Student
           </Button>
@@ -108,7 +157,9 @@ export default function StudentManagement() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Students</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Students
+            </CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
@@ -118,21 +169,31 @@ export default function StudentManagement() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Students</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Active Students
+            </CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{students.filter((s) => s.status === "Active").length}</div>
-            <p className="text-xs text-muted-foreground">Currently seeking placement</p>
+            <div className="text-2xl font-bold">
+              {students.filter((s) => s.status === "Active").length}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Currently seeking placement
+            </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Placed Students</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Placed Students
+            </CardTitle>
             <GraduationCap className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{students.filter((s) => s.status === "Placed").length}</div>
+            <div className="text-2xl font-bold">
+              {students.filter((s) => s.status === "Placed").length}
+            </div>
             <p className="text-xs text-muted-foreground">Successfully placed</p>
           </CardContent>
         </Card>
@@ -143,7 +204,9 @@ export default function StudentManagement() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {(students.reduce((sum, s) => sum + s.cgpa, 0) / students.length).toFixed(1)}
+              {(
+                students.reduce((sum, s) => sum + s.cgpa, 0) / students.length
+              ).toFixed(1)}
             </div>
             <p className="text-xs text-muted-foreground">Overall performance</p>
           </CardContent>
@@ -164,13 +227,18 @@ export default function StudentManagement() {
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
-              <Select value={departmentFilter} onValueChange={setDepartmentFilter}>
+              <Select
+                value={departmentFilter}
+                onValueChange={setDepartmentFilter}
+              >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Department" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Departments</SelectItem>
-                  <SelectItem value="Computer Science">Computer Science</SelectItem>
+                  <SelectItem value="Computer Science">
+                    Computer Science
+                  </SelectItem>
                   <SelectItem value="Electronics">Electronics</SelectItem>
                   <SelectItem value="Mechanical">Mechanical</SelectItem>
                   <SelectItem value="Civil">Civil</SelectItem>
@@ -212,8 +280,13 @@ export default function StudentManagement() {
                   <TableCell>
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src={student.profilePicture || "/placeholder.svg"} alt={student.name} />
-                        <AvatarFallback>{student.name.substring(0, 2)}</AvatarFallback>
+                        <AvatarImage
+                          src={student.profilePicture || "/placeholder.svg"}
+                          alt={student.name}
+                        />
+                        <AvatarFallback>
+                          {student.name.substring(0, 2)}
+                        </AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="font-medium">{student.name}</div>
@@ -228,14 +301,26 @@ export default function StudentManagement() {
                   <TableCell>{student.department}</TableCell>
                   <TableCell>{student.batch}</TableCell>
                   <TableCell>
-                    <Badge variant={student.cgpa >= 8.5 ? "default" : student.cgpa >= 7.5 ? "secondary" : "outline"}>
+                    <Badge
+                      variant={
+                        student.cgpa >= 8.5
+                          ? "default"
+                          : student.cgpa >= 7.5
+                          ? "secondary"
+                          : "outline"
+                      }
+                    >
                       {student.cgpa}
                     </Badge>
                   </TableCell>
                   <TableCell>
                     <Badge
                       variant={
-                        student.status === "Placed" ? "default" : student.status === "Active" ? "secondary" : "outline"
+                        student.status === "Placed"
+                          ? "default"
+                          : student.status === "Active"
+                          ? "secondary"
+                          : "outline"
                       }
                     >
                       {student.status}
@@ -243,7 +328,9 @@ export default function StudentManagement() {
                   </TableCell>
                   <TableCell>{student.applications}</TableCell>
                   <TableCell>
-                    <Badge variant={student.offers > 0 ? "default" : "outline"}>{student.offers}</Badge>
+                    <Badge variant={student.offers > 0 ? "default" : "outline"}>
+                      {student.offers}
+                    </Badge>
                   </TableCell>
                   <TableCell>{student.lastActive}</TableCell>
                   <TableCell className="text-right">
@@ -254,19 +341,21 @@ export default function StudentManagement() {
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem className={'cursor-pointer'}
+                        <DropdownMenuItem
+                          className={"cursor-pointer"}
                           onClick={() => {
-                            setSelectedStudent(student)
-                            setShowViewProfile(true)
+                            setSelectedStudent(student);
+                            setShowViewProfile(true);
                           }}
                         >
                           <Eye className="mr-2 h-4 w-4" />
                           View Profile
                         </DropdownMenuItem>
-                        <DropdownMenuItem className={'cursor-pointer'}
+                        <DropdownMenuItem
+                          className={"cursor-pointer"}
                           onClick={() => {
-                            setSelectedStudent(student)
-                            setShowEditProfile(true)
+                            setSelectedStudent(student);
+                            setShowEditProfile(true);
                           }}
                         >
                           <Edit className="mr-2 h-4 w-4" />
@@ -286,14 +375,18 @@ export default function StudentManagement() {
         </CardContent>
       </Card>
 
-      {showAddStudent && <AddStudentDialog onClose={() => setShowAddStudent(false)} />}
-      {showImportDialog && <ImportStudentsDialog onClose={() => setShowImportDialog(false)} />}
+      {showAddStudent && (
+        <AddStudentDialog onClose={() => setShowAddStudent(false)} />
+      )}
+      {showImportDialog && (
+        <ImportStudentsDialog onClose={() => setShowImportDialog(false)} />
+      )}
       {showViewProfile && selectedStudent && (
         <ViewStudentProfileDialog
           student={selectedStudent}
           onClose={() => {
-            setShowViewProfile(false)
-            setSelectedStudent(null)
+            setShowViewProfile(false);
+            setSelectedStudent(null);
           }}
         />
       )}
@@ -301,39 +394,43 @@ export default function StudentManagement() {
         <EditStudentDialog
           student={selectedStudent}
           onClose={() => {
-            setShowEditProfile(false)
-            setSelectedStudent(null)
+            setShowEditProfile(false);
+            setSelectedStudent(null);
           }}
           onSave={(updatedStudent) => {
-            console.log("Updated student:", updatedStudent)
+            console.log("Updated student:", updatedStudent);
             //handle backend is pending
-            setShowEditProfile(false)
-            setSelectedStudent(null)
+            setShowEditProfile(false);
+            setSelectedStudent(null);
           }}
         />
       )}
     </div>
-  )
+  );
 }
 
 function AddStudentDialog({ onClose }) {
   const [formData, setFormData] = useState({
+    id: "",
     name: "",
     email: "",
-    phone: "",
-    rollNumber: "",
+    finishingSchool: "",
     department: "",
     batch: "",
-    cgpa: "",
-    profilePicture: null,
-  })
+    cloudinaryPublicId: "",
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Add Student Data:", formData)
-    alert("Student added successfully!")
-    onClose()
-  }
+  const handleSubmit = async (e) => {
+    try {
+      e.preventDefault();
+      const res = await api.post("/student/create", formData);
+      toast("Status : " + res.data?.message);
+    } catch (err) {
+      toast("Error while creating user (or)\n Student already exists ");
+    } finally {
+      onClose();
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -350,11 +447,27 @@ function AddStudentDialog({ onClose }) {
         <form onSubmit={handleSubmit} className="p-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
+              <Label htmlFor="id">Roll No *</Label>
+              <Input
+                id="id"
+                value={formData.id}
+                type="String"
+                maxLength={10}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, id: e.target.value }))
+                }
+                required
+              />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="name">Full Name *</Label>
               <Input
                 id="name"
+                type="String"
                 value={formData.name}
-                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 required
               />
             </div>
@@ -364,42 +477,45 @@ function AddStudentDialog({ onClose }) {
                 id="email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
+                }
                 required
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone Number</Label>
+              <Label htmlFor="finishingSchool">Finishing School</Label>
               <Input
-                id="phone"
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="rollNumber">Roll Number *</Label>
-              <Input
-                id="rollNumber"
-                value={formData.rollNumber}
-                onChange={(e) => setFormData((prev) => ({ ...prev, rollNumber: e.target.value }))}
-                required
+                id="finishingSchool"
+                value={formData.finishingSchool}
+                maxLength={3}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    finishingSchool: e.target.value,
+                  }))
+                }
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="department">Department *</Label>
               <Select
                 value={formData.department}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, department: value }))}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, department: value }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Department" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Computer Science">Computer Science</SelectItem>
-                  <SelectItem value="Electronics">Electronics</SelectItem>
-                  <SelectItem value="Mechanical">Mechanical</SelectItem>
-                  <SelectItem value="Civil">Civil</SelectItem>
+                  <SelectItem value="Computer Science and Engineering">
+                    Computer Science and Engineering
+                  </SelectItem>
+                  <SelectItem value="Computer Science and Engineering(DS)">
+                    Computer Science and Engineering(DS)
+                  </SelectItem>
+                  <SelectItem value="AI/ML">AI/ML</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -407,43 +523,37 @@ function AddStudentDialog({ onClose }) {
               <Label htmlFor="batch">Batch Year *</Label>
               <Select
                 value={formData.batch}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, batch: value }))}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, batch: value }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Batch" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="2023">2023</SelectItem>
-                  <SelectItem value="2024">2024</SelectItem>
-                  <SelectItem value="2025">2025</SelectItem>
-                  <SelectItem value="2026">2026</SelectItem>
-                  <SelectItem value="2027">2027</SelectItem>
+                  {Array.from({ length: 9 }, (_, i) => {
+                    const year = new Date().getFullYear() - 4 + i;
+                    return (
+                      <SelectItem key={year} value={year.toString()}>
+                        {year}
+                      </SelectItem>
+                    );
+                  })}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="cgpa">CGPA</Label>
+              <Label htmlFor="cloudinaryPublicId">Cloudinary ID</Label>
               <Input
-                id="cgpa"
-                type="number"
-                step="0.01"
-                min="0"
-                max="10"
-                value={formData.cgpa}
-                onChange={(e) => setFormData((prev) => ({ ...prev, cgpa: e.target.value }))}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="profilePicture">Profile Picture</Label>
-              <Input
-                id="profilePicture"
-                type="file"
-                accept="image/*"
-                onChange={(e) => setFormData((prev) => ({ ...prev, profilePicture: e.target.files?.[0] || null }))}
+                id="cloudinaryPublicId"
+                type="String"
+                value={formData.cloudinaryPublicId}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, cloudinaryPublicId: e.target.value }))
+                }
               />
             </div>
           </div>
-
           <div className="flex justify-end space-x-2 pt-4 border-t">
             <Button type="button" variant="outline" onClick={onClose}>
               Cancel
@@ -453,23 +563,23 @@ function AddStudentDialog({ onClose }) {
         </form>
       </div>
     </div>
-  )
+  );
 }
 
 function ImportStudentsDialog({ onClose }) {
-  const [file, setFile] = useState(null)
-  const [previewData, setPreviewData] = useState([])
-  const [showPreview, setShowPreview] = useState(false)
+  const [file, setFile] = useState(null);
+  const [previewData, setPreviewData] = useState([]);
+  const [showPreview, setShowPreview] = useState(false);
   const [importSettings, setImportSettings] = useState({
     batch: "2025",
     department: "all",
     overwriteExisting: false,
-  })
+  });
 
   const handleFileUpload = (e) => {
-    const uploadedFile = e.target.files?.[0]
+    const uploadedFile = e.target.files?.[0];
     if (uploadedFile) {
-      setFile(uploadedFile)
+      setFile(uploadedFile);
       const mockData = [
         {
           name: "John Doe",
@@ -492,17 +602,17 @@ function ImportStudentsDialog({ onClose }) {
           department: "Electronics",
           cgpa: 7.8,
         },
-      ]
-      setPreviewData(mockData)
-      setShowPreview(true)
+      ];
+      setPreviewData(mockData);
+      setShowPreview(true);
     }
-  }
+  };
 
   const handleImport = () => {
-    console.log("Importing students:", { file, previewData, importSettings })
-    alert(`Successfully imported ${previewData.length} students!`)
-    onClose()
-  }
+    console.log("Importing students:", { file, previewData, importSettings });
+    alert(`Successfully imported ${previewData.length} students!`);
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -523,12 +633,17 @@ function ImportStudentsDialog({ onClose }) {
                 <Label>Upload Excel File</Label>
                 <div
                   className="border border-dashed rounded-md p-8 text-center cursor-pointer hover:bg-muted/50 transition-colors"
-                  onClick={() => document.getElementById("excel-upload")?.click()}
+                  onClick={() =>
+                    document.getElementById("excel-upload")?.click()
+                  }
                 >
                   <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <p className="text-lg font-medium mb-2">{file ? file.name : "Click to upload Excel file"}</p>
+                  <p className="text-lg font-medium mb-2">
+                    {file ? file.name : "Click to upload Excel file"}
+                  </p>
                   <p className="text-sm text-muted-foreground mb-4">
-                    Excel file with columns: Name, Email, Roll Number, Department, CGPA, Phone
+                    Excel file with columns: Name, Email, Roll Number,
+                    Department, CGPA, Phone
                   </p>
                   <Button variant="outline">
                     <FileText className="mr-2 h-4 w-4" />
@@ -549,7 +664,9 @@ function ImportStudentsDialog({ onClose }) {
                   <Label htmlFor="batch">Default Batch Year</Label>
                   <Select
                     value={importSettings.batch}
-                    onValueChange={(value) => setImportSettings((prev) => ({ ...prev, batch: value }))}
+                    onValueChange={(value) =>
+                      setImportSettings((prev) => ({ ...prev, batch: value }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -567,14 +684,21 @@ function ImportStudentsDialog({ onClose }) {
                   <Label htmlFor="department">Filter Department</Label>
                   <Select
                     value={importSettings.department}
-                    onValueChange={(value) => setImportSettings((prev) => ({ ...prev, department: value }))}
+                    onValueChange={(value) =>
+                      setImportSettings((prev) => ({
+                        ...prev,
+                        department: value,
+                      }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="all">All Departments</SelectItem>
-                      <SelectItem value="Computer Science">Computer Science</SelectItem>
+                      <SelectItem value="Computer Science">
+                        Computer Science
+                      </SelectItem>
                       <SelectItem value="Electronics">Electronics</SelectItem>
                       <SelectItem value="Mechanical">Mechanical</SelectItem>
                       <SelectItem value="Civil">Civil</SelectItem>
@@ -588,9 +712,16 @@ function ImportStudentsDialog({ onClose }) {
                       type="checkbox"
                       id="overwrite"
                       checked={importSettings.overwriteExisting}
-                      onChange={(e) => setImportSettings((prev) => ({ ...prev, overwriteExisting: e.target.checked }))}
+                      onChange={(e) =>
+                        setImportSettings((prev) => ({
+                          ...prev,
+                          overwriteExisting: e.target.checked,
+                        }))
+                      }
                     />
-                    <Label htmlFor="overwrite">Overwrite existing students</Label>
+                    <Label htmlFor="overwrite">
+                      Overwrite existing students
+                    </Label>
                   </div>
                 </div>
               </div>
@@ -599,7 +730,9 @@ function ImportStudentsDialog({ onClose }) {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-medium">Preview Import Data</h3>
-                <Badge variant="secondary">{previewData.length} students found</Badge>
+                <Badge variant="secondary">
+                  {previewData.length} students found
+                </Badge>
               </div>
 
               <div className="border rounded-lg overflow-hidden">
@@ -629,7 +762,8 @@ function ImportStudentsDialog({ onClose }) {
 
               {previewData.length > 10 && (
                 <p className="text-sm text-muted-foreground text-center">
-                  Showing first 10 rows. {previewData.length - 10} more students will be imported.
+                  Showing first 10 rows. {previewData.length - 10} more students
+                  will be imported.
                 </p>
               )}
             </div>
@@ -640,12 +774,18 @@ function ImportStudentsDialog({ onClose }) {
               Cancel
             </Button>
             {showPreview && (
-              <Button type="button" variant="outline" onClick={() => setShowPreview(false)}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setShowPreview(false)}
+              >
                 Back to Upload
               </Button>
             )}
             {showPreview ? (
-              <Button onClick={handleImport}>Import {previewData.length} Students</Button>
+              <Button onClick={handleImport}>
+                Import {previewData.length} Students
+              </Button>
             ) : (
               <Button disabled={!file}>Preview Data</Button>
             )}
@@ -653,7 +793,7 @@ function ImportStudentsDialog({ onClose }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function ViewStudentProfileDialog({ student, onClose }) {
@@ -676,19 +816,38 @@ function ViewStudentProfileDialog({ student, onClose }) {
               <Card>
                 <CardContent className="p-6 text-center">
                   <Avatar className="h-24 w-24 mx-auto mb-4">
-                    <AvatarImage src={student.profilePicture || "/placeholder.svg"} alt={student.name} />
-                    <AvatarFallback className="text-lg">{student.name.substring(0, 2)}</AvatarFallback>
+                    <AvatarImage
+                      src={student.profilePicture || "/placeholder.svg"}
+                      alt={student.name}
+                    />
+                    <AvatarFallback className="text-lg">
+                      {student.name.substring(0, 2)}
+                    </AvatarFallback>
                   </Avatar>
                   <h3 className="text-xl font-bold mb-2">{student.name}</h3>
-                  <p className="text-muted-foreground mb-4">{student.department}</p>
+                  <p className="text-muted-foreground mb-4">
+                    {student.department}
+                  </p>
                   <div className="space-y-2">
                     <Badge variant="secondary">Batch of {student.batch}</Badge>
-                    <Badge variant={student.cgpa >= 8.5 ? "default" : student.cgpa >= 7.5 ? "secondary" : "outline"}>
+                    <Badge
+                      variant={
+                        student.cgpa >= 8.5
+                          ? "default"
+                          : student.cgpa >= 7.5
+                          ? "secondary"
+                          : "outline"
+                      }
+                    >
                       CGPA: {student.cgpa}
                     </Badge>
                     <Badge
                       variant={
-                        student.status === "Placed" ? "default" : student.status === "Active" ? "secondary" : "outline"
+                        student.status === "Placed"
+                          ? "default"
+                          : student.status === "Active"
+                          ? "secondary"
+                          : "outline"
                       }
                     >
                       {student.status}
@@ -727,19 +886,27 @@ function ViewStudentProfileDialog({ student, onClose }) {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <Label className="text-sm font-medium">Department</Label>
-                      <p className="text-sm text-muted-foreground">{student.department}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {student.department}
+                      </p>
                     </div>
                     <div>
                       <Label className="text-sm font-medium">Batch Year</Label>
-                      <p className="text-sm text-muted-foreground">{student.batch}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {student.batch}
+                      </p>
                     </div>
                     <div>
                       <Label className="text-sm font-medium">CGPA</Label>
-                      <p className="text-sm text-muted-foreground">{student.cgpa}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {student.cgpa}
+                      </p>
                     </div>
                     <div>
                       <Label className="text-sm font-medium">Status</Label>
-                      <p className="text-sm text-muted-foreground">{student.status}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {student.status}
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -752,15 +919,25 @@ function ViewStudentProfileDialog({ student, onClose }) {
                 <CardContent>
                   <div className="grid grid-cols-3 gap-4 text-center">
                     <div>
-                      <div className="text-2xl font-bold text-blue-600">{student.applications}</div>
-                      <p className="text-sm text-muted-foreground">Applications</p>
+                      <div className="text-2xl font-bold text-blue-600">
+                        {student.applications}
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Applications
+                      </p>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-orange-600">{student.interviews}</div>
-                      <p className="text-sm text-muted-foreground">Interviews</p>
+                      <div className="text-2xl font-bold text-orange-600">
+                        {student.interviews}
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        Interviews
+                      </p>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-green-600">{student.offers}</div>
+                      <div className="text-2xl font-bold text-green-600">
+                        {student.offers}
+                      </div>
                       <p className="text-sm text-muted-foreground">Offers</p>
                     </div>
                   </div>
@@ -771,7 +948,7 @@ function ViewStudentProfileDialog({ student, onClose }) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function EditStudentDialog({ student, onClose, onSave }) {
@@ -785,12 +962,12 @@ function EditStudentDialog({ student, onClose, onSave }) {
     cgpa: student.cgpa.toString(),
     status: student.status,
     profilePicture: null,
-  })
+  });
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    onSave({ ...student, ...formData, cgpa: Number.parseFloat(formData.cgpa) })
-  }
+    e.preventDefault();
+    onSave({ ...student, ...formData, cgpa: Number.parseFloat(formData.cgpa) });
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -811,7 +988,9 @@ function EditStudentDialog({ student, onClose, onSave }) {
               <Input
                 id="edit-name"
                 value={formData.name}
-                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, name: e.target.value }))
+                }
                 required
               />
             </div>
@@ -821,7 +1000,9 @@ function EditStudentDialog({ student, onClose, onSave }) {
                 id="edit-email"
                 type="email"
                 value={formData.email}
-                onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, email: e.target.value }))
+                }
                 required
               />
             </div>
@@ -831,7 +1012,9 @@ function EditStudentDialog({ student, onClose, onSave }) {
                 id="edit-phone"
                 type="tel"
                 value={formData.phone}
-                onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, phone: e.target.value }))
+                }
               />
             </div>
             <div className="space-y-2">
@@ -839,7 +1022,12 @@ function EditStudentDialog({ student, onClose, onSave }) {
               <Input
                 id="edit-rollNumber"
                 value={formData.rollNumber}
-                onChange={(e) => setFormData((prev) => ({ ...prev, rollNumber: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    rollNumber: e.target.value,
+                  }))
+                }
                 required
               />
             </div>
@@ -847,13 +1035,17 @@ function EditStudentDialog({ student, onClose, onSave }) {
               <Label htmlFor="edit-department">Department *</Label>
               <Select
                 value={formData.department}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, department: value }))}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, department: value }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Department" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Computer Science">Computer Science</SelectItem>
+                  <SelectItem value="Computer Science">
+                    Computer Science
+                  </SelectItem>
                   <SelectItem value="Electronics">Electronics</SelectItem>
                   <SelectItem value="Mechanical">Mechanical</SelectItem>
                   <SelectItem value="Civil">Civil</SelectItem>
@@ -864,7 +1056,9 @@ function EditStudentDialog({ student, onClose, onSave }) {
               <Label htmlFor="edit-batch">Batch Year *</Label>
               <Select
                 value={formData.batch}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, batch: value }))}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, batch: value }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Batch" />
@@ -887,14 +1081,18 @@ function EditStudentDialog({ student, onClose, onSave }) {
                 min="0"
                 max="10"
                 value={formData.cgpa}
-                onChange={(e) => setFormData((prev) => ({ ...prev, cgpa: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, cgpa: e.target.value }))
+                }
               />
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit-status">Status</Label>
               <Select
                 value={formData.status}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, status: value }))}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, status: value }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select Status" />
@@ -912,7 +1110,12 @@ function EditStudentDialog({ student, onClose, onSave }) {
                 id="edit-profilePicture"
                 type="file"
                 accept="image/*"
-                onChange={(e) => setFormData((prev) => ({ ...prev, profilePicture: e.target.files?.[0] || null }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    profilePicture: e.target.files?.[0] || null,
+                  }))
+                }
               />
             </div>
           </div>
@@ -926,5 +1129,5 @@ function EditStudentDialog({ student, onClose, onSave }) {
         </form>
       </div>
     </div>
-  )
+  );
 }
