@@ -176,7 +176,7 @@ export function RecruiterDashboard() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Recruiter Dashboard</h2>
           <p className="text-muted-foreground">
-            Welcome to TechCorp's recruitment portal. Manage your job postings and candidates.
+            Welcome to TechCorp&apos;s recruitment portal. Manage your job postings and candidates.
           </p>
         </div>
         <div className="flex items-center gap-2">

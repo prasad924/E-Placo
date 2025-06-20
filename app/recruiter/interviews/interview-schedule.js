@@ -555,7 +555,7 @@ export function InterviewSchedule() {
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">Today's Interviews</p>
+                <p className="text-sm font-medium text-muted-foreground">Today&apos;s Interviews</p>
                 <p className="text-2xl font-bold">5</p>
               </div>
               <CalendarIcon className="h-8 w-8 text-blue-600" />

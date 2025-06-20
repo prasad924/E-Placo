@@ -1,17 +1,38 @@
-"use client"
+"use client";
 
-import { useState, useRef } from "react"
-import { Building, Edit, FileText, MapPin, Phone, Plus, Save, Send, X, Upload, Camera } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useState } from "react";
+import {
+  Building,
+  Edit,
+  FileText,
+  MapPin,
+  Phone,
+  Plus,
+  Save,
+  Send,
+  X,
+  Upload,
+  Mail,
+  Github,
+  ExternalLink,
+  Linkedin,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -19,252 +40,116 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { toast } from "sonner"
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
+import { useStudentForm } from "@/hooks/useStudentForm";
+import Eloading from "@/components/loading";
+import Link from "next/link";
+
+const isEmpty = (value) => {
+  return (
+    value === null ||
+    value === undefined ||
+    (typeof value === "string" && value.trim() === "") ||
+    (Array.isArray(value) && value.length === 0)
+  );
+};
 
 export function StudentProfile() {
-  const [isEditing, setIsEditing] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
-  const fileInputRef = useRef(null)
-  
+  const [newSkill, setNewSkill] = useState("");
+  const [newLanguage, setNewLanguage] = useState("");
 
-  const [profileData, setProfileData] = useState({
-    name: "John Smith",
-    email: "john.smith@example.com",
-    phone: "+91 98765 43210",
-    location: "Bangalore, India",
-    university: "Tech University",
-    degree: "Computer Science & Engineering",
-    batch: "2025",
-    cgpa: "8.5",
-    profilePicture: "/placeholder.svg",
-    aboutMe:
-      "I am a final year Computer Science student with a passion for web development and machine learning. I have experience building full-stack applications and working with various frameworks and technologies. I am looking for opportunities in software development and data science.",
-  })
+  const {
+    form,
+    setForm,
+    loading,
+    saveStatus,
+    updateStudent,
+    fetchStudent,
+    addEducation,
+    updateEducation,
+    deleteEducation,
+    addProject,
+    updateProject,
+    deleteProject,
+    addExperience,
+    updateExperience,
+    deleteExperience,
+    addCertification,
+    updateCertification,
+    deleteCertification,
+    addAdditionalLink,
+    updateAdditionalLink,
+    deleteAdditionalLink,
+    addSkill,
+    removeSkill,
+    addLanguage,
+    removeLanguage,
+  } = useStudentForm();
 
-  // Skills state
-  const [skills, setSkills] = useState(["JavaScript", "React", "Node.js", "Python", "SQL", "Git"])
-  const [newSkill, setNewSkill] = useState("")
-
-  // Languages state
-  const [languages, setLanguages] = useState([
-    { language: "English", proficiency: "Fluent" },
-    { language: "Hindi", proficiency: "Native" },
-    { language: "French", proficiency: "Basic" },
-  ])
-
-  // Projects state
-  const [projects, setProjects] = useState([
-    {
-      id: "1",
-      name: "E-Commerce Platform",
-      description:
-        "Built a full-stack e-commerce platform using React, Node.js, and MongoDB. Implemented features like user authentication, product search, cart management, and payment integration.",
-      technologies: ["React", "Node.js", "MongoDB"],
-      link: "https://github.com/johnsmith/ecommerce",
-    },
-    {
-      id: "2",
-      name: "Sentiment Analysis Tool",
-      description:
-        "Developed a sentiment analysis tool that analyzes text data from social media and provides insights on customer sentiment. Used Python, NLTK, and Flask for the backend.",
-      technologies: ["Python", "NLTK", "Flask"],
-      link: "https://github.com/johnsmith/sentiment-analysis",
-    },
-  ])
-
-  // Education state
-  const [education, setEducation] = useState([
-    {
-      id: "1",
-      degree: "B.Tech in Computer Science & Engineering",
-      university: "Tech University",
-      startYear: "2021",
-      endYear: "2025",
-      grade: "8.5 CGPA",
-      coursework:
-        "Data Structures & Algorithms, Database Management Systems, Operating Systems, Computer Networks, Machine Learning, Web Development",
-    },
-    {
-      id: "2",
-      degree: "Higher Secondary Education",
-      university: "City Public School",
-      startYear: "2019",
-      endYear: "2021",
-      grade: "92%",
-      coursework: "",
-    },
-  ])
-
-  // Experience state
-  const [experience, setExperience] = useState([
-    {
-      id: "1",
-      title: "Software Development Intern",
-      company: "TechCorp",
-      startDate: "May 2024",
-      endDate: "July 2024",
-      description:
-        "Worked on developing new features for the company's web application using React and Node.js. Collaborated with the design team to implement responsive UI components. Participated in code reviews and agile development processes.",
-      technologies: ["React", "Node.js", "Agile"],
-    },
-    {
-      id: "2",
-      title: "Research Assistant",
-      company: "University AI Lab",
-      startDate: "January 2024",
-      endDate: "April 2024",
-      description:
-        "Assisted in research on natural language processing techniques. Implemented and evaluated various machine learning models for text classification. Co-authored a research paper on sentiment analysis.",
-      technologies: ["Python", "NLP", "Research"],
-    },
-  ])
-
-  // Certifications state
-  const [certifications, setCertifications] = useState([
-    {
-      id: "1",
-      name: "AWS Certified Developer",
-      authority: "Amazon Web Services",
-      date: "January 2025",
-      credentialId: "AWS-DEV-2025-001",
-    },
-    {
-      id: "2",
-      name: "Machine Learning Specialization",
-      authority: "Stanford University (Coursera)",
-      date: "November 2024",
-      credentialId: "COURSERA-ML-2024-002",
-    },
-  ])
-
-  // Temporary edit states
-  const [editData, setEditData] = useState(profileData)
-
-  // Trigger file input
-  const triggerFileInput = () => {
-    fileInputRef.current?.click()
-  }
+  const [isEditing, setIsEditing] = useState(false);
 
   const calculateCompletion = () => {
-    let completed = 0
-    const total = 12
+    if (!form) return 0;
 
-    if (profileData.name) completed++
-    if (profileData.email) completed++
-    if (profileData.phone) completed++
-    if (profileData.location) completed++
-    if (profileData.aboutMe && profileData.aboutMe.length > 50) completed++
-    if (profileData.profilePicture && profileData.profilePicture !== "/placeholder.svg") completed++
-    if (skills.length >= 3) completed++
-    if (languages.length >= 1) completed++
-    if (projects.length >= 1) completed++
-    if (education.length >= 1) completed++
-    if (experience.length >= 1) completed++
-    if (certifications.length >= 1) completed++
+    let completed = 0;
+    const total = 12;
 
-    return Math.round((completed / total) * 100)
-  }
+    if (form.name) completed++;
+    if (form.email) completed++;
+    if (form.personalProfile?.phoneNumber) completed++;
+    if (form.personalProfile?.address) completed++;
+    if (
+      form.personalProfile?.aboutMe &&
+      form.personalProfile.aboutMe.length > 50
+    )
+      completed++;
+    if (form.url) completed++;
+    if (form.careerProfile?.skills?.filter(Boolean).length >= 3) completed++;
+    if (form.personalProfile?.languages?.filter(Boolean).length >= 1)
+      completed++;
+    if (form.careerProfile?.projects?.length >= 1) completed++;
+    if (form.education?.length >= 1) completed++;
+    if (form.careerProfile?.experience?.length >= 1) completed++;
+    if (form.careerProfile?.certifications?.length >= 1) completed++;
+
+    return Math.round((completed / total) * 100);
+  };
 
   const handleSaveProfile = async () => {
     try {
-      setProfileData(editData)
-      setIsEditing(false)
+      await updateStudent();
+      setIsEditing(false);
 
-      toast({
+      toast("Success", {
         title: "Profile updated!",
         description: "Your profile has been successfully updated.",
-      })
-
-      console.log("Profile saved:", editData)
+      });
     } catch (error) {
-      toast({
+      toast("Failed", {
         title: "Update failed",
-        description: "Failed to update profile. Please try again.",
+        description:
+          error?.message || "Failed to update profile. Please try again.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
-  const handleCancelEdit = () => {
-    setEditData(profileData)
-    setIsEditing(false)
-  }
+  const handleCancelEdit = async () => {
+    await fetchStudent();
+    setIsEditing(false);
+  };
 
-  // Skills functions
-  const addSkill = () => {
-    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      setSkills([...skills, newSkill.trim()])
-      setNewSkill("")
-    }
-  }
-
-  const removeSkill = (skillToRemove) => {
-    setSkills(skills.filter((skill) => skill !== skillToRemove))
-  }
-
-  // Projects functions
-  const addProject = (newProject) => {
-    setProjects([...projects, { ...newProject, id: Date.now().toString() }])
-  }
-
-  const updateProject = (id, updatedProject) => {
-    setProjects(projects.map((project) => (project.id === id ? { ...project, ...updatedProject } : project)))
-  }
-
-  const deleteProject = (id) => {
-    setProjects(projects.filter((project) => project.id !== id))
-  }
-
-  // Education functions
-  const addEducation = (newEducation) => {
-    setEducation([...education, { ...newEducation, id: Date.now().toString() }])
-  }
-
-  const updateEducation = (id, updatedEducation) => {
-    setEducation(education.map((edu) => (edu.id === id ? { ...edu, ...updatedEducation } : edu)))
-  }
-
-  const deleteEducation = (id) => {
-    setEducation(education.filter((edu) => edu.id !== id))
-  }
-
-  // Experience functions
-  const addExperience = (newExperience) => {
-    setExperience([...experience, { ...newExperience, id: Date.now().toString() }])
-  }
-
-  const updateExperience = (id, updatedExperience) => {
-    setExperience(experience.map((exp) => (exp.id === id ? { ...exp, ...updatedExperience } : exp)))
-  }
-
-  const deleteExperience = (id) => {
-    setExperience(experience.filter((exp) => exp.id !== id))
-  }
-
-  // Certifications functions
-  const addCertification = (newCertification) => {
-    setCertifications([...certifications, { ...newCertification, id: Date.now().toString() }])
-  }
-
-  const updateCertification = (id, updatedCertification) => {
-    setCertifications(certifications.map((cert) => (cert.id === id ? { ...cert, ...updatedCertification } : cert)))
-  }
-
-  const deleteCertification = (id) => {
-    setCertifications(certifications.filter((cert) => cert.id !== id))
-  }
+  if (loading || !form) return <Eloading />;
 
   return (
     <div className="space-y-6">
-      {/* Hidden file input */}
-      <input ref={fileInputRef} type="file" accept="image/*" className="hidden" />
-
-      {/* Header */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <h2 className="text-3xl font-bold tracking-tight">My Profile</h2>
-          <p className="text-muted-foreground">Manage your profile information and resume.</p>
+          <p className="text-muted-foreground">
+            Manage your profile information and resume.
+          </p>
         </div>
         <div className="flex items-center gap-2">
           {isEditing ? (
@@ -272,9 +157,12 @@ export function StudentProfile() {
               <Button variant="outline" onClick={handleCancelEdit}>
                 Cancel
               </Button>
-              <Button onClick={handleSaveProfile}>
+              <Button
+                onClick={handleSaveProfile}
+                disabled={saveStatus !== "idle"}
+              >
                 <Save className="mr-2 h-4 w-4" />
-                Save Changes
+                {saveStatus === "idle" ? "Save Changes" : "Saving"}
               </Button>
             </>
           ) : (
@@ -292,9 +180,12 @@ export function StudentProfile() {
             <div className="flex flex-col items-center">
               <div className="relative group">
                 <Avatar className="h-24 w-24">
-                  <AvatarImage src={profileData.profilePicture || "/placeholder.svg"} alt={profileData.name} />
+                  <AvatarImage
+                    src={form.url || "/default.png"}
+                    alt={form.name || "Student"}
+                  />
                   <AvatarFallback>
-                    {profileData.name
+                    {(form.name || "User")
                       .split(" ")
                       .map((n) => n[0])
                       .join("")}
@@ -305,176 +196,320 @@ export function StudentProfile() {
               {isEditing ? (
                 <div className="mt-4 w-full space-y-2">
                   <Input
-                    value={editData.name}
-                    onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+                    value={form.name || ""}
+                    onChange={(e) => setForm({ ...form, name: e.target.value })}
                     className="text-center font-semibold"
                   />
-                  <Input
-                    value={editData.degree}
-                    onChange={(e) => setEditData({ ...editData, degree: e.target.value })}
-                    className="text-center text-sm"
-                  />
+                  {["male", "female", "other"].map((option) => (
+                    <Label
+                      key={option}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <Input
+                        type="radio"
+                        name="gender"
+                        value={option}
+                        checked={form.gender === option}
+                        onChange={(e) =>
+                          setForm((prev) => ({
+                            ...prev,
+                            gender: e.target.value,
+                          }))
+                        }
+                      />
+                      {option.charAt(0).toUpperCase() + option.slice(1)}
+                    </Label>
+                  ))}
                 </div>
               ) : (
                 <>
-                  <CardTitle className="mt-4 text-center">{profileData.name}</CardTitle>
-                  <CardDescription className="text-center">{profileData.degree}</CardDescription>
+                  <CardTitle className="mt-4 text-center">
+                    {form.name || "User"}{" "}
+                    {form.gender
+                      ? `(${form.gender.charAt(0).toUpperCase()})`
+                      : ""}
+                  </CardTitle>
+                  <CardDescription className="text-center">
+                    Roll No : {form.id}
+                  </CardDescription>
+                  {form.department && (
+                    <CardDescription className="text-center">
+                      {form.department}
+                    </CardDescription>
+                  )}
                 </>
               )}
 
               <div className="mt-2 flex flex-wrap justify-center gap-2">
-                <Badge variant="secondary">CGPA: {profileData.cgpa}</Badge>
-                <Badge variant="secondary">Batch of {profileData.batch}</Badge>
+                {isEditing ? (
+                  <Input
+                    value={form.cgpa || ""}
+                    onChange={(e) => setForm({ ...form, cgpa: e.target.value })}
+                    className="text-center font-light text-sm "
+                    placeholder="CGPA"
+                  />
+                ) : (
+                  <>
+                    <Badge variant="secondary">{form.finishingSchool}</Badge>
+                    {form.cgpa && (
+                      <Badge variant="secondary">CGPA: {form.cgpa}</Badge>
+                    )}
+                    <Badge variant="secondary">
+                      Batch of {form.batch || "N/A"}
+                    </Badge>
+                  </>
+                )}
               </div>
             </div>
           </CardHeader>
 
           <CardContent className="space-y-4">
-            {/* Profile Completion */}
             <div>
               <h4 className="mb-2 text-sm font-medium">Profile Completion</h4>
               <Progress value={calculateCompletion()} className="h-2" />
               <p className="mt-2 text-xs text-muted-foreground">
-                Your profile is {calculateCompletion()}% complete. Add more details to improve visibility.
+                Your profile is {calculateCompletion()}% complete. Add more
+                details to improve visibility.
               </p>
             </div>
-
             <Separator />
-
-            {/* Contact Information */}
             <div className="space-y-2">
               <h4 className="text-sm font-medium">Contact Information</h4>
-              {isEditing ? (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
+              {isEditing || !isEmpty(form.personalProfile?.address) ? (
+                <div className="flex items-center gap-2 text-sm">
+                  <MapPin className="h-4 w-4 text-muted-foreground" />
+                  {isEditing ? (
                     <Input
-                      value={editData.location}
-                      onChange={(e) => setEditData({ ...editData, location: e.target.value })}
+                      value={form.personalProfile?.address || ""}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          personalProfile: {
+                            ...prev.personalProfile,
+                            address: e.target.value,
+                          },
+                        }))
+                      }
                       className="text-sm"
                     />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <Input
-                      value={editData.phone}
-                      onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
-                      className="text-sm"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Send className="h-4 w-4 text-muted-foreground" />
-                    <Input
-                      value={editData.email}
-                      onChange={(e) => setEditData({ ...editData, email: e.target.value })}
-                      className="text-sm"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Building className="h-4 w-4 text-muted-foreground" />
-                    <Input
-                      value={editData.university}
-                      onChange={(e) => setEditData({ ...editData, university: e.target.value })}
-                      className="text-sm"
-                    />
-                  </div>
+                  ) : (
+                    <span>{form.personalProfile?.address}</span>
+                  )}
                 </div>
-              ) : (
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="h-4 w-4 text-muted-foreground" />
-                    <span>{profileData.location}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Phone className="h-4 w-4 text-muted-foreground" />
-                    <span>{profileData.phone}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Send className="h-4 w-4 text-muted-foreground" />
-                    <span>{profileData.email}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <Building className="h-4 w-4 text-muted-foreground" />
-                    <span>{profileData.university}</span>
-                  </div>
+              ) : null}
+
+              {isEditing || !isEmpty(form.personalProfile?.phoneNumber) ? (
+                <div className="flex items-center gap-2 text-sm">
+                  <Phone className="h-4 w-4 text-muted-foreground" />
+                  {isEditing ? (
+                    <Input
+                      value={form.personalProfile?.phoneNumber || ""}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          personalProfile: {
+                            ...prev.personalProfile,
+                            phoneNumber: e.target.value,
+                          },
+                        }))
+                      }
+                      className="text-sm"
+                    />
+                  ) : (
+                    <span>{form.personalProfile?.phoneNumber}</span>
+                  )}
                 </div>
-              )}
+              ) : null}
+
+              {isEditing || !isEmpty(form.email) ? (
+                <div className="flex items-center gap-2 text-sm">
+                  <Send className="h-4 w-4 text-muted-foreground" />
+                  {isEditing ? (
+                    <Input
+                      value={form.email || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, email: e.target.value })
+                      }
+                      className="text-sm"
+                    />
+                  ) : (
+                    <span>{form.email}</span>
+                  )}
+                </div>
+              ) : null}
+
+              {isEditing || !isEmpty(form.university) ? (
+                <div className="flex items-center gap-2 text-sm">
+                  <Building className="h-4 w-4 text-muted-foreground" />
+                  {isEditing ? (
+                    <Input
+                      value={form.university || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, university: e.target.value })
+                      }
+                      className="text-sm"
+                    />
+                  ) : (
+                    <span>{form.university}</span>
+                  )}
+                </div>
+              ) : null}
             </div>
 
-            <Separator />
-
-            {/* Skills */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium">Skills</h4>
-                {isEditing && (
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button variant="ghost" size="icon" className="h-6 w-6">
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Add Skill</DialogTitle>
-                        <DialogDescription>Add a new skill to your profile</DialogDescription>
-                      </DialogHeader>
-                      <div className="flex gap-2">
-                        <Input
-                          placeholder="Enter skill name"
-                          value={newSkill}
-                          onChange={(e) => setNewSkill(e.target.value)}
-                          onKeyPress={(e) => e.key === "Enter" && addSkill()}
-                        />
-                        <Button onClick={addSkill}>Add</Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {skills.map((skill, index) => (
-                  <Badge key={index} variant="outline" className="relative group">
-                    {skill}
+            {isEditing || !isEmpty(form.careerProfile?.skills) ? (
+              <>
+                <Separator />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-medium">Skills</h4>
                     {isEditing && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100"
-                        onClick={() => removeSkill(skill)}
-                      >
-                        <X className="h-3 w-3" />
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Add Skill</DialogTitle>
+                            <DialogDescription>
+                              Add a new skill to your profile
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Enter skill name"
+                              value={newSkill}
+                              onChange={(e) => setNewSkill(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addSkill(newSkill);
+                                  setNewSkill("");
+                                }
+                              }}
+                            />
+                            <Button
+                              onClick={() => {
+                                addSkill(newSkill);
+                                setNewSkill("");
+                              }}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     )}
-                  </Badge>
-                ))}
-              </div>
-            </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(form.careerProfile?.skills || []).map((skill, index) => (
+                      <Badge
+                        key={index}
+                        variant="outline"
+                        className="relative group"
+                      >
+                        {skill}
+                        {isEditing && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100"
+                            onClick={() => removeSkill(skill)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        )}
+                      </Badge>
+                    ))}
+                  </div>
+                </div>
+              </>
+            ) : null}
 
-            <Separator />
+            {isEditing || !isEmpty(form.personalProfile?.languages) ? (
+              <>
+                <Separator />
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-sm font-medium">Languages</h4>
+                    {isEditing && (
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                          >
+                            <Plus className="h-4 w-4" />
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Add Language</DialogTitle>
+                            <DialogDescription>
+                              Add a language you speak
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="flex gap-2">
+                            <Input
+                              placeholder="Enter Language"
+                              value={newLanguage}
+                              onChange={(e) => setNewLanguage(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                  e.preventDefault();
+                                  addLanguage(newLanguage);
+                                  setNewLanguage("");
+                                }
+                              }}
+                            />
+                            <Button
+                              onClick={() => {
+                                addLanguage(newLanguage);
+                                setNewLanguage("");
+                              }}
+                            >
+                              Add
+                            </Button>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
+                    )}
+                  </div>
 
-            {/* Languages */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <h4 className="text-sm font-medium">Languages</h4>
-                {isEditing && (
-                  <Button variant="ghost" size="icon" className="h-6 w-6">
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {languages.map((lang, index) => (
-                  <Badge key={index} variant="outline">
-                    {lang.language} ({lang.proficiency})
-                  </Badge>
-                ))}
-              </div>
-            </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(form.personalProfile?.languages || []).map(
+                      (lang, index) => (
+                        <Badge
+                          key={index}
+                          variant="outline"
+                          className="relative group"
+                        >
+                          {lang}
+                          {isEditing && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100"
+                              onClick={() => removeLanguage(lang)}
+                            >
+                              <X className="h-3 w-3" />
+                            </Button>
+                          )}
+                        </Badge>
+                      )
+                    )}
+                  </div>
+                </div>
+              </>
+            ) : null}
           </CardContent>
         </Card>
-
-        {/* Main Content */}
         <div className="space-y-6 md:col-span-5">
           <Tabs defaultValue="about">
             <TabsList className="grid w-full grid-cols-4">
@@ -484,9 +519,7 @@ export function StudentProfile() {
               <TabsTrigger value="resume">Resume</TabsTrigger>
             </TabsList>
 
-            {/* About Tab */}
             <TabsContent value="about" className="space-y-6 mt-6">
-              {/* About Me */}
               <Card>
                 <CardHeader>
                   <CardTitle>About Me</CardTitle>
@@ -495,12 +528,23 @@ export function StudentProfile() {
                   {isEditing ? (
                     <Textarea
                       className="min-h-[150px]"
-                      value={editData.aboutMe}
-                      onChange={(e) => setEditData({ ...editData, aboutMe: e.target.value })}
+                      value={form.personalProfile?.aboutMe || ""}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          personalProfile: {
+                            ...prev.personalProfile,
+                            aboutMe: e.target.value,
+                          },
+                        }))
+                      }
                       placeholder="Tell us about yourself, your interests, and career goals..."
                     />
                   ) : (
-                    <p className="text-muted-foreground">{profileData.aboutMe}</p>
+                    <p className="text-muted-foreground">
+                      {form.personalProfile?.aboutMe ||
+                        "No description provided."}
+                    </p>
                   )}
                 </CardContent>
               </Card>
@@ -514,15 +558,19 @@ export function StudentProfile() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {projects.map((project) => (
-                    <ProjectCard
-                      key={project.id}
-                      project={project}
-                      isEditing={isEditing}
-                      onUpdate={(updatedProject) => updateProject(project.id, updatedProject)}
-                      onDelete={() => deleteProject(project.id)}
-                    />
-                  ))}
+                  {(form.careerProfile?.projects || []).map(
+                    (project, index) => (
+                      <ProjectCard
+                        key={index}
+                        project={project}
+                        isEditing={isEditing}
+                        onUpdate={(updatedProject) =>
+                          updateProject(index, updatedProject)
+                        }
+                        onDelete={() => deleteProject(index)}
+                      />
+                    )
+                  )}
                 </CardContent>
               </Card>
 
@@ -531,24 +579,56 @@ export function StudentProfile() {
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle>Certifications</CardTitle>
-                    {isEditing && <CertificationDialog onAdd={addCertification} />}
+                    {isEditing && (
+                      <CertificationDialog onAdd={addCertification} />
+                    )}
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {certifications.map((cert) => (
-                    <CertificationCard
-                      key={cert.id}
-                      certification={cert}
-                      isEditing={isEditing}
-                      onUpdate={(updatedCert) => updateCertification(cert.id, updatedCert)}
-                      onDelete={() => deleteCertification(cert.id)}
-                    />
-                  ))}
+                  {(form.careerProfile?.certifications || []).map(
+                    (cert, index) => (
+                      <CertificationCard
+                        key={index}
+                        certification={cert}
+                        isEditing={isEditing}
+                        onUpdate={(updatedCert) =>
+                          updateCertification(index, updatedCert)
+                        }
+                        onDelete={() => deleteCertification(index)}
+                      />
+                    )
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Additional Links */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Additional Links</CardTitle>
+                    {isEditing && (
+                      <AdditionalLinkDialog onAdd={addAdditionalLink} />
+                    )}
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {(form.careerProfile?.additionalLinks || []).map(
+                    (link, index) => (
+                      <AdditionalLinkCard
+                        key={index}
+                        link={link}
+                        isEditing={isEditing}
+                        onUpdate={(updatedLink) =>
+                          updateAdditionalLink(index, updatedLink)
+                        }
+                        onDelete={() => deleteAdditionalLink(index)}
+                      />
+                    )
+                  )}
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* Education Tab */}
             <TabsContent value="education" className="space-y-6 mt-6">
               <Card>
                 <CardHeader>
@@ -558,20 +638,21 @@ export function StudentProfile() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {education.map((edu) => (
+                  {(form.education || []).map((edu, index) => (
                     <EducationCard
-                      key={edu.id}
+                      key={index}
                       education={edu}
                       isEditing={isEditing}
-                      onUpdate={(updatedEdu) => updateEducation(edu.id, updatedEdu)}
-                      onDelete={() => deleteEducation(edu.id)}
+                      onUpdate={(updatedEdu) =>
+                        updateEducation(index, updatedEdu)
+                      }
+                      onDelete={() => deleteEducation(index)}
                     />
                   ))}
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* Experience Tab */}
             <TabsContent value="experience" className="space-y-6 mt-6">
               <Card>
                 <CardHeader>
@@ -581,104 +662,296 @@ export function StudentProfile() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {experience.map((exp) => (
+                  {(form.careerProfile?.experience || []).map((exp, index) => (
                     <ExperienceCard
-                      key={exp.id}
+                      key={index}
                       experience={exp}
                       isEditing={isEditing}
-                      onUpdate={(updatedExp) => updateExperience(exp.id, updatedExp)}
-                      onDelete={() => deleteExperience(exp.id)}
+                      onUpdate={(updatedExp) =>
+                        updateExperience(index, updatedExp)
+                      }
+                      onDelete={() => deleteExperience(index)}
                     />
                   ))}
                 </CardContent>
               </Card>
             </TabsContent>
 
-            {/* Resume Tab */}
             <TabsContent value="resume" className="space-y-6 mt-6">
               <Card>
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle>Resume</CardTitle>
                     <div className="flex items-center gap-2">
-                      <Button variant="outline" size="sm">
-                        <FileText className="mr-2 h-4 w-4" />
-                        Download PDF
-                      </Button>
-                      <Button size="sm">
-                        <Upload className="mr-2 h-4 w-4" />
-                        Upload Resume
-                      </Button>
+                      {isEditing ? (
+                        <div className="flex">
+                          <Label htmlFor="resumeLink">External resume</Label>
+                          <Input
+                            id="resumeLink"
+                            value={form.resumeLink || ""}
+                            onChange={(e) =>
+                              setForm({ ...form, resumeLink: e.target.value })
+                            }
+                            placeholder="Ex: https:drive.google.com/prasad924/resume"
+                          />
+                        </div>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className={"cursor-pointer"}
+                          onClick={() =>
+                            window.open(form.resumeLink || "#", "_blank")
+                          }
+                        >
+                          <FileText className="mr-2 h-4 w-4" />
+                          Show External Resume
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </CardHeader>
+
                 <CardContent>
                   <div className="rounded-lg border p-4 bg-muted/50">
-                    <div className="aspect-[1/1.414] w-full max-w-md mx-auto bg-background rounded-md shadow-sm p-8 flex flex-col">
-                      <div className="text-center mb-6">
-                        <h2 className="text-xl font-bold">{profileData.name}</h2>
-                        <p className="text-sm text-muted-foreground">{profileData.degree} Student</p>
-                        <div className="flex justify-center gap-2 mt-2 text-xs text-muted-foreground">
-                          <span>{profileData.email}</span>
-                          <span>•</span>
-                          <span>{profileData.phone}</span>
+                    <div
+                      className={`aspect-[1/1.414] w-full max-w-2xl mx-auto bg-white rounded-md shadow-sm p-8 text-black flex flex-col`}
+                      style={{ fontFamily: "sans-serif" }}
+                    >
+                      <div className="text-center mb-6 border-b-2 border-gray-800 pb-4">
+                        <h1 className="text-2xl font-bold uppercase tracking-wider mb-2">
+                          {form.name || "Your Name"}
+                        </h1>
+                        <div className="flex justify-center items-center gap-4 text-sm text-gray-700 flex-wrap">
+                          {form.personalProfile?.phoneNumber && (
+                            <div className="flex items-center gap-1">
+                              <Phone className="h-3 w-3" />
+                              <span>{form.personalProfile.phoneNumber}</span>
+                            </div>
+                          )}
+                          {form.email && (
+                            <div className="flex items-center gap-1">
+                              <Mail className="h-3 w-3" />
+                              <span>{form.email}</span>
+                            </div>
+                          )}
+                          {form.personalProfile?.address && (
+                            <div className="flex items-center gap-1">
+                              <MapPin className="h-3 w-3" />
+                              <span>{form.personalProfile?.address}</span>
+                            </div>
+                          )}
+                          {form.careerProfile?.additionalLinks?.map(
+                            (link, index) => (
+                              <div
+                                key={index}
+                                className="flex items-center gap-1"
+                              >
+                                {link.linkName
+                                  ?.toLowerCase()
+                                  .includes("linkedin") ? (
+                                  <Linkedin className="h-3 w-3" />
+                                ) : link.linkName
+                                    ?.toLowerCase()
+                                    .includes("github") ? (
+                                  <Github className="h-3 w-3" />
+                                ) : (
+                                  <ExternalLink className="h-3 w-3" />
+                                )}
+                                <Link target="_blank" href={link.linkUrl}>
+                                  {link.linkUrl}
+                                </Link>
+                              </div>
+                            )
+                          )}
                         </div>
                       </div>
 
-                      <div className="space-y-4 flex-1">
-                        <div>
-                          <h3 className="text-sm font-bold border-b pb-1">EDUCATION</h3>
-                          {education.slice(0, 2).map((edu, index) => (
-                            <div key={index} className="mt-2">
-                              <div className="flex justify-between text-xs">
-                                <p className="font-medium">{edu.degree}</p>
-                                <p>
-                                  {edu.startYear} - {edu.endYear}
-                                </p>
+                      <div className="space-y-5 flex-1">
+                        {form.personalProfile?.aboutMe && (
+                          <div>
+                            <h2 className="text-sm font-bold uppercase tracking-wider border-b border-gray-400 pb-1 mb-2">
+                              Summary
+                            </h2>
+                            <p className="text-xs leading-relaxed text-justify">
+                              {form.personalProfile.aboutMe}
+                            </p>
+                          </div>
+                        )}
+
+                        {form.education && form.education.length > 0 && (
+                          <div>
+                            <h2 className="text-sm font-bold uppercase tracking-wider border-b border-gray-400 pb-1 mb-2">
+                              Education
+                            </h2>
+                            {form.education.slice(0, 2).map((edu, index) => (
+                              <div key={index} className="mb-3">
+                                <div className="flex justify-between items-start">
+                                  <div className="flex-1">
+                                    <h3 className="text-xs font-bold">
+                                      {edu.school || "Institution"}
+                                    </h3>
+                                    <p className="text-xs italic text-gray-600">
+                                      {edu.degree || "Degree"}{" "}
+                                      {edu.grade && `(GPA: ${edu.grade})`}
+                                    </p>
+                                  </div>
+                                  <div className="text-xs text-right">
+                                    <p className="font-medium">
+                                      {edu.startYear || "Year"} -{" "}
+                                      {edu.endYear || "Year"}
+                                    </p>
+                                    <p className="text-gray-600">
+                                      {edu.location || ""}
+                                    </p>
+                                  </div>
+                                </div>
+                                {edu.courseWork && (
+                                  <div className="mt-1">
+                                    <p className="text-xs">
+                                      <span className="font-medium">
+                                        Relevant coursework:
+                                      </span>{" "}
+                                      {edu.courseWork}
+                                    </p>
+                                  </div>
+                                )}
                               </div>
-                              <p className="text-xs">
-                                {edu.university} | {edu.grade}
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm font-bold border-b pb-1">EXPERIENCE</h3>
-                          {experience.slice(0, 2).map((exp, index) => (
-                            <div key={index} className="mt-2">
-                              <div className="flex justify-between text-xs">
-                                <p className="font-medium">{exp.title}</p>
-                                <p>
-                                  {exp.startDate} - {exp.endDate}
-                                </p>
-                              </div>
-                              <p className="text-xs">{exp.company}</p>
-                              <p className="text-xs mt-1">{exp.description.substring(0, 100)}...</p>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm font-bold border-b pb-1">PROJECTS</h3>
-                          {projects.slice(0, 2).map((project, index) => (
-                            <div key={index} className="mt-2">
-                              <p className="text-xs font-medium">{project.name}</p>
-                              <p className="text-xs mt-1">{project.description.substring(0, 80)}...</p>
-                            </div>
-                          ))}
-                        </div>
-
-                        <div>
-                          <h3 className="text-sm font-bold border-b pb-1">SKILLS</h3>
-                          <div className="mt-2 flex flex-wrap gap-1 text-xs">
-                            {skills.slice(0, 6).map((skill, index) => (
-                              <Badge key={index} variant="outline" className="text-xs">
-                                {skill}
-                              </Badge>
                             ))}
                           </div>
-                        </div>
+                        )}
+
+                        {form.careerProfile?.projects &&
+                          form.careerProfile.projects.length > 0 && (
+                            <div>
+                              <h2 className="text-sm font-bold uppercase tracking-wider border-b border-gray-400 pb-1 mb-2">
+                                Projects
+                              </h2>
+                              {form.careerProfile.projects
+                                .slice(0, 3)
+                                .map((project, index) => (
+                                  <div key={index} className="mb-3">
+                                    <div className="flex justify-between items-start mb-1">
+                                      <div className="flex items-center gap-2">
+                                        <h3 className="text-xs font-bold">
+                                          {project.title || "Project Title"}
+                                        </h3>
+                                        {project.projectLink && (
+                                          <ExternalLink className="h-3 w-3 text-blue-600" />
+                                        )}
+                                      </div>
+                                      <div className="text-xs text-gray-600">
+                                        {project.technologies &&
+                                          project.technologies.length > 0 && (
+                                            <span className="italic">
+                                              {project.technologies
+                                                .slice(0, 3)
+                                                .join(", ")}
+                                            </span>
+                                          )}
+                                      </div>
+                                    </div>
+                                    {project.description && (
+                                      <div className="text-xs space-y-1">
+                                        {project.description
+                                          .split(".")
+                                          .filter((sentence) => sentence.trim())
+                                          .slice(0, 3)
+                                          .map((sentence, idx) => (
+                                            <p
+                                              key={idx}
+                                              className="flex items-start"
+                                            >
+                                              <span className="mr-2">•</span>
+                                              <span>{sentence.trim()}.</span>
+                                            </p>
+                                          ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                            </div>
+                          )}
+
+                        {form.careerProfile?.experience &&
+                          form.careerProfile.experience.length > 0 && (
+                            <div>
+                              <h2 className="text-sm font-bold uppercase tracking-wider border-b border-gray-400 pb-1 mb-2">
+                                Experience
+                              </h2>
+                              {form.careerProfile.experience
+                                .slice(0, 2)
+                                .map((exp, index) => (
+                                  <div key={index} className="mb-3">
+                                    <div className="flex justify-between items-start mb-1">
+                                      <div>
+                                        <h3 className="text-xs font-bold">
+                                          {exp.title || "Job Title"}
+                                        </h3>
+                                        <p className="text-xs italic text-gray-600">
+                                          {exp.company || "Company"}
+                                        </p>
+                                      </div>
+                                      <div className="text-xs text-right">
+                                        <p className="font-medium">
+                                          {exp.startDate || "Start"} -{" "}
+                                          {exp.endDate || "End"}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    {exp.description && (
+                                      <div className="text-xs space-y-1">
+                                        {exp.description
+                                          .split(".")
+                                          .filter((sentence) => sentence.trim())
+                                          .slice(0, 3)
+                                          .map((sentence, idx) => (
+                                            <p
+                                              key={idx}
+                                              className="flex items-start"
+                                            >
+                                              <span className="mr-2">•</span>
+                                              <span>{sentence.trim()}.</span>
+                                            </p>
+                                          ))}
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                            </div>
+                          )}
+
+                        {form.careerProfile?.skills &&
+                          form.careerProfile.skills.length > 0 && (
+                            <div>
+                              <h2 className="text-sm font-bold uppercase tracking-wider border-b border-gray-400 pb-1 mb-2">
+                                Skills
+                              </h2>
+                              <div className="space-y-1">
+                                <div>
+                                  <span className="text-xs font-medium">
+                                    Technologies and Frameworks:{" "}
+                                  </span>
+                                  <span className="text-xs">
+                                    {form.careerProfile.skills.join(", ")}
+                                  </span>
+                                </div>
+                                {form.personalProfile?.languages &&
+                                  form.personalProfile.languages.length > 0 && (
+                                    <div>
+                                      <span className="text-xs font-medium">
+                                        Languages:{" "}
+                                      </span>
+                                      <span className="text-xs">
+                                        {form.personalProfile.languages.join(
+                                          ", "
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
+                              </div>
+                            </div>
+                          )}
                       </div>
                     </div>
                   </div>
@@ -689,26 +962,37 @@ export function StudentProfile() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-// Project Card Component
 function ProjectCard({ project, isEditing, onUpdate, onDelete }) {
   return (
     <div className="rounded-lg border p-4">
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <h4 className="font-medium">{project.name}</h4>
-          <p className="mt-1 text-sm text-muted-foreground">{project.description}</p>
+          <h4 className="font-medium">{project.title || "Untitled Project"}</h4>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {project.description || "No description"}
+          </p>
+          {project.projectStatus && (
+            <p className="text-sm text-muted-foreground">
+              Status: {project.projectStatus}
+            </p>
+          )}
           <div className="mt-2 flex flex-wrap gap-2">
-            {project.technologies.map((tech, index) => (
+            {(project.technologies || []).map((tech, index) => (
               <Badge key={index} variant="outline">
                 {tech}
               </Badge>
             ))}
           </div>
-          {project.link && (
-            <a href={project.link} className="text-sm text-blue-600 hover:underline mt-2 block">
+          {project.projectLink && (
+            <a
+              href={project.projectLink}
+              className="text-sm text-blue-600 hover:underline mt-2 block"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               View Project →
             </a>
           )}
@@ -723,55 +1007,64 @@ function ProjectCard({ project, isEditing, onUpdate, onDelete }) {
         )}
       </div>
     </div>
-  )
+  );
 }
 
-// Project Dialog Component
 function ProjectDialog({ project, onAdd, onUpdate }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(
     project || {
-      name: "",
+      title: "",
       description: "",
+      projectStatus: "",
+      projectLink: "",
       technologies: [],
-      link: "",
-    },
-  )
-  const [newTech, setNewTech] = useState("")
+    }
+  );
+  const [newTech, setNewTech] = useState("");
 
   const handleSubmit = () => {
     if (project) {
-      onUpdate(formData)
+      onUpdate(formData);
     } else {
-      onAdd(formData)
+      onAdd(formData);
     }
-    setOpen(false)
+    setOpen(false);
     if (!project) {
-      setFormData({ name: "", description: "", technologies: [], link: "" })
+      setFormData({
+        title: "",
+        description: "",
+        projectStatus: "",
+        projectLink: "",
+        technologies: [],
+      });
     }
-  }
+  };
 
   const addTechnology = () => {
     if (newTech.trim() && !formData.technologies.includes(newTech.trim())) {
       setFormData({
         ...formData,
         technologies: [...formData.technologies, newTech.trim()],
-      })
-      setNewTech("")
+      });
+      setNewTech("");
     }
-  }
+  };
 
   const removeTechnology = (tech) => {
     setFormData({
       ...formData,
       technologies: formData.technologies.filter((t) => t !== tech),
-    })
-  }
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={project ? "ghost" : "outline"} size={project ? "icon" : "sm"}>
+        <Button
+          variant={project ? "ghost" : "outline"}
+          size={project ? "icon" : "sm"}
+        >
           {project ? (
             <Edit className="h-4 w-4" />
           ) : (
@@ -786,45 +1079,60 @@ function ProjectDialog({ project, onAdd, onUpdate }) {
         <DialogHeader>
           <DialogTitle>{project ? "Edit Project" : "Add Project"}</DialogTitle>
           <DialogDescription>
-            {project ? "Update your project details" : "Add a new project to your profile"}
+            {project
+              ? "Update your project details"
+              : "Add a new project to your profile"}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label htmlFor="name">Project Name</Label>
+            <Label htmlFor="title">Project Title</Label>
             <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              placeholder="Enter project name"
+              id="title"
+              value={formData.title || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
+              placeholder="Enter project title"
             />
           </div>
           <div>
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              value={formData.description || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               placeholder="Describe your project"
               rows={3}
             />
           </div>
           <div>
             <Label htmlFor="status">Status</Label>
-            <div className="flex">
-            <Input type="radio" id="In-Progress" name="status" value="In-Progress"/>
-            <Label for="In-Progress">In-Progress</Label>
-            <Input type="radio" id="Finished" name="status" value="Finished"/>
-            <Label for="Finished">Finished</Label>
-            </div>
+            <select
+              id="status"
+              value={formData.projectStatus || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, projectStatus: e.target.value })
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">Select Status</option>
+              <option value="In-Progress">In Progress</option>
+              <option value="Completed">Completed</option>
+              <option value="On-Hold">On Hold</option>
+            </select>
           </div>
 
           <div>
             <Label htmlFor="link">Project Link (Optional)</Label>
             <Input
               id="link"
-              value={formData.link}
-              onChange={(e) => setFormData({ ...formData, link: e.target.value })}
+              value={formData.projectLink || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, projectLink: e.target.value })
+              }
               placeholder="https://github.com/username/project"
             />
           </div>
@@ -845,7 +1153,12 @@ function ProjectDialog({ project, onAdd, onUpdate }) {
               {formData.technologies.map((tech, index) => (
                 <Badge key={index} variant="outline" className="relative group">
                   {tech}
-                  <Button variant="ghost" size="icon" className="h-4 w-4 ml-1" onClick={() => removeTechnology(tech)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 ml-1"
+                    onClick={() => removeTechnology(tech)}
+                  >
                     <X className="h-3 w-3" />
                   </Button>
                 </Badge>
@@ -858,27 +1171,32 @@ function ProjectDialog({ project, onAdd, onUpdate }) {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
-// Similar components for Education, Experience, and Certification
 function EducationCard({ education, isEditing, onUpdate, onDelete }) {
   return (
     <div className="rounded-lg border p-4">
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <h4 className="font-medium">{education.degree}</h4>
-          <p className="text-sm text-muted-foreground">{education.university}</p>
           <div className="mt-2 flex items-center justify-between">
-            <p className="text-sm">
-              {education.startYear} - {education.endYear}
-            </p>
-            <Badge>{education.grade}</Badge>
+            <h4 className="font-medium">{education.degree || "Degree"}</h4>
+            <Badge>{education.grade || "Grade"} CGPA</Badge>
           </div>
-          {education.coursework && (
+          <div className="mt-2 flex items-center justify-between">
+            <p className="text-sm text-muted-foreground">
+              {education.school || "School"}, {education.location || ""}
+            </p>
+            <p className="text-sm">
+              {education.startYear || "Start"} - {education.endYear || "End"}
+            </p>
+          </div>
+          {education.courseWork && (
             <div className="mt-2">
-              <h5 className="text-sm font-medium">Relevant Coursework:</h5>
-              <p className="text-sm text-muted-foreground">{education.coursework}</p>
+              <h5 className="text-sm font-medium">Relevant coursework:</h5>
+              <p className="text-sm text-muted-foreground">
+                {education.courseWork}
+              </p>
             </div>
           )}
         </div>
@@ -892,38 +1210,50 @@ function EducationCard({ education, isEditing, onUpdate, onDelete }) {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 function EducationDialog({ education, onAdd, onUpdate }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(
     education || {
       degree: "",
-      university: "",
+      school: "",
       startYear: "",
       endYear: "",
       grade: "",
-      coursework: "",
-    },
-  )
+      courseWork: "",
+      location: "",
+    }
+  );
 
   const handleSubmit = () => {
     if (education) {
-      onUpdate(formData)
+      onUpdate(formData);
     } else {
-      onAdd(formData)
+      onAdd(formData);
     }
-    setOpen(false)
+    setOpen(false);
     if (!education) {
-      setFormData({ degree: "", university: "", startYear: "", endYear: "", grade: "", coursework: "" })
+      setFormData({
+        degree: "",
+        school: "",
+        startYear: "",
+        endYear: "",
+        grade: "",
+        courseWork: "",
+        lcoation: "",
+      });
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={education ? "ghost" : "outline"} size={education ? "icon" : "sm"}>
+        <Button
+          variant={education ? "ghost" : "outline"}
+          size={education ? "icon" : "sm"}
+        >
           {education ? (
             <Edit className="h-4 w-4" />
           ) : (
@@ -936,9 +1266,13 @@ function EducationDialog({ education, onAdd, onUpdate }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{education ? "Edit Education" : "Add Education"}</DialogTitle>
+          <DialogTitle>
+            {education ? "Edit Education" : "Add Education"}
+          </DialogTitle>
           <DialogDescription>
-            {education ? "Update your education details" : "Add education to your profile"}
+            {education
+              ? "Update your education details"
+              : "Add education to your profile"}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
@@ -946,18 +1280,33 @@ function EducationDialog({ education, onAdd, onUpdate }) {
             <Label htmlFor="degree">Degree</Label>
             <Input
               id="degree"
-              value={formData.degree}
-              onChange={(e) => setFormData({ ...formData, degree: e.target.value })}
+              value={formData.degree || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, degree: e.target.value })
+              }
               placeholder="B.Tech in Computer Science"
             />
           </div>
           <div>
-            <Label htmlFor="university">University/School</Label>
+            <Label htmlFor="school">University/School</Label>
             <Input
-              id="university"
-              value={formData.university}
-              onChange={(e) => setFormData({ ...formData, university: e.target.value })}
+              id="school"
+              value={formData.school || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, school: e.target.value })
+              }
               placeholder="University Name"
+            />
+          </div>
+          <div>
+            <Label htmlFor="location">Location</Label>
+            <Input
+              id="location"
+              value={formData.location || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, location: e.target.value })
+              }
+              placeholder="Ex: Hyderabad"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -965,8 +1314,10 @@ function EducationDialog({ education, onAdd, onUpdate }) {
               <Label htmlFor="startYear">Start Year</Label>
               <Input
                 id="startYear"
-                value={formData.startYear}
-                onChange={(e) => setFormData({ ...formData, startYear: e.target.value })}
+                value={formData.startYear || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, startYear: e.target.value })
+                }
                 placeholder="2021"
               />
             </div>
@@ -974,8 +1325,10 @@ function EducationDialog({ education, onAdd, onUpdate }) {
               <Label htmlFor="endYear">End Year</Label>
               <Input
                 id="endYear"
-                value={formData.endYear}
-                onChange={(e) => setFormData({ ...formData, endYear: e.target.value })}
+                value={formData.endYear || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, endYear: e.target.value })
+                }
                 placeholder="2025"
               />
             </div>
@@ -984,17 +1337,21 @@ function EducationDialog({ education, onAdd, onUpdate }) {
             <Label htmlFor="grade">Grade/CGPA</Label>
             <Input
               id="grade"
-              value={formData.grade}
-              onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+              value={formData.grade || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, grade: e.target.value })
+              }
               placeholder="8.5 CGPA or 85%"
             />
           </div>
           <div>
-            <Label htmlFor="coursework">Relevant Coursework (Optional)</Label>
+            <Label htmlFor="courseWork">Relevant coursework (Optional)</Label>
             <Textarea
-              id="coursework"
-              value={formData.coursework}
-              onChange={(e) => setFormData({ ...formData, coursework: e.target.value })}
+              id="courseWork"
+              value={formData.courseWork || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, courseWork: e.target.value })
+              }
               placeholder="List relevant courses"
               rows={2}
             />
@@ -1005,7 +1362,7 @@ function EducationDialog({ education, onAdd, onUpdate }) {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 function ExperienceCard({ experience, isEditing, onUpdate, onDelete }) {
@@ -1013,14 +1370,18 @@ function ExperienceCard({ experience, isEditing, onUpdate, onDelete }) {
     <div className="rounded-lg border p-4">
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <h4 className="font-medium">{experience.title}</h4>
-          <p className="text-sm text-muted-foreground">{experience.company}</p>
-          <p className="mt-1 text-sm">
-            {experience.startDate} - {experience.endDate}
+          <h4 className="font-medium">{experience.title || "Job Title"}</h4>
+          <p className="text-sm text-muted-foreground">
+            {experience.company || "Company"}
           </p>
-          <p className="mt-2 text-sm text-muted-foreground">{experience.description}</p>
+          <p className="mt-1 text-sm">
+            {experience.startDate || "Start"} - {experience.endDate || "End"}
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {experience.description || "No description"}
+          </p>
           <div className="mt-2 flex flex-wrap gap-2">
-            {experience.technologies.map((tech, index) => (
+            {(experience.technologies || []).map((tech, index) => (
               <Badge key={index} variant="outline">
                 {tech}
               </Badge>
@@ -1037,11 +1398,11 @@ function ExperienceCard({ experience, isEditing, onUpdate, onDelete }) {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 function ExperienceDialog({ experience, onAdd, onUpdate }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(
     experience || {
       title: "",
@@ -1050,43 +1411,53 @@ function ExperienceDialog({ experience, onAdd, onUpdate }) {
       endDate: "",
       description: "",
       technologies: [],
-    },
-  )
-  const [newTech, setNewTech] = useState("")
+    }
+  );
+  const [newTech, setNewTech] = useState("");
 
   const handleSubmit = () => {
     if (experience) {
-      onUpdate(formData)
+      onUpdate(formData);
     } else {
-      onAdd(formData)
+      onAdd(formData);
     }
-    setOpen(false)
+    setOpen(false);
     if (!experience) {
-      setFormData({ title: "", company: "", startDate: "", endDate: "", description: "", technologies: [] })
+      setFormData({
+        title: "",
+        company: "",
+        startDate: "",
+        endDate: "",
+        description: "",
+        technologies: [],
+      });
     }
-  }
+  };
 
   const addTechnology = () => {
     if (newTech.trim() && !formData.technologies.includes(newTech.trim())) {
       setFormData({
         ...formData,
         technologies: [...formData.technologies, newTech.trim()],
-      })
-      setNewTech("")
+      });
+      setNewTech("");
     }
-  }
+  };
 
   const removeTechnology = (tech) => {
     setFormData({
       ...formData,
       technologies: formData.technologies.filter((t) => t !== tech),
-    })
-  }
+    });
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={experience ? "ghost" : "outline"} size={experience ? "icon" : "sm"}>
+        <Button
+          variant={experience ? "ghost" : "outline"}
+          size={experience ? "icon" : "sm"}
+        >
           {experience ? (
             <Edit className="h-4 w-4" />
           ) : (
@@ -1099,9 +1470,13 @@ function ExperienceDialog({ experience, onAdd, onUpdate }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{experience ? "Edit Experience" : "Add Experience"}</DialogTitle>
+          <DialogTitle>
+            {experience ? "Edit Experience" : "Add Experience"}
+          </DialogTitle>
           <DialogDescription>
-            {experience ? "Update your experience details" : "Add work experience to your profile"}
+            {experience
+              ? "Update your experience details"
+              : "Add work experience to your profile"}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
@@ -1109,8 +1484,10 @@ function ExperienceDialog({ experience, onAdd, onUpdate }) {
             <Label htmlFor="title">Job Title</Label>
             <Input
               id="title"
-              value={formData.title}
-              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              value={formData.title || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, title: e.target.value })
+              }
               placeholder="Software Developer Intern"
             />
           </div>
@@ -1118,8 +1495,10 @@ function ExperienceDialog({ experience, onAdd, onUpdate }) {
             <Label htmlFor="company">Company</Label>
             <Input
               id="company"
-              value={formData.company}
-              onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+              value={formData.company || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, company: e.target.value })
+              }
               placeholder="Company Name"
             />
           </div>
@@ -1128,8 +1507,10 @@ function ExperienceDialog({ experience, onAdd, onUpdate }) {
               <Label htmlFor="startDate">Start Date</Label>
               <Input
                 id="startDate"
-                value={formData.startDate}
-                onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                value={formData.startDate || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, startDate: e.target.value })
+                }
                 placeholder="May 2024"
               />
             </div>
@@ -1137,8 +1518,10 @@ function ExperienceDialog({ experience, onAdd, onUpdate }) {
               <Label htmlFor="endDate">End Date</Label>
               <Input
                 id="endDate"
-                value={formData.endDate}
-                onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
+                value={formData.endDate || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, endDate: e.target.value })
+                }
                 placeholder="July 2024 or Present"
               />
             </div>
@@ -1147,8 +1530,10 @@ function ExperienceDialog({ experience, onAdd, onUpdate }) {
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              value={formData.description || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               placeholder="Describe your role and achievements"
               rows={3}
             />
@@ -1170,7 +1555,12 @@ function ExperienceDialog({ experience, onAdd, onUpdate }) {
               {formData.technologies.map((tech, index) => (
                 <Badge key={index} variant="outline" className="relative group">
                   {tech}
-                  <Button variant="ghost" size="icon" className="h-4 w-4 ml-1" onClick={() => removeTechnology(tech)}>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-4 w-4 ml-1"
+                    onClick={() => removeTechnology(tech)}
+                  >
                     <X className="h-3 w-3" />
                   </Button>
                 </Badge>
@@ -1183,7 +1573,7 @@ function ExperienceDialog({ experience, onAdd, onUpdate }) {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 function CertificationCard({ certification, isEditing, onUpdate, onDelete }) {
@@ -1191,16 +1581,37 @@ function CertificationCard({ certification, isEditing, onUpdate, onDelete }) {
     <div className="rounded-lg border p-4">
       <div className="flex justify-between items-start">
         <div className="flex-1">
-          <h4 className="font-medium">{certification.name}</h4>
-          <p className="mt-1 text-sm text-muted-foreground">{certification.authority}</p>
-          <p className="text-xs text-muted-foreground">Issued: {certification.date}</p>
+          <h4 className="font-medium">
+            {certification.name || "Certification Name"}
+          </h4>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {certification.provider || "Provider"}
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Issued: {certification.issueDate || "Date"}
+          </p>
           {certification.credentialId && (
-            <p className="text-xs text-muted-foreground">Credential ID: {certification.credentialId}</p>
+            <p className="text-xs text-muted-foreground">
+              Credential ID: {certification.credentialId}
+            </p>
+          )}
+          {certification.credentialLink && (
+            <a
+              href={certification.credentialLink}
+              className="text-xs text-blue-600 hover:underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              View Credential →
+            </a>
           )}
         </div>
         {isEditing && (
           <div className="flex gap-2 ml-4">
-            <CertificationDialog certification={certification} onUpdate={onUpdate} />
+            <CertificationDialog
+              certification={certification}
+              onUpdate={onUpdate}
+            />
             <Button variant="ghost" size="icon" onClick={onDelete}>
               <X className="h-4 w-4" />
             </Button>
@@ -1208,36 +1619,46 @@ function CertificationCard({ certification, isEditing, onUpdate, onDelete }) {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 function CertificationDialog({ certification, onAdd, onUpdate }) {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(
     certification || {
       name: "",
-      authority: "",
-      date: "",
+      provider: "",
+      issueDate: "",
       credentialId: "",
-    },
-  )
+      credentialLink: "",
+    }
+  );
 
   const handleSubmit = () => {
     if (certification) {
-      onUpdate(formData)
+      onUpdate(formData);
     } else {
-      onAdd(formData)
+      onAdd(formData);
     }
-    setOpen(false)
+    setOpen(false);
     if (!certification) {
-      setFormData({ name: "", authority: "", date: "", credentialId: "" })
+      setFormData({
+        name: "",
+        provider: "",
+        issueDate: "",
+        credentialId: "",
+        credentialLink: "",
+      });
     }
-  }
+  };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={certification ? "ghost" : "outline"} size={certification ? "icon" : "sm"}>
+        <Button
+          variant={certification ? "ghost" : "outline"}
+          size={certification ? "icon" : "sm"}
+        >
           {certification ? (
             <Edit className="h-4 w-4" />
           ) : (
@@ -1250,9 +1671,13 @@ function CertificationDialog({ certification, onAdd, onUpdate }) {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
-          <DialogTitle>{certification ? "Edit Certification" : "Add Certification"}</DialogTitle>
+          <DialogTitle>
+            {certification ? "Edit Certification" : "Add Certification"}
+          </DialogTitle>
           <DialogDescription>
-            {certification ? "Update your certification details" : "Add a certification to your profile"}
+            {certification
+              ? "Update your certification details"
+              : "Add a certification to your profile"}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
@@ -1260,26 +1685,32 @@ function CertificationDialog({ certification, onAdd, onUpdate }) {
             <Label htmlFor="name">Certification Name</Label>
             <Input
               id="name"
-              value={formData.name}
-              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              value={formData.name || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, name: e.target.value })
+              }
               placeholder="AWS Certified Developer"
             />
           </div>
           <div>
-            <Label htmlFor="authority">Issuing Authority</Label>
+            <Label htmlFor="provider">Issuing Authority</Label>
             <Input
-              id="authority"
-              value={formData.authority}
-              onChange={(e) => setFormData({ ...formData, authority: e.target.value })}
+              id="provider"
+              value={formData.provider || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, provider: e.target.value })
+              }
               placeholder="Amazon Web Services"
             />
           </div>
           <div>
-            <Label htmlFor="date">Issue Date</Label>
+            <Label htmlFor="issueDate">Issue Date</Label>
             <Input
-              id="date"
-              value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              id="issueDate"
+              value={formData.issueDate || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, issueDate: e.target.value })
+              }
               placeholder="January 2025"
             />
           </div>
@@ -1287,18 +1718,22 @@ function CertificationDialog({ certification, onAdd, onUpdate }) {
             <Label htmlFor="credentialId">Credential ID (Optional)</Label>
             <Input
               id="credentialId"
-              value={formData.credentialId}
-              onChange={(e) => setFormData({ ...formData, credentialId: e.target.value })}
+              value={formData.credentialId || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, credentialId: e.target.value })
+              }
               placeholder="AWS-DEV-2025-001"
             />
           </div>
-          <div className="space-y-1">
+          <div>
             <Label htmlFor="credentialLink">Credential Link (Optional)</Label>
             <Input
               id="credentialLink"
-              value={formData.credentialLink}
-              onChange={(e) => setFormData({ ...formData, credentialLink: e.target.value })}
-              placeholder="https://prasad924.in/springboot"
+              value={formData.credentialLink || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, credentialLink: e.target.value })
+              }
+              placeholder="https://example.com/credential"
             />
           </div>
           <Button onClick={handleSubmit} className="w-full">
@@ -1307,5 +1742,119 @@ function CertificationDialog({ certification, onAdd, onUpdate }) {
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
+}
+
+function AdditionalLinkCard({ link, isEditing, onUpdate, onDelete }) {
+  return (
+    <div className="rounded-lg border p-4">
+      <div className="flex justify-between items-start">
+        <div className="flex-1">
+          <h4 className="font-medium">{link.linkName || "Link Name"}</h4>
+          {link.linkUrl && (
+            <a
+              href={link.linkUrl}
+              className="text-sm text-blue-600 hover:underline mt-1 block"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {link.linkUrl} →
+            </a>
+          )}
+        </div>
+        {isEditing && (
+          <div className="flex gap-2 ml-4">
+            <AdditionalLinkDialog link={link} onUpdate={onUpdate} />
+            <Button variant="ghost" size="icon" onClick={onDelete}>
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function AdditionalLinkDialog({ link, onAdd, onUpdate }) {
+  const [open, setOpen] = useState(false);
+  const [formData, setFormData] = useState(
+    link || {
+      linkName: "",
+      linkUrl: "",
+    }
+  );
+
+  const handleSubmit = () => {
+    if (link) {
+      onUpdate(formData);
+    } else {
+      onAdd(formData);
+    }
+    setOpen(false);
+    if (!link) {
+      setFormData({
+        linkName: "",
+        linkUrl: "",
+      });
+    }
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          variant={link ? "ghost" : "outline"}
+          size={link ? "icon" : "sm"}
+        >
+          {link ? (
+            <Edit className="h-4 w-4" />
+          ) : (
+            <>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Link
+            </>
+          )}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>
+            {link ? "Edit Link" : "Add Additional Link"}
+          </DialogTitle>
+          <DialogDescription>
+            {link
+              ? "Update your link details"
+              : "Add an additional link to your profile"}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div>
+            <Label htmlFor="linkName">Link Name</Label>
+            <Input
+              id="linkName"
+              value={formData.linkName || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, linkName: e.target.value })
+              }
+              placeholder="Portfolio, LinkedIn, GitHub, etc."
+            />
+          </div>
+          <div>
+            <Label htmlFor="linkUrl">Link URL</Label>
+            <Input
+              id="linkUrl"
+              value={formData.linkUrl || ""}
+              onChange={(e) =>
+                setFormData({ ...formData, linkUrl: e.target.value })
+              }
+              placeholder="https://example.com"
+            />
+          </div>
+          <Button onClick={handleSubmit} className="w-full">
+            {link ? "Update Link" : "Add Link"}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
 }

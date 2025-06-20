@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
+import { useState } from "react";
+import Link from "next/link";
 import {
   Award,
   Briefcase,
@@ -23,14 +23,22 @@ import {
   BookmarkCheck,
   TrendingUp,
   Zap,
-} from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Separator } from "@/components/ui/separator"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { toast } from "sonner"
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
+import Image from "next/image";
 
 // Comprehensive company data
 const COMPANY_DATA = {
@@ -125,7 +133,8 @@ const COMPANY_DATA = {
         deadline: "May 15, 2025",
         postedDate: "April 1, 2025",
         applicants: 245,
-        description: "Join our dynamic engineering team to build next-generation software solutions...",
+        description:
+          "Join our dynamic engineering team to build next-generation software solutions...",
         requirements: [
           "B.Tech/BE in Computer Science with CGPA ≥ 7.5",
           "Strong programming skills in Java/Python/JavaScript",
@@ -146,14 +155,22 @@ const COMPANY_DATA = {
         deadline: "May 20, 2025",
         postedDate: "April 3, 2025",
         applicants: 189,
-        description: "Create engaging and responsive user interfaces for our web applications...",
+        description:
+          "Create engaging and responsive user interfaces for our web applications...",
         requirements: [
           "B.Tech/BE in any field with strong frontend skills",
           "Proficiency in HTML, CSS, JavaScript",
           "Experience with React/Angular/Vue.js",
           "Knowledge of responsive design principles",
         ],
-        skills: ["HTML", "CSS", "JavaScript", "React", "TypeScript", "Tailwind CSS"],
+        skills: [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "React",
+          "TypeScript",
+          "Tailwind CSS",
+        ],
       },
       {
         id: "job-003",
@@ -167,14 +184,22 @@ const COMPANY_DATA = {
         deadline: "May 25, 2025",
         postedDate: "April 5, 2025",
         applicants: 156,
-        description: "Analyze complex datasets to derive actionable insights for business decisions...",
+        description:
+          "Analyze complex datasets to derive actionable insights for business decisions...",
         requirements: [
           "M.Tech/MS in Computer Science/Statistics/Mathematics",
           "Strong knowledge of machine learning algorithms",
           "Proficiency in Python and data science libraries",
           "Experience with big data technologies",
         ],
-        skills: ["Python", "R", "SQL", "Machine Learning", "TensorFlow", "Pandas"],
+        skills: [
+          "Python",
+          "R",
+          "SQL",
+          "Machine Learning",
+          "TensorFlow",
+          "Pandas",
+        ],
       },
     ],
     reviews: [
@@ -192,7 +217,10 @@ const COMPANY_DATA = {
           "Good work-life balance",
           "Competitive compensation",
         ],
-        cons: ["Sometimes high pressure during product launches", "Limited parking space"],
+        cons: [
+          "Sometimes high pressure during product launches",
+          "Limited parking space",
+        ],
         helpful: 24,
         department: "Engineering",
         experience: "2 years",
@@ -205,8 +233,16 @@ const COMPANY_DATA = {
         title: "Innovative and dynamic workplace",
         content:
           "The company has a strong focus on innovation and provides excellent opportunities to work on cutting-edge projects. The leadership is approachable and values employee feedback.",
-        pros: ["Innovative projects", "Approachable leadership", "Good benefits package", "Modern office facilities"],
-        cons: ["Fast-paced environment can be stressful", "Occasional long hours during deadlines"],
+        pros: [
+          "Innovative projects",
+          "Approachable leadership",
+          "Good benefits package",
+          "Modern office facilities",
+        ],
+        cons: [
+          "Fast-paced environment can be stressful",
+          "Occasional long hours during deadlines",
+        ],
         helpful: 18,
         department: "Product",
         experience: "3 years",
@@ -225,7 +261,10 @@ const COMPANY_DATA = {
           "Skilled team members",
           "Good learning curve",
         ],
-        cons: ["Could improve cross-team collaboration", "Meeting-heavy culture"],
+        cons: [
+          "Could improve cross-team collaboration",
+          "Meeting-heavy culture",
+        ],
         helpful: 31,
         department: "Data Science",
         experience: "1.5 years",
@@ -304,7 +343,8 @@ const COMPANY_DATA = {
     contactInfo: {
       email: "campus.recruitment@techcorp.com",
       phone: "+91 98765 43210",
-      address: "TechCorp Campus, 123 Tech Park, Electronic City, Bangalore - 560100",
+      address:
+        "TechCorp Campus, 123 Tech Park, Electronic City, Bangalore - 560100",
       recruiter: {
         name: "Priya Sharma",
         designation: "Campus Recruitment Manager",
@@ -313,23 +353,25 @@ const COMPANY_DATA = {
       },
     },
   },
-}
+};
 
 export function StudentCompanyProfile({ companyId }) {
-  const [activeTab, setActiveTab] = useState("overview")
-  const [isFollowing, setIsFollowing] = useState(false)
-  const [isBookmarked, setIsBookmarked] = useState(false)
+  const [activeTab, setActiveTab] = useState("overview");
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   // Get company data based on ID
-  const company = COMPANY_DATA[companyId] || COMPANY_DATA.techcorp
+  const company = COMPANY_DATA[companyId] || COMPANY_DATA.techcorp;
 
   const handleFollow = () => {
-    setIsFollowing(!isFollowing)
+    setIsFollowing(!isFollowing);
     toast({
       title: isFollowing ? "Unfollowed" : "Following",
-      description: `You are now ${isFollowing ? "not following" : "following"} ${company.name}`,
-    })
-  }
+      description: `You are now ${
+        isFollowing ? "not following" : "following"
+      } ${company.name}`,
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -344,17 +386,25 @@ export function StudentCompanyProfile({ companyId }) {
       {/* Cover Image and Company Info */}
       <div className="relative">
         <div className="h-48 w-full rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 overflow-hidden md:h-64">
-          <img
+          <Image
             src={company.coverImage || "/placeholder.svg"}
             alt={`${company.name} cover`}
-            className="h-full w-full object-cover opacity-80"
+            width={0}
+            height={0}
+            sizes="100vw"
+            className="w-full h-full object-cover opacity-80"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
         </div>
         <div className="absolute -bottom-16 left-4 flex items-end md:left-8">
           <Avatar className="h-24 w-24 border-4 border-background md:h-32 md:w-32">
-            <AvatarImage src={company.logo || "/placeholder.svg"} alt={company.name} />
-            <AvatarFallback className="text-2xl font-bold">{company.name.substring(0, 2)}</AvatarFallback>
+            <AvatarImage
+              src={company.logo || "/placeholder.svg"}
+              alt={company.name}
+            />
+            <AvatarFallback className="text-2xl font-bold">
+              {company.name.substring(0, 2)}
+            </AvatarFallback>
           </Avatar>
         </div>
       </div>
@@ -364,12 +414,17 @@ export function StudentCompanyProfile({ companyId }) {
         <div className="flex-1">
           <div className="flex items-center gap-3 mb-2">
             <h1 className="text-3xl font-bold">{company.name}</h1>
-            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+            <Badge
+              variant="outline"
+              className="bg-green-50 text-green-700 border-green-200"
+            >
               <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
               Actively Hiring
             </Badge>
           </div>
-          <p className="text-lg text-muted-foreground mb-3">{company.tagline}</p>
+          <p className="text-lg text-muted-foreground mb-3">
+            {company.tagline}
+          </p>
 
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
             <div className="flex items-center">
@@ -399,19 +454,27 @@ export function StudentCompanyProfile({ companyId }) {
           {/* Quick Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div className="text-center p-3 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{company.stats.activeJobs}</div>
+              <div className="text-2xl font-bold text-blue-600">
+                {company.stats.activeJobs}
+              </div>
               <div className="text-xs text-blue-600">Active Jobs</div>
             </div>
             <div className="text-center p-3 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{company.stats.hiringRate}%</div>
+              <div className="text-2xl font-bold text-green-600">
+                {company.stats.hiringRate}%
+              </div>
               <div className="text-xs text-green-600">Hiring Rate</div>
             </div>
             <div className="text-center p-3 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{company.stats.avgSalary}</div>
+              <div className="text-2xl font-bold text-purple-600">
+                {company.stats.avgSalary}
+              </div>
               <div className="text-xs text-purple-600">Avg Salary</div>
             </div>
             <div className="text-center p-3 bg-orange-50 rounded-lg">
-              <div className="text-2xl font-bold text-orange-600">{company.stats.responseTime}</div>
+              <div className="text-2xl font-bold text-orange-600">
+                {company.stats.responseTime}
+              </div>
               <div className="text-xs text-orange-600">Response Time</div>
             </div>
           </div>
@@ -426,17 +489,26 @@ export function StudentCompanyProfile({ companyId }) {
             </a>
           </Button>
           <Button size="sm" onClick={handleFollow}>
-            <Heart className={`mr-2 h-4 w-4 ${isFollowing ? "fill-current" : ""}`} />
+            <Heart
+              className={`mr-2 h-4 w-4 ${isFollowing ? "fill-current" : ""}`}
+            />
             {isFollowing ? "Following" : "Follow"}
           </Button>
         </div>
       </div>
 
       {/* Tabs Navigation */}
-      <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+      <Tabs
+        defaultValue="overview"
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="space-y-4"
+      >
         <TabsList className="grid w-full grid-cols-2 md:grid-cols-5">
           <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="jobs">Jobs ({company.stats.activeJobs})</TabsTrigger>
+          <TabsTrigger value="jobs">
+            Jobs ({company.stats.activeJobs})
+          </TabsTrigger>
           <TabsTrigger value="reviews">Reviews</TabsTrigger>
           <TabsTrigger value="culture">Culture</TabsTrigger>
           <TabsTrigger value="faqs">FAQs</TabsTrigger>
@@ -451,19 +523,27 @@ export function StudentCompanyProfile({ companyId }) {
                   <CardTitle>About {company.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="whitespace-pre-line text-muted-foreground leading-relaxed">{company.about}</p>
+                  <p className="whitespace-pre-line text-muted-foreground leading-relaxed">
+                    {company.about}
+                  </p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader>
                   <CardTitle>Technology Stack</CardTitle>
-                  <CardDescription>Technologies and tools used at {company.name}</CardDescription>
+                  <CardDescription>
+                    Technologies and tools used at {company.name}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="flex flex-wrap gap-2">
                     {company.techStack.map((tech) => (
-                      <Badge key={tech} variant="secondary" className="px-3 py-1">
+                      <Badge
+                        key={tech}
+                        variant="secondary"
+                        className="px-3 py-1"
+                      >
                         {tech}
                       </Badge>
                     ))}
@@ -481,23 +561,35 @@ export function StudentCompanyProfile({ companyId }) {
               <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
                 <div>
                   <CardTitle>Open Positions</CardTitle>
-                  <CardDescription>Current job openings at {company.name}. Apply now to join our team!</CardDescription>
+                  <CardDescription>
+                    Current job openings at {company.name}. Apply now to join
+                    our team!
+                  </CardDescription>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge variant="secondary">{company.stats.activeJobs} Active Jobs</Badge>
-                  <Badge variant="outline">{company.stats.totalHires} Total Hires</Badge>
+                  <Badge variant="secondary">
+                    {company.stats.activeJobs} Active Jobs
+                  </Badge>
+                  <Badge variant="outline">
+                    {company.stats.totalHires} Total Hires
+                  </Badge>
                 </div>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
                 {company.openPositions.map((job) => (
-                  <div key={job.id} className="rounded-lg border p-6 hover:shadow-md transition-shadow">
+                  <div
+                    key={job.id}
+                    className="rounded-lg border p-6 hover:shadow-md transition-shadow"
+                  >
                     <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
                       <div className="flex-1">
                         <div className="flex items-start justify-between mb-3">
                           <div>
-                            <h3 className="text-xl font-semibold mb-1">{job.title}</h3>
+                            <h3 className="text-xl font-semibold mb-1">
+                              {job.title}
+                            </h3>
                             <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                               <span className="flex items-center">
                                 <Briefcase className="mr-1 h-4 w-4" />
@@ -517,7 +609,10 @@ export function StudentCompanyProfile({ companyId }) {
                               </span>
                             </div>
                           </div>
-                          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                          <Badge
+                            variant="outline"
+                            className="bg-green-50 text-green-700 border-green-200"
+                          >
                             <TrendingUp className="mr-1 h-3 w-3" />
                             Hot
                           </Badge>
@@ -527,16 +622,23 @@ export function StudentCompanyProfile({ companyId }) {
                           <Badge variant="secondary">{job.type}</Badge>
                           <Badge variant="outline">{job.workMode}</Badge>
                           <Badge variant="outline">{job.experience}</Badge>
-                          <Badge variant="outline" className="text-red-600 border-red-200">
+                          <Badge
+                            variant="outline"
+                            className="text-red-600 border-red-200"
+                          >
                             <Clock className="mr-1 h-3 w-3" />
                             Deadline: {job.deadline}
                           </Badge>
                         </div>
 
-                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{job.description}</p>
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                          {job.description}
+                        </p>
 
                         <div className="mb-4">
-                          <h4 className="font-medium mb-2 text-sm">Key Requirements:</h4>
+                          <h4 className="font-medium mb-2 text-sm">
+                            Key Requirements:
+                          </h4>
                           <ul className="text-sm text-muted-foreground space-y-1">
                             {job.requirements.slice(0, 2).map((req, index) => (
                               <li key={index} className="flex items-start">
@@ -549,7 +651,11 @@ export function StudentCompanyProfile({ companyId }) {
 
                         <div className="flex flex-wrap gap-1 mb-4">
                           {job.skills.slice(0, 6).map((skill) => (
-                            <Badge key={skill} variant="outline" className="text-xs">
+                            <Badge
+                              key={skill}
+                              variant="outline"
+                              className="text-xs"
+                            >
                               {skill}
                             </Badge>
                           ))}
@@ -577,7 +683,8 @@ export function StudentCompanyProfile({ companyId }) {
             <CardFooter>
               <div className="flex items-center justify-between w-full">
                 <p className="text-sm text-muted-foreground">
-                  Showing {company.openPositions.length} of {company.stats.activeJobs} active positions
+                  Showing {company.openPositions.length} of{" "}
+                  {company.stats.activeJobs} active positions
                 </p>
                 <Button variant="outline" size="sm">
                   View All Jobs
@@ -595,7 +702,8 @@ export function StudentCompanyProfile({ companyId }) {
                 <div>
                   <CardTitle>Employee Reviews</CardTitle>
                   <CardDescription>
-                    Read what current and former employees have to say about working at {company.name}.
+                    Read what current and former employees have to say about
+                    working at {company.name}.
                   </CardDescription>
                 </div>
                 <div className="flex items-center gap-4">
@@ -605,11 +713,17 @@ export function StudentCompanyProfile({ companyId }) {
                       {[1, 2, 3, 4, 5].map((i) => (
                         <Star
                           key={i}
-                          className={`h-4 w-4 ${i <= Math.floor(company.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                          className={`h-4 w-4 ${
+                            i <= Math.floor(company.rating)
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-300"
+                          }`}
                         />
                       ))}
                     </div>
-                    <div className="text-xs text-muted-foreground">Based on {company.totalReviews} reviews</div>
+                    <div className="text-xs text-muted-foreground">
+                      Based on {company.totalReviews} reviews
+                    </div>
                   </div>
                 </div>
               </div>
@@ -620,7 +734,9 @@ export function StudentCompanyProfile({ companyId }) {
                   <div key={review.id} className="rounded-lg border p-6">
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <h4 className="font-semibold text-lg">{review.title}</h4>
+                        <h4 className="font-semibold text-lg">
+                          {review.title}
+                        </h4>
                         <div className="flex items-center gap-2 mt-1 text-sm text-muted-foreground">
                           <span>{review.author}</span>
                           <span>•</span>
@@ -637,18 +753,26 @@ export function StudentCompanyProfile({ companyId }) {
                           {[1, 2, 3, 4, 5].map((i) => (
                             <Star
                               key={i}
-                              className={`h-4 w-4 ${i <= Math.floor(review.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}`}
+                              className={`h-4 w-4 ${
+                                i <= Math.floor(review.rating)
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-300"
+                              }`}
                             />
                           ))}
                         </div>
                       </div>
                     </div>
 
-                    <p className="text-sm mb-4 leading-relaxed">{review.content}</p>
+                    <p className="text-sm mb-4 leading-relaxed">
+                      {review.content}
+                    </p>
 
                     <div className="grid gap-4 sm:grid-cols-2 mb-4">
                       <div>
-                        <h5 className="text-sm font-medium text-green-700 mb-2">Pros</h5>
+                        <h5 className="text-sm font-medium text-green-700 mb-2">
+                          Pros
+                        </h5>
                         <ul className="space-y-1 text-sm text-muted-foreground">
                           {review.pros.map((pro, index) => (
                             <li key={index} className="flex items-start">
@@ -659,7 +783,9 @@ export function StudentCompanyProfile({ companyId }) {
                         </ul>
                       </div>
                       <div>
-                        <h5 className="text-sm font-medium text-red-700 mb-2">Cons</h5>
+                        <h5 className="text-sm font-medium text-red-700 mb-2">
+                          Cons
+                        </h5>
                         <ul className="space-y-1 text-sm text-muted-foreground">
                           {review.cons.map((con, index) => (
                             <li key={index} className="flex items-start">
@@ -672,7 +798,9 @@ export function StudentCompanyProfile({ companyId }) {
                     </div>
 
                     <div className="flex items-center justify-between pt-4 border-t">
-                      <div className="text-sm text-muted-foreground">{review.helpful} people found this helpful</div>
+                      <div className="text-sm text-muted-foreground">
+                        {review.helpful} people found this helpful
+                      </div>
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm">
                           👍 Helpful
@@ -699,12 +827,16 @@ export function StudentCompanyProfile({ companyId }) {
           <Card>
             <CardHeader>
               <CardTitle>Company Culture & Benefits</CardTitle>
-              <CardDescription>Discover what makes {company.name} a great place to work.</CardDescription>
+              <CardDescription>
+                Discover what makes {company.name} a great place to work.
+              </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
                 <h3 className="text-lg font-semibold mb-3">Work Culture</h3>
-                <p className="whitespace-pre-line text-muted-foreground leading-relaxed">{company.culture}</p>
+                <p className="whitespace-pre-line text-muted-foreground leading-relaxed">
+                  {company.culture}
+                </p>
               </div>
 
               <Separator />
@@ -713,7 +845,10 @@ export function StudentCompanyProfile({ companyId }) {
                 <h3 className="text-lg font-semibold mb-4">Benefits & Perks</h3>
                 <div className="grid gap-3 sm:grid-cols-2">
                   {company.benefits.map((benefit, index) => (
-                    <div key={index} className="flex items-start p-3 bg-muted/50 rounded-lg">
+                    <div
+                      key={index}
+                      className="flex items-start p-3 bg-muted/50 rounded-lg"
+                    >
                       <div className="w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0"></div>
                       <span className="text-sm">{benefit}</span>
                     </div>
@@ -730,7 +865,8 @@ export function StudentCompanyProfile({ companyId }) {
             <CardHeader>
               <CardTitle>Frequently Asked Questions</CardTitle>
               <CardDescription>
-                Common questions about working at {company.name} and our recruitment process.
+                Common questions about working at {company.name} and our
+                recruitment process.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -738,13 +874,17 @@ export function StudentCompanyProfile({ companyId }) {
                 {company.faqs.map((faq, index) => (
                   <div key={index} className="rounded-lg border p-4">
                     <h4 className="font-semibold mb-2">{faq.question}</h4>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{faq.answer}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {faq.answer}
+                    </p>
                   </div>
                 ))}
               </div>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <p className="text-sm text-muted-foreground">Have more questions? Contact our recruitment team.</p>
+              <p className="text-sm text-muted-foreground">
+                Have more questions? Contact our recruitment team.
+              </p>
               <Button variant="outline" size="sm" asChild>
                 <a href={`mailto:${company.contactInfo.recruiter.email}`}>
                   <Mail className="mr-2 h-4 w-4" />
@@ -756,5 +896,5 @@ export function StudentCompanyProfile({ companyId }) {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

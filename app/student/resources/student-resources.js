@@ -34,6 +34,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "sonner"
+import Image from "next/image"
 
 // Mock resource data
 const RESOURCES = [
@@ -469,7 +470,7 @@ export function StudentResources() {
               <BookOpen className="h-10 w-10 text-muted-foreground" />
               <h3 className="mt-4 text-lg font-semibold">No resources found</h3>
               <p className="mt-2 text-sm text-muted-foreground">
-                We couldn't find any resources matching your current filters. Try adjusting your search or filters.
+                We couldn&apos;t find any resources matching your current filters. Try adjusting your search or filters.
               </p>
               <Button
                 className="mt-4"
@@ -498,9 +499,12 @@ export function StudentResources() {
                 {filteredResources.map((resource) => (
                   <Card key={resource.id} className="overflow-hidden">
                     <div className="aspect-video w-full overflow-hidden bg-muted">
-                      <img
+                      <Image
                         src={resource.thumbnail || "/placeholder.svg"}
                         alt={resource.title}
+                        height={0}
+                        width={0}
+                        sizes="100dvw"
                         className="h-full w-full object-cover transition-transform hover:scale-105"
                       />
                     </div>
@@ -561,9 +565,12 @@ export function StudentResources() {
                     <div className="flex flex-col sm:flex-row">
                       <div className="w-full sm:w-48 md:w-60">
                         <div className="aspect-video w-full overflow-hidden bg-muted sm:h-full">
-                          <img
+                          <Image
                             src={resource.thumbnail || "/placeholder.svg"}
                             alt={resource.title}
+                            height={0}
+                        width={0}
+                        sizes="100dvw"
                             className="h-full w-full object-cover transition-transform hover:scale-105"
                           />
                         </div>

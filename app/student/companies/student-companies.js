@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
   Building,
   MapPin,
@@ -23,6 +22,7 @@ import {
   Award,
   TrendingUp,
 } from "lucide-react"
+import Image from "next/image"
 
 const companies = [
   {
@@ -300,10 +300,11 @@ export function StudentCompanies() {
                 <CardHeader className="pb-4">
                   <div className="flex items-start justify-between">
                     <div className="flex items-center space-x-3">
-                      <img
+                      <Image
                         src={company.logo || "/placeholder.svg"}
                         alt={company.name}
-                        className="h-12 w-12 rounded-lg object-cover"
+                        className="rounded-lg object-cover"
+                        height={12} width={12}
                       />
                       <div>
                         <CardTitle className="text-lg">{company.name}</CardTitle>
@@ -414,10 +415,11 @@ export function StudentCompanies() {
                   <CardHeader className="pb-4">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center space-x-3">
-                        <img
+                        <Image
                           src={company.logo || "/placeholder.svg"}
                           alt={company.name}
-                          className="h-12 w-12 rounded-lg object-cover"
+                          className="rounded-lg object-cover"
+                          height={12} width={12}
                         />
                         <div>
                           <CardTitle className="text-lg">{company.name}</CardTitle>

@@ -13,7 +13,6 @@ export const PlatformSettingsProvider = ({ children }) => {
     setLoading(true)
     try {
       const res = await api.get("/auth/platform-settings")
-      console.log(res)
       if(res.data.message === "Settings not avaliable") {
         return
       }

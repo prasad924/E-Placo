@@ -8,7 +8,8 @@ export default function StudentAppLayout({ children }) {
   return (
     <RouteGuard requiredRole="student">
       <PlatformSettingsProvider>
-        <StudentLayout>{children}</StudentLayout>
+        <StudentLayout>
+          {children}</StudentLayout>
       </PlatformSettingsProvider>
     </RouteGuard>
   );

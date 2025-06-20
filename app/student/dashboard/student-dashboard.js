@@ -36,7 +36,7 @@ export function StudentDashboard() {
         <div>
           <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
           <p className="text-muted-foreground">
-            Welcome back, {user.name}! Here's what's happening with your placement journey.
+            Welcome back, {user.name}! Here&apos;s what&apos;s happening with your placement journey.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -101,7 +101,7 @@ export function StudentDashboard() {
         <Card className="md:col-span-4">
           <CardHeader>
             <CardTitle>Placement Drives</CardTitle>
-            <CardDescription>Browse and apply to placement drives you're eligible for.</CardDescription>
+            <CardDescription>Browse and apply to placement drives you&apos;re eligible for.</CardDescription>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="eligible">

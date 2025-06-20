@@ -26,7 +26,7 @@ export function DrivesListing() {
     <div className="space-y-6">
       <div>
         <h2 className="text-3xl font-bold tracking-tight">Placement Drives</h2>
-        <p className="text-muted-foreground">Browse and apply to placement drives you're eligible for.</p>
+        <p className="text-muted-foreground">Browse and apply to placement drives you&apos;re eligible for.</p>
       </div>
 
       <div className="flex flex-col gap-4 md:flex-row md:items-center">
