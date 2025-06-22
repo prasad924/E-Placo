@@ -1,18 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import {
-  ChevronLeft,
-  ChevronRight,
-  Clock,
-  Download,
-  ExternalLink,
-  Filter,
-  MapPin,
-  Plus,
-  Search,
-  Video,
-} from "lucide-react"
+import { ChevronLeft, ChevronRight, Clock, ExternalLink, Filter, MapPin, Search, Video } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -29,7 +18,6 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 
-// Mock data for calendar events
 const MOCK_EVENTS = [
   {
     id: 1,
@@ -130,48 +118,37 @@ export function InterviewCalendar() {
   const [searchQuery, setSearchQuery] = useState("")
   const [filterType, setFilterType] = useState(["interview", "test", "presentation", "group-discussion"])
 
-  // Navigate to previous month
   const prevMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
   }
 
-  // Navigate to next month
   const nextMonth = () => {
     setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
   }
 
-  // Navigate to today
   const goToToday = () => {
-    const today = new Date(2025, 4, 5) // Fixed date for demo
+    const today = new Date(2025, 4, 5)
     setCurrentDate(new Date(today.getFullYear(), today.getMonth(), 1))
     setSelectedDate(today)
   }
 
-  // Generate calendar days
   const generateCalendarDays = () => {
     const year = currentDate.getFullYear()
     const month = currentDate.getMonth()
 
-    // First day of the month
     const firstDay = new Date(year, month, 1)
-    // Last day of the month
     const lastDay = new Date(year, month + 1, 0)
 
-    // Day of the week for the first day (0 = Sunday, 1 = Monday, ..., 6 = Saturday)
     const firstDayOfWeek = firstDay.getDay()
 
-    // Total days in the month
     const daysInMonth = lastDay.getDate()
 
-    // Days from previous month to fill the first row
     const prevMonthDays = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1
 
-    // Previous month's last day
     const prevMonthLastDay = new Date(year, month, 0).getDate()
 
     const days = []
 
-    // Add days from previous month
     for (let i = prevMonthDays - 1; i >= 0; i--) {
       const date = new Date(year, month - 1, prevMonthLastDay - i)
       days.push({
@@ -181,7 +158,6 @@ export function InterviewCalendar() {
       })
     }
 
-    // Add days from current month
     for (let i = 1; i <= daysInMonth; i++) {
       const date = new Date(year, month, i)
       days.push({
@@ -191,7 +167,6 @@ export function InterviewCalendar() {
       })
     }
 
-    // Add days from next month to complete the grid (up to 42 total cells for 6 rows)
     const remainingDays = 42 - days.length
     for (let i = 1; i <= remainingDays; i++) {
       const date = new Date(year, month + 1, i)
@@ -205,7 +180,6 @@ export function InterviewCalendar() {
     return days
   }
 
-  // Get events for a specific date
   const getEventsForDate = (date) => {
     const dateString = formatDateToYYYYMMDD(date)
     return MOCK_EVENTS.filter((event) => {
@@ -217,7 +191,6 @@ export function InterviewCalendar() {
     })
   }
 
-  // Format a date to YYYY-MM-DD
   const formatDateToYYYYMMDD = (date) => {
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, "0")
@@ -225,15 +198,12 @@ export function InterviewCalendar() {
     return `${year}-${month}-${day}`
   }
 
-  // Get events for selected date
   const selectedDateEvents = selectedDate ? getEventsForDate(selectedDate) : []
 
-  // Format date for display
   const formatMonth = (date) => {
     return date.toLocaleDateString("en-US", { month: "long", year: "numeric" })
   }
 
-  // Check if a date is the same as the selected date
   const isSameDate = (date1, date2) => {
     if (!date2) return false
     return (
@@ -243,7 +213,6 @@ export function InterviewCalendar() {
     )
   }
 
-  // Get type badge color
   const getTypeBadgeColor = (type) => {
     switch (type) {
       case "interview":
@@ -259,7 +228,6 @@ export function InterviewCalendar() {
     }
   }
 
-  // Format event type for display
   const formatEventType = (type) => {
     switch (type) {
       case "interview":
@@ -559,9 +527,6 @@ export function InterviewCalendar() {
                       </div>
                       <div className="flex items-center gap-2">
                         <Badge className={getTypeBadgeColor(event.type)}>{formatEventType(event.type)}</Badge>
-                        <Button variant="outline" size="sm">
-                          Details
-                        </Button>
                       </div>
                     </div>
                   ))}

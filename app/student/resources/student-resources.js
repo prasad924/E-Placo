@@ -1,23 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useCallback } from "react"
 import {
   Award,
-  Bookmark,
   BookOpen,
   Code,
-  Download,
   ExternalLink,
   FileText,
   Filter,
   Laptop,
   Lightbulb,
-  MapPin,
+  Loader2,
   Play,
   Search,
-  Share2,
-  ThumbsUp,
   Users,
+  RefreshCw,
 } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -35,245 +32,9 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "sonner"
 import Image from "next/image"
+import api from "@/lib/api"
 
-// Mock resource data
-const RESOURCES = [
-  {
-    id: "res-001",
-    title: "Resume Building Workshop",
-    type: "video",
-    category: "resume",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "Career Services",
-    duration: "45 min",
-    date: "Apr 15, 2025",
-    description:
-      "Learn how to create an effective resume that highlights your skills and experiences. This workshop covers resume formats, content organization, and tips for making your resume stand out to recruiters.",
-    tags: ["Resume", "Career Development", "Job Application"],
-    views: 1250,
-    likes: 320,
-    bookmarked: false,
-    featured: true,
-    url: "https://www.youtube.com/watch?v=example1",
-    source: "YouTube",
-  },
-  {
-    id: "res-002",
-    title: "Technical Interview Questions",
-    type: "document",
-    category: "interview",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "Engineering Department",
-    pages: 45,
-    date: "Apr 10, 2025",
-    description:
-      "A comprehensive collection of technical interview questions commonly asked in software engineering interviews. Includes questions on data structures, algorithms, system design, and programming concepts.",
-    tags: ["Technical Interview", "Coding", "Algorithms", "Data Structures"],
-    downloads: 850,
-    likes: 275,
-    bookmarked: true,
-    featured: true,
-    url: "https://leetcode.com/explore/interview/card/top-interview-questions-easy/",
-    source: "LeetCode",
-  },
-  {
-    id: "res-003",
-    title: "Aptitude Test Practice",
-    type: "quiz",
-    category: "aptitude",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "Mathematics Department",
-    questions: 100,
-    date: "Apr 5, 2025",
-    description:
-      "Practice your quantitative aptitude skills with this comprehensive test. Includes questions on numerical ability, logical reasoning, and verbal ability that are commonly asked in placement aptitude tests.",
-    tags: ["Aptitude", "Quantitative", "Logical Reasoning", "Verbal"],
-    attempts: 1500,
-    likes: 420,
-    bookmarked: false,
-    featured: false,
-    url: "https://www.indiabix.com/aptitude/questions-and-answers/",
-    source: "IndiaBix",
-  },
-  {
-    id: "res-004",
-    title: "HR Interview Preparation Guide",
-    type: "document",
-    category: "interview",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "HR Department",
-    pages: 30,
-    date: "Mar 28, 2025",
-    description:
-      "Prepare for HR interviews with this comprehensive guide. Learn about common HR interview questions, how to present yourself professionally, and strategies for discussing your strengths, weaknesses, and career goals.",
-    tags: ["HR Interview", "Soft Skills", "Communication"],
-    downloads: 720,
-    likes: 310,
-    bookmarked: false,
-    featured: false,
-    url: "https://www.interviewbit.com/hr-interview-questions/",
-    source: "InterviewBit",
-  },
-  {
-    id: "res-005",
-    title: "Data Structures and Algorithms",
-    type: "course",
-    category: "technical",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "Prof. Sharma",
-    modules: 12,
-    duration: "20 hours",
-    date: "Mar 20, 2025",
-    description:
-      "A comprehensive course on data structures and algorithms. Learn about arrays, linked lists, trees, graphs, sorting algorithms, searching algorithms, and more. Includes practical coding exercises and problem-solving techniques.",
-    tags: ["DSA", "Programming", "Algorithms", "Computer Science"],
-    enrollments: 950,
-    likes: 480,
-    bookmarked: true,
-    featured: true,
-    url: "https://www.coursera.org/specializations/data-structures-algorithms",
-    source: "Coursera",
-  },
-  {
-    id: "res-006",
-    title: "Group Discussion Strategies",
-    type: "video",
-    category: "soft-skills",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "Communication Skills Dept",
-    duration: "35 min",
-    date: "Mar 15, 2025",
-    description:
-      "Learn effective strategies for group discussions, a common component of the placement process. This video covers how to articulate your thoughts clearly, listen actively, and make meaningful contributions to group discussions.",
-    tags: ["Group Discussion", "Communication", "Soft Skills"],
-    views: 880,
-    likes: 230,
-    bookmarked: false,
-    featured: false,
-    url: "https://www.youtube.com/watch?v=example2",
-    source: "YouTube",
-  },
-  {
-    id: "res-007",
-    title: "Web Development Fundamentals",
-    type: "course",
-    category: "technical",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "Tech Learning Center",
-    modules: 8,
-    duration: "15 hours",
-    date: "Mar 10, 2025",
-    description:
-      "Learn the fundamentals of web development including HTML, CSS, and JavaScript. This course covers front-end development concepts, responsive design principles, and basic web application development.",
-    tags: ["Web Development", "HTML", "CSS", "JavaScript"],
-    enrollments: 1100,
-    likes: 520,
-    bookmarked: false,
-    featured: false,
-    url: "https://www.freecodecamp.org/learn/responsive-web-design/",
-    source: "freeCodeCamp",
-  },
-  {
-    id: "res-008",
-    title: "Mock Interview Sessions",
-    type: "event",
-    category: "interview",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "Placement Cell",
-    date: "May 5-10, 2025",
-    location: "Online & Campus",
-    description:
-      "Participate in mock interview sessions conducted by industry professionals and faculty members. Get feedback on your interview performance and tips for improvement. Registration required.",
-    tags: ["Mock Interview", "Feedback", "Practice"],
-    registrations: 320,
-    likes: 180,
-    bookmarked: false,
-    featured: true,
-    url: "https://www.pramp.com/",
-    source: "Pramp",
-  },
-  {
-    id: "res-009",
-    title: "Python Programming for Beginners",
-    type: "course",
-    category: "technical",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "Computer Science Dept",
-    modules: 10,
-    duration: "18 hours",
-    date: "Mar 5, 2025",
-    description:
-      "A beginner-friendly course on Python programming. Learn Python syntax, data types, control structures, functions, and basic programming concepts. Includes hands-on coding exercises and projects.",
-    tags: ["Python", "Programming", "Beginners"],
-    enrollments: 1300,
-    likes: 590,
-    bookmarked: false,
-    featured: false,
-    url: "https://www.codecademy.com/learn/learn-python-3",
-    source: "Codecademy",
-  },
-  {
-    id: "res-010",
-    title: "Effective Communication Skills",
-    type: "workshop",
-    category: "soft-skills",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "Soft Skills Training Center",
-    duration: "2 days",
-    date: "Apr 20-21, 2025",
-    location: "Auditorium A",
-    description:
-      "Enhance your communication skills with this interactive workshop. Learn about verbal and non-verbal communication, presentation skills, email etiquette, and effective listening. Includes role-playing exercises.",
-    tags: ["Communication", "Soft Skills", "Presentation"],
-    registrations: 250,
-    likes: 200,
-    bookmarked: false,
-    featured: false,
-    url: "https://www.udemy.com/course/communication-skills-for-professionals/",
-    source: "Udemy",
-  },
-  {
-    id: "res-011",
-    title: "System Design Interview Preparation",
-    type: "document",
-    category: "interview",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "Senior Engineers Panel",
-    pages: 60,
-    date: "Mar 1, 2025",
-    description:
-      "Prepare for system design interviews with this comprehensive guide. Learn about scalable system architecture, database design, API design, and how to approach system design problems during interviews.",
-    tags: ["System Design", "Architecture", "Technical Interview"],
-    downloads: 680,
-    likes: 340,
-    bookmarked: false,
-    featured: false,
-    url: "https://github.com/donnemartin/system-design-primer",
-    source: "GitHub",
-  },
-  {
-    id: "res-012",
-    title: "Machine Learning Fundamentals",
-    type: "course",
-    category: "technical",
-    thumbnail: "/placeholder.svg?height=200&width=350",
-    author: "AI Research Lab",
-    modules: 15,
-    duration: "25 hours",
-    date: "Feb 25, 2025",
-    description:
-      "Learn the fundamentals of machine learning including supervised and unsupervised learning, neural networks, and model evaluation. This course covers theoretical concepts and practical implementation using Python and popular ML libraries.",
-    tags: ["Machine Learning", "AI", "Data Science", "Python"],
-    enrollments: 850,
-    likes: 420,
-    bookmarked: false,
-    featured: false,
-    url: "https://www.kaggle.com/learn/intro-to-machine-learning",
-    source: "Kaggle",
-  },
-]
 
-// Resource categories
 const CATEGORIES = [
   { id: "all", name: "All Resources", icon: BookOpen },
   { id: "resume", name: "Resume Building", icon: FileText },
@@ -282,8 +43,6 @@ const CATEGORIES = [
   { id: "aptitude", name: "Aptitude & Reasoning", icon: Lightbulb },
   { id: "soft-skills", name: "Soft Skills", icon: Award },
 ]
-
-// Resource types
 const TYPES = [
   { id: "all", name: "All Types" },
   { id: "video", name: "Videos" },
@@ -293,47 +52,53 @@ const TYPES = [
   { id: "event", name: "Events & Workshops" },
 ]
 
+
 export function StudentResources() {
   const [searchQuery, setSearchQuery] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [typeFilter, setTypeFilter] = useState([])
-  const [bookmarkedOnly, setBookmarkedOnly] = useState(false)
-  const [resources, setResources] = useState(RESOURCES)
+  const [resources, setResources] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+  const fetchResources = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
 
-  // Filter resources based on search query, category, type, and bookmarked status
-  const filteredResources = resources.filter((resource) => {
-    const matchesSearch =
-      resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      resource.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      resource.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
+      const params = new URLSearchParams()
 
-    const matchesCategory = selectedCategory === "all" || resource.category === selectedCategory
+      if (selectedCategory !== "all") {
+        params.append("category", selectedCategory)
+      }
 
-    const matchesType = typeFilter.length === 0 || typeFilter.includes(resource.type)
+      if (typeFilter.length > 0) {
+        typeFilter.forEach((type) => params.append("type", type))
+      }
 
-    const matchesBookmarked = !bookmarkedOnly || resource.bookmarked
+      if (searchQuery) {
+        params.append("search", searchQuery)
+      }
 
-    return matchesSearch && matchesCategory && matchesType && matchesBookmarked
-  })
+      const response = await api.get(`/student/resources?${params}`)
 
-  // Toggle bookmark status
-  const toggleBookmark = (id) => {
-    setResources(
-      resources.map((resource) => {
-        if (resource.id === id) {
-          const newStatus = !resource.bookmarked
-          toast({
-            title: newStatus ? "Resource Bookmarked" : "Bookmark Removed",
-            description: `"${resource.title}" has been ${newStatus ? "added to" : "removed from"} your bookmarks.`,
-          })
-          return { ...resource, bookmarked: newStatus }
-        }
-        return resource
-      }),
-    )
-  }
+      if (!response) {
+      toast.error("Failed to fetch resources")
+      }
 
-  // Get resource icon based on type
+      const data = response.data.resources
+      setResources(data)
+
+    } catch (err) {
+      toast.error("Failed to load resources")
+    } finally {
+      setLoading(false)
+    }
+  }, [selectedCategory, typeFilter, searchQuery])
+
+  useEffect(() => {
+    fetchResources()
+  }, [fetchResources])
+
   const getResourceIcon = (type) => {
     switch (type) {
       case "video":
@@ -352,23 +117,25 @@ export function StudentResources() {
     }
   }
 
-  // Format resource stats based on type
-  const getResourceStats = (resource) => {
-    switch (resource.type) {
-      case "video":
-        return `${resource.views} views • ${resource.duration}`
-      case "document":
-        return `${resource.downloads} downloads • ${resource.pages} pages`
-      case "course":
-        return `${resource.enrollments} enrolled • ${resource.modules} modules • ${resource.duration}`
-      case "quiz":
-        return `${resource.attempts} attempts • ${resource.questions} questions`
-      case "event":
-      case "workshop":
-        return `${resource.registrations} registered • ${resource.location}`
-      default:
-        return ""
-    }
+  const resetFilters = () => {
+    setSearchQuery("")
+    setSelectedCategory("all")
+    setTypeFilter([])
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <div className="text-center">
+          <h3 className="text-lg font-semibold text-destructive">Error Loading Resources</h3>
+          <p className="text-sm text-muted-foreground mt-2">{error}</p>
+        </div>
+        <Button onClick={() => fetchResources()} variant="outline">
+          <RefreshCw className="mr-2 h-4 w-4" />
+          Try Again
+        </Button>
+      </div>
+    )
   }
 
   return (
@@ -382,7 +149,6 @@ export function StudentResources() {
         </div>
       </div>
 
-      {/* Search and Filters */}
       <div className="flex flex-col gap-4 md:flex-row md:items-center">
         <div className="relative flex-1">
           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -400,6 +166,11 @@ export function StudentResources() {
               <Button variant="outline">
                 <Filter className="mr-2 h-4 w-4" />
                 Resource Type
+                {typeFilter.length > 0 && (
+                  <Badge variant="secondary" className="ml-2">
+                    {typeFilter.length}
+                  </Badge>
+                )}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
@@ -422,14 +193,9 @@ export function StudentResources() {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant={bookmarkedOnly ? "default" : "outline"} onClick={() => setBookmarkedOnly(!bookmarkedOnly)}>
-            <Bookmark className={`mr-2 h-4 w-4 ${bookmarkedOnly ? "fill-current" : ""}`} />
-            Bookmarked
-          </Button>
         </div>
       </div>
 
-      {/* Categories */}
       <div className="flex overflow-x-auto pb-2 -mx-6 px-6 space-x-2">
         {CATEGORIES.map((category) => {
           const Icon = category.icon
@@ -447,24 +213,45 @@ export function StudentResources() {
         })}
       </div>
 
-      
-
-      {/* All Resources */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-xl font-semibold">
-            {bookmarkedOnly
-              ? "Bookmarked Resources"
-              : selectedCategory !== "all"
-                ? CATEGORIES.find((c) => c.id === selectedCategory)?.name
-                : "All Resources"}
+            {selectedCategory !== "all" ? CATEGORIES.find((c) => c.id === selectedCategory)?.name : "All Resources"}
           </h3>
-          <p className="text-sm text-muted-foreground">
-            Showing {filteredResources.length} of {resources.length} resources
-          </p>
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-muted-foreground">
+              {loading ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Loading...
+                </span>
+              ) : (
+                `Showing ${resources.length} resources`
+              )}
+            </p>
+            {(searchQuery || selectedCategory !== "all" || typeFilter.length > 0) && (
+              <Button variant="ghost" size="sm" onClick={resetFilters}>
+                Reset Filters
+              </Button>
+            )}
+          </div>
         </div>
 
-        {filteredResources.length === 0 ? (
+        {loading ? (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <Card key={i} className="overflow-hidden">
+                <div className="aspect-video w-full bg-muted animate-pulse" />
+                <CardHeader className="p-4">
+                  <div className="space-y-2">
+                    <div className="h-4 bg-muted animate-pulse rounded" />
+                    <div className="h-4 bg-muted animate-pulse rounded w-3/4" />
+                  </div>
+                </CardHeader>
+              </Card>
+            ))}
+          </div>
+        ) : resources.length === 0 ? (
           <Card className="p-8 text-center">
             <div className="mx-auto flex max-w-[420px] flex-col items-center justify-center text-center">
               <BookOpen className="h-10 w-10 text-muted-foreground" />
@@ -472,15 +259,7 @@ export function StudentResources() {
               <p className="mt-2 text-sm text-muted-foreground">
                 We couldn&apos;t find any resources matching your current filters. Try adjusting your search or filters.
               </p>
-              <Button
-                className="mt-4"
-                onClick={() => {
-                  setSearchQuery("")
-                  setSelectedCategory("all")
-                  setTypeFilter([])
-                  setBookmarkedOnly(false)
-                }}
-              >
+              <Button className="mt-4" onClick={resetFilters}>
                 Reset Filters
               </Button>
             </div>
@@ -496,15 +275,14 @@ export function StudentResources() {
 
             <TabsContent value="grid" className="mt-6">
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredResources.map((resource) => (
-                  <Card key={resource.id} className="overflow-hidden">
+                {resources.map((resource) => (
+                  <Card key={resource.id} className="overflow-hidden hover:shadow-lg transition-shadow">
                     <div className="aspect-video w-full overflow-hidden bg-muted">
                       <Image
-                        src={resource.thumbnail || "/placeholder.svg"}
+                        src={resource.thumbnail || "/resource.jpg?height=200&width=300"}
                         alt={resource.title}
-                        height={0}
-                        width={0}
-                        sizes="100dvw"
+                        width={300}
+                        height={200}
                         className="h-full w-full object-cover transition-transform hover:scale-105"
                       />
                     </div>
@@ -514,17 +292,8 @@ export function StudentResources() {
                           {getResourceIcon(resource.type)}
                           {TYPES.find((t) => t.id === resource.type)?.name.slice(0, -1) || resource.type}
                         </Badge>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8"
-                          onClick={() => toggleBookmark(resource.id)}
-                        >
-                          <Bookmark className={`h-4 w-4 ${resource.bookmarked ? "fill-primary text-primary" : ""}`} />
-                          <span className="sr-only">Bookmark</span>
-                        </Button>
                       </div>
-                      <CardTitle className="line-clamp-1 text-lg">{resource.title}</CardTitle>
+                      <CardTitle className="line-clamp-2 text-lg">{resource.title}</CardTitle>
                       <CardDescription className="line-clamp-2">{resource.description}</CardDescription>
                     </CardHeader>
                     <CardContent className="p-4 pt-0">
@@ -534,15 +303,20 @@ export function StudentResources() {
                             {tag}
                           </Badge>
                         ))}
+                        {resource.tags.length > 3 && (
+                          <Badge variant="secondary" className="text-xs">
+                            +{resource.tags.length - 3}
+                          </Badge>
+                        )}
                       </div>
                       <div className="flex items-center justify-between text-sm text-muted-foreground">
                         <div className="flex items-center">
-                          <Avatar className="mr-1 h-5 w-5">
-                            <AvatarFallback>{resource.author.charAt(0)}</AvatarFallback>
+                          <Avatar className="mr-2 h-6 w-6">
+                            <AvatarFallback className="text-xs">{resource.author.charAt(0)}</AvatarFallback>
                           </Avatar>
-                          <span>{resource.author}</span>
+                          <span className="truncate">{resource.author}</span>
                         </div>
-                        <span>{resource.source}</span>
+                        <span className="text-xs">{resource.source}</span>
                       </div>
                     </CardContent>
                     <CardFooter className="p-4 pt-0">
@@ -560,17 +334,16 @@ export function StudentResources() {
 
             <TabsContent value="list" className="mt-6">
               <div className="space-y-4">
-                {filteredResources.map((resource) => (
-                  <Card key={resource.id}>
+                {resources.map((resource) => (
+                  <Card key={resource.id} className="hover:shadow-lg transition-shadow">
                     <div className="flex flex-col sm:flex-row">
                       <div className="w-full sm:w-48 md:w-60">
                         <div className="aspect-video w-full overflow-hidden bg-muted sm:h-full">
                           <Image
-                            src={resource.thumbnail || "/placeholder.svg"}
+                            src={resource.thumbnail || "/resource.jpg?height=200&width=300"}
                             alt={resource.title}
-                            height={0}
-                        width={0}
-                        sizes="100dvw"
+                            width={300}
+                            height={200}
                             className="h-full w-full object-cover transition-transform hover:scale-105"
                           />
                         </div>
@@ -581,51 +354,39 @@ export function StudentResources() {
                             {getResourceIcon(resource.type)}
                             {TYPES.find((t) => t.id === resource.type)?.name.slice(0, -1) || resource.type}
                           </Badge>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                            onClick={() => toggleBookmark(resource.id)}
-                          >
-                            <Bookmark className={`h-4 w-4 ${resource.bookmarked ? "fill-primary text-primary" : ""}`} />
-                            <span className="sr-only">Bookmark</span>
-                          </Button>
                         </div>
                         <h3 className="mt-2 text-lg font-semibold">{resource.title}</h3>
                         <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{resource.description}</p>
                         <div className="mt-2 flex flex-wrap gap-1">
-                          {resource.tags.slice(0, 3).map((tag) => (
+                          {resource.tags.slice(0, 5).map((tag) => (
                             <Badge key={tag} variant="secondary" className="text-xs">
                               {tag}
                             </Badge>
                           ))}
+                          {resource.tags.length > 5 && (
+                            <Badge variant="secondary" className="text-xs">
+                              +{resource.tags.length - 5}
+                            </Badge>
+                          )}
                         </div>
                         <div className="mt-auto pt-4">
-                          <div className="flex flex-wrap items-center justify-between gap-2">
-                            <div className="flex items-center text-sm text-muted-foreground">
-                              <Avatar className="mr-1 h-5 w-5">
-                                <AvatarFallback>{resource.author.charAt(0)}</AvatarFallback>
+                          <div className="flex items-center justify-between text-sm text-muted-foreground mb-4">
+                            <div className="flex items-center">
+                              <Avatar className="mr-2 h-6 w-6">
+                                <AvatarFallback className="text-xs">{resource.author.charAt(0)}</AvatarFallback>
                               </Avatar>
                               <span className="mr-2">{resource.author}</span>
                               <span>•</span>
                               <span className="ml-2">{resource.source}</span>
                             </div>
-                            <div className="flex items-center text-sm text-muted-foreground">
-                              <span>{getResourceStats(resource)}</span>
-                            </div>
+                            <span className="text-xs">{new Date(resource.date).toLocaleDateString()}</span>
                           </div>
-                          <div className="mt-4 flex gap-2">
-                            <Button variant="outline" size="sm" className="flex-1">
-                              <ThumbsUp className="mr-2 h-4 w-4" />
-                              Like ({resource.likes})
-                            </Button>
-                            <Button size="sm" className="flex-1" asChild>
-                              <a href={resource.url} target="_blank" rel="noopener noreferrer">
-                                Visit Resource
-                                <ExternalLink className="ml-2 h-4 w-4" />
-                              </a>
-                            </Button>
-                          </div>
+                          <Button className="w-full" asChild>
+                            <a href={resource.url} target="_blank" rel="noopener noreferrer">
+                              Visit Resource
+                              <ExternalLink className="ml-2 h-4 w-4" />
+                            </a>
+                          </Button>
                         </div>
                       </div>
                     </div>

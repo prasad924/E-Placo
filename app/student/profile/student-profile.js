@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import {
   Building,
   Edit,
   FileText,
@@ -1110,19 +1117,21 @@ function ProjectDialog({ project, onAdd, onUpdate }) {
           </div>
           <div>
             <Label htmlFor="status">Status</Label>
-            <select
-              id="status"
+
+            <Select
               value={formData.projectStatus || ""}
-              onChange={(e) =>
-                setFormData({ ...formData, projectStatus: e.target.value })
+              onValueChange={(value) =>
+                setFormData({ ...formData, projectStatus: value })
               }
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="">Select Status</option>
-              <option value="In-Progress">In Progress</option>
-              <option value="Completed">Completed</option>
-              <option value="On-Hold">On Hold</option>
-            </select>
+              <SelectTrigger className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <SelectValue placeholder="Select Status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="In-Progress">In Progress</SelectItem>
+                <SelectItem value="Completed">Completed</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div>

@@ -29,7 +29,7 @@ export function AdminLayout({ children }) {
             </div>
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-secondary/50">
               <Avatar className="h-7 w-7">
-                <AvatarImage src={user.url ? user.url : "default.png"} alt="Avatar" />
+                <AvatarImage src={user.url ? user.url : "/default.png"} alt="Avatar" />
                 <AvatarFallback>$</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
@@ -84,10 +84,10 @@ export function AdminLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname === "/admin/contact-hrs"}>
-                      <Link href="/admin/contact-hrs">
+                    <SidebarMenuButton asChild isActive={pathname === "/admin/contact-recruiters"}>
+                      <Link href="/admin/contact-recruiters">
                         <User className="h-4 w-4" />
-                        <span>Contact HR&apos;s</span>
+                        <span>Contact Recruiter&apos;s</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -99,7 +99,7 @@ export function AdminLayout({ children }) {
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
-                  <SidebarMenuItem>
+                  {/* <SidebarMenuItem>
                     <SidebarMenuButton asChild isActive={pathname === "/admin/calendar"}>
                       <Link href="/admin/calendar">
                         <Calendar className="h-4 w-4" />
@@ -114,7 +114,7 @@ export function AdminLayout({ children }) {
                         <span>Resources Management</span>
                       </Link>
                     </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  </SidebarMenuItem> */}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -179,12 +179,12 @@ export function AdminLayout({ children }) {
                         Analytics
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    {/* <Button variant="ghost" className="w-full justify-start" asChild>
                       <Link href="/admin/calendar">
                         <Calendar className="mr-2 h-4 w-4" />
                         Schedule Management
                       </Link>
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
               </SheetContent>
@@ -200,7 +200,7 @@ export function AdminLayout({ children }) {
                   <DropdownMenuTrigger asChild className={'cursor-pointer'}>
                     <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                       <Avatar className="h-9 w-9">
-                        <AvatarImage src={user.url ? user.url : "default.png"} alt="Avatar" />
+                        <AvatarImage src={user.url ? user.url : "/default.png"} alt="Avatar" />
                         <AvatarFallback>$</AvatarFallback>
                       </Avatar>
                     </Button>

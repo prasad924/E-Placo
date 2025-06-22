@@ -15,7 +15,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 export function LoginForm() {
   const { setUser } = useAuth();
   const router = useRouter();
-  const [email, setEmail] = useState("");
+  const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +31,7 @@ export function LoginForm() {
     try {
       const res = await api.post(
         "/auth/login",
-        { email, password, role, rememberMe },
+        { id, password, role, rememberMe },
         { withCredentials: true }
       );
 
@@ -60,13 +60,14 @@ export function LoginForm() {
           <h2 className="text-3xl font-semibold text-center">Login</h2>
 
           <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="id">Employee/Student ID</Label>
             <Input
-              id="email"
-              type="email"
-              placeholder="kmit@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              id="id"
+              type="id"
+              placeholder="Ex: 23BD5A0518"
+              value={id}
+              maxLength={10}
+              onChange={(e) => setId(e.target.value)}
               required
             />
           </div>
@@ -74,12 +75,12 @@ export function LoginForm() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label htmlFor="password">Password</Label>
-              <div
+              {/* <div
                 onClick={() => router.push("/forgot-password")}
                 className="text-sm text-muted-foreground hover:underline cursor-pointer"
               >
                 Forgot password?
-              </div>
+              </div> */}
             </div>
             <div className="relative">
               <Input
@@ -116,7 +117,15 @@ export function LoginForm() {
               onValueChange={setRole}
               className="flex flex-col space-y-1"
             >
-              {["student", "admin", "recruiter"].map((type) => (
+              {/* {["student", "admin", "recruiter"].map((type) => (
+                <div key={type} className="flex items-center space-x-2">
+                  <RadioGroupItem value={type} id={type} />
+                  <Label htmlFor={type} className="font-normal capitalize">
+                    {type}
+                  </Label>
+                </div>
+              ))} */}
+               {["student", "admin"].map((type) => (
                 <div key={type} className="flex items-center space-x-2">
                   <RadioGroupItem value={type} id={type} />
                   <Label htmlFor={type} className="font-normal capitalize">

@@ -62,6 +62,7 @@ export function StudentLayout({ children }) {
               </Avatar>
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{user.name}</span>
+                <span className="text-xs text-muted-foreground">{user.id}</span>
                 <span className="text-xs text-muted-foreground">{user.email}</span>
               </div>
             </div>
@@ -83,6 +84,14 @@ export function StudentLayout({ children }) {
                       <Link href="/student/drives">
                         <Briefcase className="h-4 w-4" />
                         <span>Placement Drives</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={pathname === '/student/applied-jobs'}>
+                      <Link href="/student/applied-jobs">
+                        <Briefcase className="h-4 w-4" />
+                        <span>Applied Jobs</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -119,10 +128,10 @@ export function StudentLayout({ children }) {
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={pathname === '/student/statistics'}>
-                      <Link href="/student/statistics">
+                    <SidebarMenuButton asChild isActive={pathname === '/student/analytics'}>
+                      <Link href="/student/analytics">
                         <Award className="h-4 w-4" />
-                        <span>Statistics</span>
+                        <span>Analytics</span>
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -214,6 +223,7 @@ export function StudentLayout({ children }) {
                     <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium">{user.name}</p>
+                        <p className="text-xs text-muted-foreground">{user.id}</p>
                         <p className="text-xs text-muted-foreground">{user.email}</p>
                       </div>
                     </DropdownMenuLabel>

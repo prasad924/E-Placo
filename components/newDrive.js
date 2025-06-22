@@ -1,66 +1,82 @@
-"use client"
+"use client";
 
-import React from "react"
-import { useState } from "react"
-import {X} from "lucide-react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import api from "@/lib/api"
+import React from "react";
+import { useState } from "react";
+import { X } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@/context/AuthContext";
+import { toast } from "sonner";
+import api from "@/lib/api";
 
-
-export default function NewDriveDialog({ onClose }) {
+export default function NewDriveDialog({ onClose, onSuccess }) {
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
+    id: "",
+    title: "",
     companyName: "",
-    companyLogo: null,
-    companyDescription: "",
-    website: "",
-    location: "",
-    jobTitle: "",
+    companyMail: "",
     department: "",
-    jobType: "Full-time",
-    experienceLevel: "Entry Level",
+    jobType: "Full-Time",
+    noOfPositions: 0,
+    salary: "",
     skills: [],
     qualifications: "",
     cgpaCriteria: "",
-    applicationDeadline: "",
-    positions: "",
-    salaryRange: "",
-    jobDescription: "",
-    selectionProcess: "",
-    interviewRounds: "",
-  })
+    description: "",
+    recruiterId: user.role =="recruiter"? user.id : "",
+    deadline: "",
+    jobDrive: {
+      eligibleStudents: null,
+      driveDate: "",
+      location: "",
+      selectionProcess: "",
+      interviewRounds: "",
+    },
+  });
 
-  const [currentSkill, setCurrentSkill] = useState("")
+  const [currentSkill, setCurrentSkill] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    //backend calls still to implement!!!
-    console.log("New Drive Data:", formData)
-    alert("New drive created successfully!")
-    onClose()
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await api.post("/admin/newDrive", formData);
+      toast("Reponse" + response.data?.message);
+      if (onSuccess !== undefined) onSuccess();
+    } catch(error) {
+      toast("Error: "+ error)
+    } finally {
+      onClose();
+    }
+  };
 
   const addSkill = () => {
     if (currentSkill.trim() && !formData.skills.includes(currentSkill.trim())) {
       setFormData((prev) => ({
         ...prev,
         skills: [...prev.skills, currentSkill.trim()],
-      }))
-      setCurrentSkill("")
+      }));
+      setCurrentSkill("");
     }
-  }
+  };
 
   const removeSkill = (skill) => {
     setFormData((prev) => ({
       ...prev,
       skills: prev.skills.filter((s) => s !== skill),
-    }))
-  }
+    }));
+  };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -90,59 +106,81 @@ export default function NewDriveDialog({ onClose }) {
                   <Input
                     id="companyName"
                     value={formData.companyName}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, companyName: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        companyName: e.target.value,
+                      }))
+                    }
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="website">Company Website</Label>
+                  <Label htmlFor="companyMail">Company Mail *</Label>
                   <Input
-                    id="website"
-                    type="url"
-                    value={formData.website}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, website: e.target.value }))}
-                    placeholder="https://company.com"
+                    id="companyMail"
+                    type="email"
+                    value={formData.companyMail}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        companyMail: e.target.value,
+                      }))
+                    }
+                    placeholder="reddyprasad.tech@gmail.com"
+                    required
                   />
                 </div>
+                {user.role != "recruiter" ? 
                 <div className="space-y-2">
-                  <Label htmlFor="location">Location</Label>
+                  <Label htmlFor="recruiterId">Recruiter ID *</Label>
                   <Input
-                    id="location"
-                    value={formData.location}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, location: e.target.value }))}
-                    placeholder="City, State, Country"
+                    id="recruiterId"
+                    type="String"
+                    value={formData.recruiterId}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        recruiterId: e.target.value,
+                      }))
+                    }
+                    placeholder="Ex: EMP001"
+                    required
                   />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="companyLogo">Company Logo</Label>
-                  <Input
-                    id="companyLogo"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => setFormData((prev) => ({ ...prev, companyLogo: e.target.files?.[0] || null }))}
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="companyDescription">Company Description</Label>
-                <Textarea
-                  id="companyDescription"
-                  value={formData.companyDescription}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, companyDescription: e.target.value }))}
-                  rows={4}
-                  placeholder="Brief description about the company..."
-                />
+                </div> : <div className="space-y-2">
+                  <Label htmlFor="recruiterId">Recruiter ID *</Label>
+                  <Badge variant={'primary'}> {user.id}</Badge>
+                </div> }
               </div>
             </TabsContent>
 
             <TabsContent value="job" className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="jobTitle">Job Title *</Label>
+                  <Label htmlFor="id">Job ID *</Label>
                   <Input
-                    id="jobTitle"
-                    value={formData.jobTitle}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, jobTitle: e.target.value }))}
+                    id="id"
+                    value={formData.id}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        id: e.target.value,
+                      }))
+                    }
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="title">Job Title *</Label>
+                  <Input
+                    id="title"
+                    value={formData.title}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        title: e.target.value,
+                      }))
+                    }
                     required
                   />
                 </div>
@@ -150,80 +188,149 @@ export default function NewDriveDialog({ onClose }) {
                   <Label htmlFor="department">Department</Label>
                   <Select
                     value={formData.department}
-                    onValueChange={(value) => setFormData((prev) => ({ ...prev, department: value }))}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, department: value }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select Department" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Computer Science">Computer Science</SelectItem>
-                      <SelectItem value="Electronics">Electronics</SelectItem>
-                      <SelectItem value="Mechanical">Mechanical</SelectItem>
-                      <SelectItem value="Civil">Civil</SelectItem>
-                      <SelectItem value="All Departments">All Departments</SelectItem>
+                      <SelectItem value="Computer Science and Engineering">
+                        Computer Science and Engineering
+                      </SelectItem>
+                      <SelectItem value="Computer Science and Engineering(DS)">
+                        Computer Science and Engineering(DS)
+                      </SelectItem>
+                      <SelectItem value="AI/ML">AI/ML</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
+                {user.role === "admin" && (
+                  <div className="space-y-2">
+                    <Label htmlFor="eligibleStudents">Eligible Students</Label>
+                    <Select
+                      value={formData.jobDrive.eligibleStudents}
+                      onValueChange={(value) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          jobDrive: {
+                            ...prev.jobDrive,
+                            eligibleStudents: value,
+                          },
+                        }))
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All students" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Elite">Elite</SelectItem>
+                        <SelectItem value="A1">A1</SelectItem>
+                        <SelectItem value="A2">A2</SelectItem>
+                        <SelectItem value="B1">B1</SelectItem>
+                        <SelectItem value="B2">B2</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+
                 <div className="space-y-2">
                   <Label htmlFor="jobType">Job Type</Label>
                   <Select
                     value={formData.jobType}
-                    onValueChange={(value) => setFormData((prev) => ({ ...prev, jobType: value }))}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, jobType: value }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Full-time">Full-time</SelectItem>
-                      <SelectItem value="Part-time">Part-time</SelectItem>
+                      <SelectItem value="Full-Time">Full-Time</SelectItem>
                       <SelectItem value="Internship">Internship</SelectItem>
-                      <SelectItem value="Contract">Contract</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="experienceLevel">Experience Level</Label>
-                  <Select
-                    value={formData.experienceLevel}
-                    onValueChange={(value) => setFormData((prev) => ({ ...prev, experienceLevel: value }))}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Entry Level">Entry Level</SelectItem>
-                      <SelectItem value="Mid Level">Mid Level</SelectItem>
-                      <SelectItem value="Senior Level">Senior Level</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="positions">Number of Positions *</Label>
+                  <Label htmlFor="noOfPositions">
+                    Number of Positions(optional)
+                  </Label>
                   <Input
-                    id="positions"
+                    id="noOfPositions"
                     type="number"
-                    value={formData.positions}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, positions: e.target.value }))}
-                    required
-                    min="1"
+                    value={formData.noOfPositions}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        noOfPositions: e.target.value,
+                      }))
+                    }
+                    min={0}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="salaryRange">Salary Range</Label>
+                  <Label htmlFor="salary">Salary Range *</Label>
                   <Input
-                    id="salaryRange"
-                    value={formData.salaryRange}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, salaryRange: e.target.value }))}
+                    id="salary"
+                    value={formData.salary}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        salary: e.target.value,
+                      }))
+                    }
                     placeholder="e.g., ₹5-8 LPA"
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="driveDate">Drive Date *</Label>
+                  <Input
+                    id="driveDate"
+                    type="date"
+                    value={formData.jobDrive.driveDate}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        jobDrive: {
+                          ...prev.jobDrive,
+                          driveDate: e.target.value,
+                        },
+                      }))
+                    }
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="location">Drive Location</Label>
+                  <Input
+                    id="location"
+                    type="string"
+                    value={formData.jobDrive.location}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        jobDrive: {
+                          ...prev.jobDrive,
+                          location: e.target.value,
+                        },
+                      }))
+                    }
                   />
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="jobDescription">Job Description *</Label>
+                <Label htmlFor="description">Job Description *</Label>
                 <Textarea
-                  id="jobDescription"
-                  value={formData.jobDescription}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, jobDescription: e.target.value }))}
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      description: e.target.value,
+                    }))
+                  }
                   rows={6}
                   placeholder="Detailed job description, responsibilities, and requirements..."
                   required
@@ -240,7 +347,9 @@ export default function NewDriveDialog({ onClose }) {
                       value={currentSkill}
                       onChange={(e) => setCurrentSkill(e.target.value)}
                       placeholder="Add a skill"
-                      onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addSkill())}
+                      onKeyPress={(e) =>
+                        e.key === "Enter" && (e.preventDefault(), addSkill())
+                      }
                     />
                     <Button type="button" onClick={addSkill}>
                       Add
@@ -248,19 +357,33 @@ export default function NewDriveDialog({ onClose }) {
                   </div>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {formData.skills.map((skill, index) => (
-                      <Badge key={index} variant="secondary" className="flex items-center gap-1">
+                      <Badge
+                        key={index}
+                        variant="secondary"
+                        className="flex items-center gap-1"
+                      >
                         {skill}
-                        <X className="h-3 w-3 cursor-pointer" onClick={() => removeSkill(skill)} />
+                        <X
+                          className="h-3 w-3 cursor-pointer"
+                          onClick={() => removeSkill(skill)}
+                        />
                       </Badge>
                     ))}
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="qualifications">Educational Qualifications</Label>
+                  <Label htmlFor="qualifications">
+                    Educational Qualifications
+                  </Label>
                   <Textarea
                     id="qualifications"
                     value={formData.qualifications}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, qualifications: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        qualifications: e.target.value,
+                      }))
+                    }
                     rows={3}
                     placeholder="Required educational qualifications..."
                   />
@@ -270,17 +393,28 @@ export default function NewDriveDialog({ onClose }) {
                   <Input
                     id="cgpaCriteria"
                     value={formData.cgpaCriteria}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, cgpaCriteria: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        cgpaCriteria: e.target.value,
+                      }))
+                    }
                     placeholder="e.g., Minimum 7.0 CGPA"
+                    maxLength={5}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="applicationDeadline">Application Deadline *</Label>
+                  <Label htmlFor="deadline">Application Deadline *</Label>
                   <Input
-                    id="applicationDeadline"
+                    id="deadline"
                     type="datetime-local"
-                    value={formData.applicationDeadline}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, applicationDeadline: e.target.value }))}
+                    value={formData.deadline}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        deadline: e.target.value,
+                      }))
+                    }
                     required
                   />
                 </div>
@@ -293,8 +427,16 @@ export default function NewDriveDialog({ onClose }) {
                   <Label htmlFor="selectionProcess">Selection Process</Label>
                   <Textarea
                     id="selectionProcess"
-                    value={formData.selectionProcess}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, selectionProcess: e.target.value }))}
+                    value={formData.jobDrive.selectionProcess}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        jobDrive: {
+                          ...prev.jobDrive,
+                          selectionProcess: e.target.value,
+                        },
+                      }))
+                    }
                     rows={4}
                     placeholder="Describe the overall selection process..."
                   />
@@ -303,8 +445,16 @@ export default function NewDriveDialog({ onClose }) {
                   <Label htmlFor="interviewRounds">Interview Rounds</Label>
                   <Textarea
                     id="interviewRounds"
-                    value={formData.interviewRounds}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, interviewRounds: e.target.value }))}
+                    value={formData.jobDrive.interviewRounds}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        jobDrive: {
+                          ...prev.jobDrive,
+                          interviewRounds: e.target.value,
+                        },
+                      }))
+                    }
                     rows={4}
                     placeholder="Detail about each interview round..."
                   />
@@ -322,5 +472,5 @@ export default function NewDriveDialog({ onClose }) {
         </form>
       </div>
     </div>
-  )
+  );
 }

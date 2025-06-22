@@ -18,7 +18,7 @@ import {
   PieChart,
   LineChart,
 } from "lucide-react"
-import ExportReportsDialog from "@/components/export-data"
+// import ExportReportsDialog from "@/components/export-data"
 
 const overallStats = [
   { title: "Total Students", value: "2,847", change: "+12%", trend: "up", icon: Users, color: "text-blue-600" },
@@ -90,7 +90,7 @@ const monthlyTrends = [
 ]
 
 export function Analytics() {
-  const [showExportReports, setShowExportReports] = useState(false);
+  // const [showExportReports, setShowExportReports] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -99,13 +99,13 @@ export function Analytics() {
           <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
           <p className="text-muted-foreground">Comprehensive placement analytics and insights</p>
         </div>
-        <div className="flex items-center space-x-4">
+        {/* <div className="flex items-center space-x-4">
           <Button variant="outline" onClick={() => setShowExportReports(true)}>
             <Calendar className="mr-2 h-4 w-4" />
             Export Report
           </Button>
           {showExportReports && <ExportReportsDialog onClose={() => setShowExportReports(false)} />}
-        </div>
+        </div> */}
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

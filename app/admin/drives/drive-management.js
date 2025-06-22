@@ -1,15 +1,32 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Image from "next/image"
+import { useState, useEffect } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -17,9 +34,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Calendar,
   Building,
@@ -27,144 +43,162 @@ import {
   Edit,
   Trash2,
   Plus,
-  Filter,
   Search,
-  Download,
-  Clock,
-  DollarSign,
   GraduationCap,
   Briefcase,
-} from "lucide-react"
-import NewDriveDialog from "@/components/newDrive"
-
-const driveStats = [
-  { title: "Total Drives", value: "156", change: "+12%", icon: Briefcase, color: "text-blue-600" },
-  { title: "Active Drives", value: "23", change: "+5%", icon: Calendar, color: "text-green-600" },
-  { title: "Companies Registered", value: "89", change: "+8%", icon: Building, color: "text-purple-600" },
-  { title: "Students Placed", value: "1,247", change: "+15%", icon: GraduationCap, color: "text-orange-600" },
-]
-
-const drives = [
-  {
-    id: 1,
-    company: "Google",
-    logo: "/default.png?height=40&width=40",
-    position: "Software Engineer",
-    type: "On-Campus",
-    status: "Active",
-    applications: 245,
-    shortlisted: 45,
-    selected: 12,
-    package: "₹25-30 LPA",
-    deadline: "2024-01-15",
-    driveDate: "2024-01-20",
-    eligibility: "7.5+ CGPA",
-    departments: ["CSE", "IT", "ECE"],
-    rounds: ["Online Test", "Technical", "HR"],
-    location: "Bangalore",
-  },
-  {
-    id: 2,
-    company: "Microsoft",
-    logo: "/default.png?height=40&width=40",
-    position: "Product Manager",
-    type: "Virtual",
-    status: "Upcoming",
-    applications: 189,
-    shortlisted: 32,
-    selected: 8,
-    package: "₹22-28 LPA",
-    deadline: "2024-01-18",
-    driveDate: "2024-01-25",
-    eligibility: "7.0+ CGPA",
-    departments: ["CSE", "IT", "MBA"],
-    rounds: ["Case Study", "Group Discussion", "Interview"],
-    location: "Hyderabad",
-  },
-  {
-    id: 3,
-    company: "Amazon",
-    logo: "/default.png?height=40&width=40",
-    position: "SDE-1",
-    type: "On-Campus",
-    status: "Completed",
-    applications: 312,
-    shortlisted: 67,
-    selected: 18,
-    package: "₹18-24 LPA",
-    deadline: "2023-12-20",
-    driveDate: "2024-01-05",
-    eligibility: "6.5+ CGPA",
-    departments: ["CSE", "IT"],
-    rounds: ["Coding Test", "Technical", "Bar Raiser"],
-    location: "Chennai",
-  },
-]
+  Loader2,
+  MapPin,
+} from "lucide-react";
+import api from "@/lib/api";
+import { toast } from "sonner";
+import NewDriveDialog from "@/components/newDrive";
+import { EditDriveDialog } from "@/components/editDriveDialog";
+import { ViewDriveDialog } from "@/components/view-drive-dialog";
+import { deleteDrive } from "@/components/delete-drive";
 
 export function DriveManagement() {
-    const [showNewDrive, setShowNewDrive] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [statusFilter, setStatusFilter] = useState("all")
-  const [selectedDrive, setSelectedDrive] = useState(null)
-  const [editingDrive, setEditingDrive] = useState(null)
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
 
-  const filteredDrives = drives.filter((drive) => {
-    const matchesSearch =
-      drive.company.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      drive.position.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === "all" || drive.status.toLowerCase() === statusFilter
-    return matchesSearch && matchesStatus
-  })
+  const [showNewDrive, setShowNewDrive] = useState(false);
+  const [selectedDrive, setSelectedDrive] = useState(null);
+  const [editingDrive, setEditingDrive] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case "active":
-        return "bg-green-100 text-green-800"
-      case "upcoming":
-        return "bg-blue-100 text-blue-800"
-      case "completed":
-        return "bg-gray-100 text-gray-800"
-      default:
-        return "bg-gray-100 text-gray-800"
+  const [drives, setDrives] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState({
+    totalDrives: 0,
+    activeDrives: 0,
+    companiesRegistered: 0,
+    studentsPlaced: 0,
+  });
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalDrives, setTotalDrives] = useState(0);
+
+  const fetchDrives = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: itemsPerPage.toString(),
+        search: searchTerm,
+        status: statusFilter === "all" ? "" : statusFilter,
+        eligibleStudents: typeFilter === "all" ? "" : typeFilter,
+        approvedByadmin: true,
+      });
+
+      const response = await api.get(`/admin/drives?${params}`);
+      const {
+        jobDrives: fetchedDrives,
+        total,
+        stats: fetchedStats,
+        totalPages: pages,
+      } = response.data;
+
+      setDrives(fetchedDrives);
+      setTotalDrives(total);
+      setStats(fetchedStats);
+      setTotalPages(pages);
+    } catch (error) {
+      console.error("Error fetching drives:", error);
+      toast("Error fetching drives data");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
+  useEffect(() => {
+    fetchDrives();
+  }, [currentPage, itemsPerPage, searchTerm, statusFilter, typeFilter]);
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, statusFilter, typeFilter]);
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Drive Management</h1>
-          <p className="text-muted-foreground">Manage placement drives and recruitment processes</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Drive Management
+          </h1>
+          <p className="text-muted-foreground">
+            Manage placement drives and recruitment processes
+          </p>
         </div>
-        <Button size="sm" onClick={() => setShowNewDrive(true)} className={'cursor-pointer'}>
-                    <Plus className="mr-2 h-4 w-4" />
-                    New Drive
-                  </Button>
-        {showNewDrive && <NewDriveDialog onClose={() => setShowNewDrive(false)} />}
+        <Button
+          size="sm"
+          onClick={() => setShowNewDrive(true)}
+          className="cursor-pointer"
+        >
+          <Plus className="mr-2 h-4 w-4" />
+          New Drive
+        </Button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {driveStats.map((stat, index) => (
-          <Card key={index}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-              <stat.icon className={`h-4 w-4 ${stat.color}`} />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">{stat.change}</span> from last month
-              </p>
-            </CardContent>
-          </Card>
-        ))}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Drives</CardTitle>
+            <Briefcase className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalDrives}</div>
+            <p className="text-xs text-muted-foreground">
+              All placement drives
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Active Drives</CardTitle>
+            <Calendar className="h-4 w-4 text-green-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.activeDrives}</div>
+            <p className="text-xs text-muted-foreground">
+              Currently accepting applications
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Companies Registered
+            </CardTitle>
+            <Building className="h-4 w-4 text-purple-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {stats.companiesRegistered}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Participating companies
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Students Placed
+            </CardTitle>
+            <GraduationCap className="h-4 w-4 text-orange-600" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.studentsPlaced}</div>
+            <p className="text-xs text-muted-foreground">Successfully placed</p>
+          </CardContent>
+        </Card>
       </div>
 
-      
       <Card>
         <CardHeader>
           <CardTitle>Placement Drives</CardTitle>
-          <CardDescription>Manage and monitor all placement drives</CardDescription>
+          <CardDescription>
+            Manage and monitor all placement drives
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-between mb-6">
@@ -184,9 +218,22 @@ export function DriveManagement() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="active">Active</SelectItem>
-                  <SelectItem value="upcoming">Upcoming</SelectItem>
-                  <SelectItem value="completed">Completed</SelectItem>
+                  <SelectItem value="Active">Active</SelectItem>
+                  <SelectItem value="Completed">Completed</SelectItem>
+                  <SelectItem value="Cancelled">Cancelled</SelectItem>
+                </SelectContent>
+              </Select>
+              <Select value={typeFilter} onValueChange={setTypeFilter}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Filter by eligibility" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Students</SelectItem>
+                  <SelectItem value="Elite">Elite</SelectItem>
+                  <SelectItem value="A1">A1</SelectItem>
+                  <SelectItem value="A2">A2</SelectItem>
+                  <SelectItem value="B1">B1</SelectItem>
+                  <SelectItem value="B2">B2</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -196,303 +243,231 @@ export function DriveManagement() {
             <Table>
               <TableHeader>
                 <TableRow>
+                  <TableHead>Drive ID</TableHead>
                   <TableHead>Company</TableHead>
-                  <TableHead>Position</TableHead>
-                  <TableHead>Type</TableHead>
+                  <TableHead>Date</TableHead>
+                  <TableHead>Location</TableHead>
+                  <TableHead>Eligible</TableHead>
+                  <TableHead>Jobs Count</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead>Applications</TableHead>
-                  <TableHead>Package</TableHead>
-                  <TableHead>Drive Date</TableHead>
+                  <TableHead>Recruiter</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredDrives.map((drive) => (
-                  <TableRow key={drive.id}>
-                    <TableCell>
-                      <div className="flex items-center space-x-3">
-                        <Image src={drive.logo || "/default.png"} alt={drive.company} height={8} width={8} className=" rounded" />
-                        <div>
-                          <div className="font-medium">{drive.company}</div>
-                          <div className="text-sm text-muted-foreground">{drive.location}</div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <div className="font-medium">{drive.position}</div>
-                      <div className="text-sm text-muted-foreground">{drive.departments.join(", ")}</div>
-                    </TableCell>
-                    <TableCell>{drive.type}</TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(drive.status)}>{drive.status}</Badge>
-                    </TableCell>
-                    <TableCell>
-                      <div className="text-sm">
-                        <div>{drive.applications} Applied</div>
-                        <div className="text-muted-foreground">{drive.shortlisted} Shortlisted</div>
-                      </div>
-                    </TableCell>
-                    <TableCell className="font-medium">{drive.package}</TableCell>
-                    <TableCell>{new Date(drive.driveDate).toLocaleDateString()}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center space-x-2">
-                        <Button variant="ghost" size="sm" onClick={() => setSelectedDrive(drive)}>
-                          <Eye className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm" onClick={() => setEditingDrive(drive)}>
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button variant="ghost" size="sm">
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8">
+                      <div className="flex items-center justify-center">
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Loading drives...
                       </div>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : drives.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={8} className="text-center py-8">
+                      No drives found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  drives.map((drive) => (
+                    <TableRow key={drive._id}>
+                      <TableCell>
+                        <div className="font-medium">{drive.id}</div>
+                        <div className="text-sm text-muted-foreground">
+                          {drive.jobDrive.selectionProcess ||
+                            "Selection process not specified"}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          {drive.companyName || "N/A"}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        {drive.jobDrive.driveDate
+                          ? new Date(
+                              drive.jobDrive.driveDate
+                            ).toLocaleDateString()
+                          : "TBD"}
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <MapPin className="mr-1 h-3 w-3 text-muted-foreground" />
+                          {drive.jobDrive.location || "N/A"}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="secondary">
+                          {drive.jobDrive.eligibleStudents || "All"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center">
+                          <Briefcase className="mr-1 h-3 w-3 text-muted-foreground" />
+                          {drive.noOfPositions || 0}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant={drive.status ? "default" : "secondary"}>
+                          {drive.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell>{drive.recruiterId || "N/A"}</TableCell>
+                      <TableCell>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setSelectedDrive(drive)}
+                          >
+                            <Eye className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => setEditingDrive(drive)}
+                          >
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-600 hover:text-red-700"
+                            onClick={() => deleteDrive(drive, fetchDrives)}
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
+          </div>
+
+          <div className="flex items-center justify-between px-2 py-4">
+            <div className="flex items-center space-x-2">
+              <p className="text-sm text-muted-foreground">
+                Showing {(currentPage - 1) * itemsPerPage + 1} to{" "}
+                {Math.min(currentPage * itemsPerPage, totalDrives)} of{" "}
+                {totalDrives} drives
+              </p>
+              <Select
+                value={itemsPerPage.toString()}
+                onValueChange={(value) => {
+                  setItemsPerPage(Number(value));
+                  setCurrentPage(1);
+                }}
+              >
+                <SelectTrigger className="w-[70px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="5">5</SelectItem>
+                  <SelectItem value="10">10</SelectItem>
+                  <SelectItem value="20">20</SelectItem>
+                  <SelectItem value="50">50</SelectItem>
+                </SelectContent>
+              </Select>
+              <span className="text-sm text-muted-foreground">per page</span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(1)}
+                disabled={currentPage === 1}
+              >
+                First
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </Button>
+
+              <div className="flex items-center space-x-1">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  let pageNumber;
+                  if (totalPages <= 5) {
+                    pageNumber = i + 1;
+                  } else if (currentPage <= 3) {
+                    pageNumber = i + 1;
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNumber = totalPages - 4 + i;
+                  } else {
+                    pageNumber = currentPage - 2 + i;
+                  }
+
+                  return (
+                    <Button
+                      key={pageNumber}
+                      variant={
+                        currentPage === pageNumber ? "default" : "outline"
+                      }
+                      size="sm"
+                      onClick={() => setCurrentPage(pageNumber)}
+                      className="w-8 h-8 p-0"
+                    >
+                      {pageNumber}
+                    </Button>
+                  );
+                })}
+              </div>
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(totalPages)}
+                disabled={currentPage === totalPages}
+              >
+                Last
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
 
+      {showNewDrive && (
+        <NewDriveDialog
+          onClose={() => setShowNewDrive(false)}
+          onSuccess={fetchDrives}
+        />
+      )}
+
       {selectedDrive && (
-        <Dialog open={!!selectedDrive} onOpenChange={() => setSelectedDrive(null)}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle className="flex items-center space-x-3">
-                <Image
-                  src={selectedDrive.logo || "/default.png"}
-                  alt={selectedDrive.company}
-                  height={10}
-                  width={10}
-                  className="rounded"
-                />
-                <div>
-                  <div>
-                    {selectedDrive.company} - {selectedDrive.position}
-                  </div>
-                  <div className="text-sm text-muted-foreground">{selectedDrive.location}</div>
-                </div>
-              </DialogTitle>
-            </DialogHeader>
-            <Tabs defaultValue="overview" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="applications">Applications</TabsTrigger>
-                <TabsTrigger value="process">Process</TabsTrigger>
-                <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              </TabsList>
-              <TabsContent value="overview" className="space-y-4">
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <div className="flex items-center space-x-2">
-                      <DollarSign className="h-4 w-4 text-green-600" />
-                      <span className="font-medium">Package: {selectedDrive.package}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Calendar className="h-4 w-4 text-blue-600" />
-                      <span>Drive Date: {new Date(selectedDrive.driveDate).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Clock className="h-4 w-4 text-orange-600" />
-                      <span>Deadline: {new Date(selectedDrive.deadline).toLocaleDateString()}</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <GraduationCap className="h-4 w-4 text-purple-600" />
-                      <span>Eligibility: {selectedDrive.eligibility}</span>
-                    </div>
-                  </div>
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="font-medium mb-2">Eligible Departments</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedDrive.departments.map((dept) => (
-                          <Badge key={dept} variant="secondary">
-                            {dept}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-medium mb-2">Selection Rounds</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedDrive.rounds.map((round) => (
-                          <Badge key={round} variant="outline">
-                            {round}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </TabsContent>
-              <TabsContent value="applications">
-                <div className="space-y-4">
-                  <div className="grid grid-cols-3 gap-4">
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-2xl font-bold text-blue-600">{selectedDrive.applications}</div>
-                        <div className="text-sm text-muted-foreground">Total Applications</div>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-2xl font-bold text-orange-600">{selectedDrive.shortlisted}</div>
-                        <div className="text-sm text-muted-foreground">Shortlisted</div>
-                      </CardContent>
-                    </Card>
-                    <Card>
-                      <CardContent className="p-4">
-                        <div className="text-2xl font-bold text-green-600">{selectedDrive.selected}</div>
-                        <div className="text-sm text-muted-foreground">Selected</div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </DialogContent>
-        </Dialog>
+        <ViewDriveDialog
+          drive={selectedDrive}
+          onClose={() => setSelectedDrive(null)}
+          onEdit={() => {
+            setSelectedDrive(null);
+            setEditingDrive(selectedDrive);
+          }}
+        />
       )}
 
       {editingDrive && (
-        <Dialog open={!!editingDrive} onOpenChange={() => setEditingDrive(null)}>
-          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Edit Drive - {editingDrive.company}</DialogTitle>
-              <DialogDescription>Update drive details and requirements</DialogDescription>
-            </DialogHeader>
-            <Tabs defaultValue="basic" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
-                <TabsTrigger value="basic">Basic Info</TabsTrigger>
-                <TabsTrigger value="requirements">Requirements</TabsTrigger>
-                <TabsTrigger value="process">Selection Process</TabsTrigger>
-                <TabsTrigger value="schedule">Schedule</TabsTrigger>
-              </TabsList>
-              <TabsContent value="basic" className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-company">Company Name</Label>
-                    <Input id="edit-company" defaultValue={editingDrive.company} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-position">Job Position</Label>
-                    <Input id="edit-position" defaultValue={editingDrive.position} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-package">Package Range</Label>
-                    <Input id="edit-package" defaultValue={editingDrive.package} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-type">Drive Type</Label>
-                    <Select defaultValue={editingDrive.type.toLowerCase().replace("-", "")}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="oncampus">On-Campus</SelectItem>
-                        <SelectItem value="virtual">Virtual</SelectItem>
-                        <SelectItem value="hybrid">Hybrid</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-location">Location</Label>
-                    <Input id="edit-location" defaultValue={editingDrive.location} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-status">Status</Label>
-                    <Select defaultValue={editingDrive.status.toLowerCase()}>
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="upcoming">Upcoming</SelectItem>
-                        <SelectItem value="completed">Completed</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </TabsContent>
-              <TabsContent value="requirements" className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-eligibility">Eligibility Criteria</Label>
-                    <Input id="edit-eligibility" defaultValue={editingDrive.eligibility} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-backlogs">Maximum Backlogs</Label>
-                    <Input id="edit-backlogs" placeholder="e.g., 0" type="number" />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label>Eligible Departments</Label>
-                  <div className="grid grid-cols-3 gap-2">
-                    {["CSE", "IT", "ECE", "EEE", "MECH", "CIVIL", "MBA", "MCA"].map((dept) => (
-                      <label key={dept} className="flex items-center space-x-2">
-                        <input
-                          type="checkbox"
-                          className="rounded"
-                          defaultChecked={editingDrive.departments.includes(dept)}
-                        />
-                        <span className="text-sm">{dept}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </TabsContent>
-              <TabsContent value="process" className="space-y-4">
-                <div className="space-y-4">
-                  <Label>Selection Rounds</Label>
-                  {editingDrive.rounds.map((round) => (
-                    <div key={round} className="flex items-center space-x-2 p-3 border rounded-lg">
-                      <input type="checkbox" className="rounded" defaultChecked />
-                      <span className="flex-1">{round}</span>
-                      <Input placeholder="Duration" className="w-24" />
-                      <Select>
-                        <SelectTrigger className="w-32">
-                          <SelectValue placeholder="Mode" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="online">Online</SelectItem>
-                          <SelectItem value="offline">Offline</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  ))}
-                </div>
-              </TabsContent>
-              <TabsContent value="schedule" className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-deadline">Application Deadline</Label>
-                    <Input id="edit-deadline" type="date" defaultValue={editingDrive.deadline} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="edit-driveDate">Drive Date</Label>
-                    <Input id="edit-driveDate" type="date" defaultValue={editingDrive.driveDate} />
-                  </div>
-                </div>
-              </TabsContent>
-            </Tabs>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setEditingDrive(null)}>
-                Cancel
-              </Button>
-              <Button
-                onClick={() => {
-                  console.log("Drive updated:", editingDrive)
-                  alert("Drive updated successfully!")
-                  setEditingDrive(null)
-                }}
-              >
-                Update Drive
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <EditDriveDialog
+          drive={editingDrive}
+          onClose={() => setEditingDrive(null)}
+          onSuccess={fetchDrives}
+        />
       )}
     </div>
-  )
+  );
 }

@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import React from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import React from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   Bell,
   Calendar,
@@ -17,9 +17,9 @@ import {
   Settings,
   User,
   Users,
-} from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Button } from "@/components/ui/button"
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,8 +27,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+} from "@/components/ui/dropdown-menu";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Sidebar,
   SidebarContent,
@@ -40,12 +40,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 // import { NotificationPopover } from "@/components/ui/notification-popover"
-import { useAuth } from "@/context/AuthContext"
+import { useAuth } from "@/context/AuthContext";
 
 export function RecruiterLayout({ children }) {
-  const router = useRouter()
+  const router = useRouter();
   const { user } = useAuth();
 
   return (
@@ -59,12 +59,17 @@ export function RecruiterLayout({ children }) {
             </div>
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-secondary/50">
               <Avatar className="h-7 w-7">
-                <AvatarImage src={user.url? user.url : 'default.png'} alt="Avatar" />
+                <AvatarImage
+                  src={user.url ? user.url : "default.png"}
+                  alt="Avatar"
+                />
                 <AvatarFallback>$</AvatarFallback>
               </Avatar>
               <div className="flex flex-col">
                 <span className="text-sm font-medium">{user.name}</span>
-                <span className="text-xs text-muted-foreground">{user.email}</span>
+                <span className="text-xs text-muted-foreground">
+                  {user.email}
+                </span>
                 {/* <span className="text-xs text-muted-foreground">{user.company}</span> */}
               </div>
             </div>
@@ -143,37 +148,61 @@ export function RecruiterLayout({ children }) {
                     <h1 className="text-xl font-bold">E-Placo</h1>
                   </div>
                   <div className="mt-4 space-y-1">
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                    >
                       <Link href="/recruiter/dashboard">
                         <Home className="mr-2 h-4 w-4" />
                         Dashboard
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                    >
                       <Link href="/recruiter/candidates">
                         <Users className="mr-2 h-4 w-4" />
                         Candidate Profiles
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                    >
                       <Link href="/recruiter/shortlisting">
                         <CheckSquare className="mr-2 h-4 w-4" />
                         Shortlisting Panel
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                    >
                       <Link href="/recruiter/interviews">
                         <Calendar className="mr-2 h-4 w-4" />
                         Interview Schedule
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                    >
                       <Link href="/recruiter/feedback">
                         <MessageSquare className="mr-2 h-4 w-4" />
                         Feedback Module
                       </Link>
                     </Button>
-                    <Button variant="ghost" className="w-full justify-start" asChild>
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start"
+                      asChild
+                    >
                       <Link href="/recruiter/job-details">
                         <FileText className="mr-2 h-4 w-4" />
                         Job Details
@@ -192,9 +221,15 @@ export function RecruiterLayout({ children }) {
                 {/* <NotificationPopover/> */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                    <Button
+                      variant="ghost"
+                      className="relative h-9 w-9 rounded-full"
+                    >
                       <Avatar className="h-9 w-9">
-                        <AvatarImage src={user.url ? user.url : 'default.png'} alt="Avatar" />
+                        <AvatarImage
+                          src={user.url ? user.url : "default.png"}
+                          alt="Avatar"
+                        />
                         <AvatarFallback>$</AvatarFallback>
                       </Avatar>
                     </Button>
@@ -203,12 +238,21 @@ export function RecruiterLayout({ children }) {
                     <DropdownMenuLabel>
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium">{user.name}</p>
-                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                        <p className="text-xs text-muted-foreground">
+                          {user.email}
+                        </p>
                         {/* <p className="text-xs text-muted-foreground">{user.company}</p> */}
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={()=>router.push('/logout')}>
+                    <DropdownMenuItem
+                      onClick={() => router.push("/recruiter/settings")}
+                      className={"cursor-pointer"}
+                    >
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => router.push("/logout")}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Log out</span>
                     </DropdownMenuItem>
@@ -221,5 +265,5 @@ export function RecruiterLayout({ children }) {
         </div>
       </div>
     </SidebarProvider>
-  )
+  );
 }

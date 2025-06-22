@@ -7,7 +7,7 @@ const defaultStudentForm = {
   id: "",
   name: "",
   email: "",
-  gender: "",
+  gender: null,
   education: [],
   personalProfile: {
     aboutMe: "",
