@@ -206,7 +206,7 @@ export function EditDriveDialog({ drive, onClose, onSuccess }) {
                         <SelectValue placeholder="All students" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="Elite">Elite</SelectItem>
+                        <SelectItem value="ELITE">Elite</SelectItem>
                         <SelectItem value="A1">A1</SelectItem>
                         <SelectItem value="A2">A2</SelectItem>
                         <SelectItem value="B1">B1</SelectItem>
