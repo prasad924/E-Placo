@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/sidebar"
 import { useAuth } from "@/context/AuthContext"
 import { usePathname } from "next/navigation"
+import { SliderButton } from "@/components/ui/darkThemeSlider"
 
 export function StudentLayout({ children }) {
   const router = useRouter()
@@ -209,6 +210,7 @@ export function StudentLayout({ children }) {
                 <h1 className="text-xl font-bold">E-Placo Student</h1>
               </div>
               <div className="flex items-center gap-4">
+                <SliderButton/>
                 {/* <NotificationPopover/> */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>

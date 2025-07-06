@@ -11,6 +11,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@/components/ui/sidebar"
 import { useAuth } from "@/context/AuthContext";
 import { usePathname } from "next/navigation";
+import { SliderButton } from "@/components/ui/darkThemeSlider"
 // import { NotificationPopover } from "@/components/ui/notification-popover"
 
 export function AdminLayout({ children }) {
@@ -195,6 +196,7 @@ export function AdminLayout({ children }) {
                 <h1 className="text-xl font-bold">E-Placo Admin</h1>
               </div>
               <div className="flex items-center gap-4">
+                <SliderButton/>
                 {/* <NotificationPopover/> */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild className={'cursor-pointer'}>

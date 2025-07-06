@@ -43,6 +43,8 @@ import {
 } from "@/components/ui/sidebar";
 // import { NotificationPopover } from "@/components/ui/notification-popover"
 import { useAuth } from "@/context/AuthContext";
+import { SliderButton } from "@/components/ui/darkThemeSlider";
+
 
 export function RecruiterLayout({ children }) {
   const router = useRouter();
@@ -60,7 +62,7 @@ export function RecruiterLayout({ children }) {
             <div className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-secondary/50">
               <Avatar className="h-7 w-7">
                 <AvatarImage
-                  src={user.url ? user.url : "default.png"}
+                  src={user.url ? user.url : "/default.png"}
                   alt="Avatar"
                 />
                 <AvatarFallback>$</AvatarFallback>
@@ -218,6 +220,7 @@ export function RecruiterLayout({ children }) {
                 <h1 className="text-xl font-bold">E-Placo Recruiter</h1>
               </div>
               <div className="flex items-center gap-4">
+                <SliderButton/>
                 {/* <NotificationPopover/> */}
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -227,7 +230,7 @@ export function RecruiterLayout({ children }) {
                     >
                       <Avatar className="h-9 w-9">
                         <AvatarImage
-                          src={user.url ? user.url : "default.png"}
+                          src={user.url ? user.url : "/default.png"}
                           alt="Avatar"
                         />
                         <AvatarFallback>$</AvatarFallback>
