@@ -23,7 +23,7 @@ const MOCK_EVENTS = [
     id: 1,
     title: "Technical Interview",
     company: "TechCorp",
-    logo: "/placeholder.svg",
+    logo: "/default.png",
     date: "2025-05-05",
     startTime: "10:00 AM",
     endTime: "11:00 AM",
@@ -37,7 +37,7 @@ const MOCK_EVENTS = [
     id: 2,
     title: "HR Interview",
     company: "CloudTech",
-    logo: "/placeholder.svg",
+    logo: "/default.png",
     date: "2025-05-05",
     startTime: "2:00 PM",
     endTime: "3:00 PM",
@@ -51,7 +51,7 @@ const MOCK_EVENTS = [
     id: 3,
     title: "Pre-placement Talk",
     company: "FutureTech",
-    logo: "/placeholder.svg",
+    logo: "/default.png",
     date: "2025-05-07",
     startTime: "2:00 PM",
     endTime: "3:30 PM",
@@ -63,7 +63,7 @@ const MOCK_EVENTS = [
     id: 4,
     title: "Aptitude Test",
     company: "GlobalSoft",
-    logo: "/placeholder.svg",
+    logo: "/default.png",
     date: "2025-05-09",
     startTime: "9:00 AM",
     endTime: "10:30 AM",
@@ -75,7 +75,7 @@ const MOCK_EVENTS = [
     id: 5,
     title: "Group Discussion",
     company: "InnovateTech",
-    logo: "/placeholder.svg",
+    logo: "/default.png",
     date: "2025-05-12",
     startTime: "11:00 AM",
     endTime: "12:30 PM",
@@ -87,7 +87,7 @@ const MOCK_EVENTS = [
     id: 6,
     title: "Coding Test",
     company: "DataSystems",
-    logo: "/placeholder.svg",
+    logo: "/default.png",
     date: "2025-05-15",
     startTime: "10:00 AM",
     endTime: "12:00 PM",
@@ -100,7 +100,7 @@ const MOCK_EVENTS = [
     id: 7,
     title: "System Design Interview",
     company: "TechCorp",
-    logo: "/placeholder.svg",
+    logo: "/default.png",
     date: "2025-05-18",
     startTime: "3:00 PM",
     endTime: "4:30 PM",
@@ -249,7 +249,7 @@ export function InterviewCalendar() {
     <div className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Interview Calendar</h2>
+          <h2 className="text-3xl font-bold tracking-tight">Interview Calendar  <sup className="text-red-500">***Static Data</sup></h2>
           <p className="text-muted-foreground">View and manage your upcoming interviews and placement events.</p>
         </div>
         <div className="flex items-center gap-2">
@@ -435,7 +435,7 @@ export function InterviewCalendar() {
                     <div key={event.id} className="space-y-3 rounded-lg border p-4">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={event.logo || "/placeholder.svg"} alt={event.company} />
+                          <AvatarImage src={event.logo || "/default.png"} alt={event.company} />
                           <AvatarFallback>{event.company.substring(0, 2)}</AvatarFallback>
                         </Avatar>
                         <div className="space-y-1">
@@ -488,7 +488,7 @@ export function InterviewCalendar() {
         </Card>
       </div>
 
-      <Card>
+      {/* <Card>
         <CardHeader>
           <CardTitle>Upcoming Events</CardTitle>
           <CardDescription>Overview of your upcoming interviews and events.</CardDescription>
@@ -508,7 +508,7 @@ export function InterviewCalendar() {
                     <div key={event.id} className="flex items-center justify-between rounded-lg border p-4">
                       <div className="flex items-center gap-4">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={event.logo || "/placeholder.svg"} alt={event.company} />
+                          <AvatarImage src={event.logo || "/default.png"} alt={event.company} />
                           <AvatarFallback>{event.company.substring(0, 2)}</AvatarFallback>
                         </Avatar>
                         <div>
@@ -540,7 +540,7 @@ export function InterviewCalendar() {
                     <div key={event.id} className="flex items-center justify-between rounded-lg border p-4">
                       <div className="flex items-center gap-4">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src={event.logo || "/placeholder.svg"} alt={event.company} />
+                          <AvatarImage src={event.logo || "/default.png"} alt={event.company} />
                           <AvatarFallback>{event.company.substring(0, 2)}</AvatarFallback>
                         </Avatar>
                         <div>
@@ -573,7 +573,7 @@ export function InterviewCalendar() {
                   <div key={event.id} className="flex items-center justify-between rounded-lg border p-4">
                     <div className="flex items-center gap-4">
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src={event.logo || "/placeholder.svg"} alt={event.company} />
+                        <AvatarImage src={event.logo || "/default.png"} alt={event.company} />
                         <AvatarFallback>{event.company.substring(0, 2)}</AvatarFallback>
                       </Avatar>
                       <div>
@@ -602,7 +602,7 @@ export function InterviewCalendar() {
             </TabsContent>
           </Tabs>
         </CardContent>
-      </Card>
+      </Card> */}
     </div>
   )
 }

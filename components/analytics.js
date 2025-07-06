@@ -35,7 +35,7 @@ const overallStats = [
 ]
 
 const departmentStats = [
-  { dept: "Computer Science", students: 450, placed: 398, rate: 88.4, avgPackage: "₹12.5 LPA", highest: "₹45 LPA" },
+  { dept: "Computer Science and Enginneering", students: 450, placed: 398, rate: 88.4, avgPackage: "₹12.5 LPA", highest: "₹45 LPA" },
   {
     dept: "Information Technology",
     students: 380,
@@ -45,7 +45,7 @@ const departmentStats = [
     highest: "₹42 LPA",
   },
   {
-    dept: "Electronics & Communication",
+    dept: "Computer Science and Enginneering(DS)",
     students: 320,
     placed: 276,
     rate: 86.3,
@@ -53,31 +53,23 @@ const departmentStats = [
     highest: "₹28 LPA",
   },
   {
-    dept: "Electrical Engineering",
+    dept: "Computer Science and Enginneering(AI/ML)",
     students: 280,
     placed: 238,
     rate: 85.0,
     avgPackage: "₹7.8 LPA",
     highest: "₹25 LPA",
   },
-  {
-    dept: "Mechanical Engineering",
-    students: 350,
-    placed: 287,
-    rate: 82.0,
-    avgPackage: "₹6.5 LPA",
-    highest: "₹22 LPA",
-  },
-  { dept: "Civil Engineering", students: 290, placed: 232, rate: 80.0, avgPackage: "₹5.8 LPA", highest: "₹18 LPA" },
+  
 ]
 
 const topCompanies = [
-  { name: "Google", hired: 25, package: "₹25-45 LPA", logo: "/placeholder.svg?height=40&width=40" },
-  { name: "Microsoft", hired: 22, package: "₹22-38 LPA", logo: "/placeholder.svg?height=40&width=40" },
-  { name: "Amazon", hired: 35, package: "₹18-32 LPA", logo: "/placeholder.svg?height=40&width=40" },
-  { name: "TCS", hired: 180, package: "₹3.5-7 LPA", logo: "/placeholder.svg?height=40&width=40" },
-  { name: "Infosys", hired: 145, package: "₹4-8 LPA", logo: "/placeholder.svg?height=40&width=40" },
-  { name: "Wipro", hired: 120, package: "₹3.8-6.5 LPA", logo: "/placeholder.svg?height=40&width=40" },
+  { name: "Google", hired: 25, package: "₹25-45 LPA", logo: "/default.png?height=40&width=40" },
+  { name: "Microsoft", hired: 22, package: "₹22-38 LPA", logo: "/default.png?height=40&width=40" },
+  { name: "Amazon", hired: 35, package: "₹18-32 LPA", logo: "/default.png?height=40&width=40" },
+  { name: "TCS", hired: 180, package: "₹3.5-7 LPA", logo: "/default.png?height=40&width=40" },
+  { name: "Infosys", hired: 145, package: "₹4-8 LPA", logo: "/default.png?height=40&width=40" },
+  { name: "Wipro", hired: 120, package: "₹3.8-6.5 LPA", logo: "/default.png?height=40&width=40" },
 ]
 
 const monthlyTrends = [
@@ -96,7 +88,7 @@ export function Analytics() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard</h1>
+          <h1 className="text-3xl font-bold tracking-tight">Analytics Dashboard <sup className="text-red-500">***Static Data</sup></h1>
           <p className="text-muted-foreground">Comprehensive placement analytics and insights</p>
         </div>
         {/* <div className="flex items-center space-x-4">
@@ -270,7 +262,7 @@ export function Analytics() {
                 {topCompanies.map((company, index) => (
                   <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
                     <div className="flex items-center space-x-4">
-                      <Image src={company.logo || "/placeholder.svg"} alt={company.name} height={40} width={40} className="rounded" />
+                      <Image src={company.logo || "/default.png"} alt={company.name} height={40} width={40} className="rounded" />
                       <div>
                         <div className="font-medium">{company.name}</div>
                         <div className="text-sm text-muted-foreground">{company.package}</div>

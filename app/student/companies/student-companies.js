@@ -268,14 +268,14 @@ export function StudentCompanies() {
               </div>
 
               <div className="flex items-center space-x-2 pt-2">
-                <Button
+                {/* <Button
                   size="sm"
                   className="flex-1 cursor-pointer"
                   onClick={() => handleCompanyClick(company)}
                 >
                   <Eye className="mr-2 h-4 w-4" />
                   View Details
-                </Button>
+                </Button> */}
                 <Button
                   variant="outline"
                   size="sm"
@@ -286,6 +286,7 @@ export function StudentCompanies() {
                   }}
                 >
                   <ExternalLink className="h-4 w-4" />
+                  Visit company website
                 </Button>
               </div>
             </CardContent>
