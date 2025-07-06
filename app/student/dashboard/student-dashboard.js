@@ -52,12 +52,14 @@ export function StudentDashboard() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          {user.resumeLink &&
           <Button variant="outline" size="sm" className={'cursor-pointer'}>
             <Link target="_blank" className="flex" href={user.resumeLink || 'https://drive.google.com/file/d/1bnbq9gWukHXxI1nOMGfNeTBIMx2nVaSj/view?usp=sharing'}>
               <FileText className="mr-2 h-4 w-4" />
               View Resume
             </Link>
           </Button>
+          }
           <Button size="sm" className={'cursor-pointer'} onClick={()=>router.push('/student/drives')}>
             <Briefcase className="mr-2 h-4 w-4" />
             Browse Drives

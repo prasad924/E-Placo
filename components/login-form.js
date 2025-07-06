@@ -117,7 +117,7 @@ export function LoginForm() {
               onValueChange={setRole}
               className="flex flex-col space-y-1"
             >
-              {["student", "admin", "recruiter"].map((type) => (
+              {["student", "admin"].map((type) => (
                 <div key={type} className="flex items-center space-x-2">
                   <RadioGroupItem value={type} id={type} />
                   <Label htmlFor={type} className="font-normal capitalize">

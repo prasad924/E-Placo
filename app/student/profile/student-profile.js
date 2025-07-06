@@ -703,18 +703,21 @@ export function StudentProfile() {
                           />
                         </div>
                       ) : (
-                        <Button
+                        form.resumeLink &&
+
+                          <Button
                           variant="outline"
                           size="sm"
                           className={"cursor-pointer"}
                           onClick={() =>
                             window.open(form.resumeLink || "#", "_blank")
                           }
-                        >
+                          >
                           <FileText className="mr-2 h-4 w-4" />
                           Show External Resume
-                        </Button>
-                      )}
+                          </Button>
+                      )
+                    }
                     </div>
                   </div>
                 </CardHeader>
