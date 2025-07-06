@@ -148,6 +148,7 @@ export function AppliedJobs() {
 }
 
 function AppliedJobCard({ application }) {
+  if(!application.jobId) return
   const job = application.jobId
 
   const getStatusInfo = () => {
