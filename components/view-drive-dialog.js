@@ -21,7 +21,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 export function ViewDriveDialog({ drive, onClose, onEdit }) {
-  console.log(drive)
   return (
     <Dialog open={!!drive} onOpenChange={onClose}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">

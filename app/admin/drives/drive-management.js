@@ -31,7 +31,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 import {
   Calendar,
@@ -314,31 +314,39 @@ export function DriveManagement() {
                       </TableCell>
                       <TableCell>{drive.recruiterId || "N/A"}</TableCell>
                       <TableCell>
-  <DropdownMenu>
-    <DropdownMenuTrigger asChild>
-      <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-        <MoreVertical className="h-4 w-4" />
-      </Button>
-    </DropdownMenuTrigger>
-    <DropdownMenuContent align="end">
-      <DropdownMenuItem onClick={() => setSelectedDrive(drive)}>
-        <Eye className="mr-2 h-4 w-4" />
-        View
-      </DropdownMenuItem>
-      <DropdownMenuItem onClick={() => setEditingDrive(drive)}>
-        <Edit className="mr-2 h-4 w-4" />
-        Edit
-      </DropdownMenuItem>
-      <DropdownMenuItem
-        onClick={() => deleteDrive(drive, fetchDrives)}
-        className="text-red-600 focus:text-red-700"
-      >
-        <Trash2 className="mr-2 h-4 w-4" />
-        Delete
-      </DropdownMenuItem>
-    </DropdownMenuContent>
-  </DropdownMenu>
-</TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() => setSelectedDrive(drive)}
+                            >
+                              <Eye className="mr-2 h-4 w-4" />
+                              View
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => setEditingDrive(drive)}
+                            >
+                              <Edit className="mr-2 h-4 w-4" />
+                              Edit
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              onClick={() => deleteDrive(drive, fetchDrives)}
+                              className="text-red-600 focus:text-red-700"
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
                     </TableRow>
                   ))
                 )}
